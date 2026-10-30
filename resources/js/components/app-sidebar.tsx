@@ -8,6 +8,7 @@ import {
     ChartNoAxesCombined,
     ShieldCheck,
     Globe,
+    LogOut,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavMain } from '@/components/nav-main';
@@ -120,6 +121,17 @@ export function AppSidebar() {
             <SidebarFooter className="border-t border-[#f0f4f5] pt-2">
                 <NavMain items={publicSiteItem} label="TAUTAN SITUS" />
                 <NavUser />
+                <div className="px-2 pt-1 pb-1">
+                    <Link
+                        href="/logout"
+                        method="post"
+                        as="button"
+                        className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-colors"
+                    >
+                        <LogOut className="size-4 shrink-0" />
+                        <span>Keluar Akun (Logout)</span>
+                    </Link>
+                </div>
             </SidebarFooter>
         </Sidebar>
     );

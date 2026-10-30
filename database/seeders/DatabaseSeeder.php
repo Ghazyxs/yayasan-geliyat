@@ -15,11 +15,32 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Super Admin (Ketua Yayasan)
+        User::updateOrCreate(
+            ['email' => 'ketua@geliyat.or.id'],
+            [
+                'name' => 'H. Ahmad Fauzi',
+                'password' => 'password',
+                'role' => 'super_admin',
+                'bidang' => 'Pimpinan Yayasan',
+                'phone' => '081234567890',
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ]
+        );
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // Admin Operasional (Bidang Kemanusiaan & Anak Yatim)
+        User::updateOrCreate(
+            ['email' => 'admin@geliyat.or.id'],
+            [
+                'name' => 'Ibu Siti Rahmah',
+                'password' => 'password',
+                'role' => 'admin',
+                'bidang' => 'Kemanusiaan & Yatim',
+                'phone' => '081298765432',
+                'is_active' => true,
+                'email_verified_at' => now(),
+            ]
+        );
     }
 }
