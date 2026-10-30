@@ -84,13 +84,24 @@ export default function PublicNavbar() {
                     {/* Actions: Donasi CTA & Admin / Auth */}
                     <div className="hidden md:flex items-center gap-3">
                         {auth?.user ? (
-                            <Link
-                                href="/dashboard"
-                                className="flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-[#186972] bg-[#e8f8fa] hover:bg-[#d5f3f7] rounded-lg transition-colors"
-                            >
-                                <LayoutDashboard className="size-4" />
-                                <span>Panel</span>
-                            </Link>
+                            <div className="flex items-center gap-1.5">
+                                <Link
+                                    href="/dashboard"
+                                    className="flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-[#186972] bg-[#e8f8fa] hover:bg-[#d5f3f7] rounded-lg transition-colors"
+                                >
+                                    <LayoutDashboard className="size-4" />
+                                    <span>Panel</span>
+                                </Link>
+                                <Link
+                                    href="/logout"
+                                    method="post"
+                                    as="button"
+                                    className="px-2.5 py-2 text-xs font-medium text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-lg transition-colors"
+                                    title="Keluar Akun"
+                                >
+                                    Keluar
+                                </Link>
+                            </div>
                         ) : (
                             <Link
                                 href="/login"
@@ -155,14 +166,25 @@ export default function PublicNavbar() {
 
                     <div className="pt-3 border-t border-gray-100 flex flex-col gap-2">
                         {auth?.user ? (
-                            <Link
-                                href="/dashboard"
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="flex items-center justify-center gap-2 w-full py-2.5 text-sm font-semibold text-[#087f8c] bg-[#e8f8fa] rounded-lg"
-                            >
-                                <LayoutDashboard className="size-4" />
-                                <span>Dashboard Pengurus</span>
-                            </Link>
+                            <>
+                                <Link
+                                    href="/dashboard"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="flex items-center justify-center gap-2 w-full py-2.5 text-sm font-semibold text-[#087f8c] bg-[#e8f8fa] rounded-lg"
+                                >
+                                    <LayoutDashboard className="size-4" />
+                                    <span>Dashboard Pengurus</span>
+                                </Link>
+                                <Link
+                                    href="/logout"
+                                    method="post"
+                                    as="button"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="flex items-center justify-center gap-2 w-full py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 rounded-lg"
+                                >
+                                    <span>Keluar Akun (Logout)</span>
+                                </Link>
+                            </>
                         ) : (
                             <Link
                                 href="/login"
