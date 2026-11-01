@@ -46,7 +46,7 @@ const mockKegiatan: KegiatanItem[] = [
     },
     {
         id: 4,
-        title: "Gemar — Gerakan Mengaji Anak Remaja",
+        title: 'Gemar — Gerakan Mengaji Anak Remaja',
         category: 'Keagamaan',
         description:
             "Pembelajaran tahsin dan tajwid Al-Qur'an bagi anak-anak usia SMP dan SMA guna memperdalam pemahaman agama dan akhlak karimah.",
@@ -76,7 +76,13 @@ const mockKegiatan: KegiatanItem[] = [
     },
 ];
 
-const categories = ['Semua', 'Pendidikan', 'Keagamaan', 'Ekonomi', 'Kemanusiaan'];
+const categories = [
+    'Semua',
+    'Pendidikan',
+    'Keagamaan',
+    'Ekonomi',
+    'Kemanusiaan',
+];
 
 export default function KegiatanPage() {
     const [selectedCategory, setSelectedCategory] = useState('Semua');
@@ -84,10 +90,13 @@ export default function KegiatanPage() {
 
     const filteredActivities = mockKegiatan.filter((item) => {
         const matchesCategory =
-            selectedCategory === 'Semua' || item.category.toLowerCase() === selectedCategory.toLowerCase();
+            selectedCategory === 'Semua' ||
+            item.category.toLowerCase() === selectedCategory.toLowerCase();
         const matchesSearch =
             item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            item.description
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
             item.location.toLowerCase().includes(searchQuery.toLowerCase());
         return matchesCategory && matchesSearch;
     });
@@ -97,42 +106,49 @@ export default function KegiatanPage() {
             <Head title="Kegiatan & Berita - Yayasan Geliyat" />
 
             {/* Banner Header with Breadcrumbs */}
-            <div className="bg-gradient-to-r from-[#d1f6fa]/60 via-[#e8f8fa] to-[#f7fcfd] border-b border-[#e4eaec] py-10 sm:py-14">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h1 className="font-poppins font-bold text-3xl sm:text-4xl text-[#1d2b2d]">
+            <div className="border-b border-[#e4eaec] bg-gradient-to-r from-[#d1f6fa]/60 via-[#e8f8fa] to-[#f7fcfd] py-10 sm:py-14">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <h1 className="font-poppins text-3xl font-bold text-[#1d2b2d] sm:text-4xl">
                         Kegiatan Yayasan
                     </h1>
-                    <nav className="flex items-center gap-2 mt-2 text-sm text-gray-500 font-poppins">
-                        <Link href="/" className="hover:text-[#14bace] transition-colors">
+                    <nav className="mt-2 flex items-center gap-2 font-poppins text-sm text-gray-500">
+                        <Link
+                            href="/"
+                            className="transition-colors hover:text-[#14bace]"
+                        >
                             Beranda
                         </Link>
                         <ChevronRight className="size-4 text-gray-400" />
-                        <span className="font-semibold text-[#186972]">Kegiatan</span>
+                        <span className="font-semibold text-[#186972]">
+                            Kegiatan
+                        </span>
                     </nav>
-                    <p className="mt-3 text-sm sm:text-base text-gray-600 max-w-2xl font-sans">
-                        Publikasi resmi dan dokumentasi berbagai kegiatan pendampingan belajar, santunan bulanan, serta pembinaan yatim di Ujungberung.
+                    <p className="mt-3 max-w-2xl font-sans text-sm text-gray-600 sm:text-base">
+                        Publikasi resmi dan dokumentasi berbagai kegiatan
+                        pendampingan belajar, santunan bulanan, serta pembinaan
+                        yatim di Ujungberung.
                     </p>
                 </div>
             </div>
 
             {/* Filter & Search Bar (Matching Figma 314:3130) */}
-            <section className="py-8 bg-white border-b border-[#e4eaec] sticky top-20 z-40 shadow-xs">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+            <section className="sticky top-20 z-40 border-b border-[#e4eaec] bg-white py-8 shadow-xs">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="flex flex-col items-stretch justify-between gap-4 md:flex-row md:items-center">
                         {/* Search Input */}
                         <div className="relative w-full md:w-80">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
+                            <Search className="absolute top-1/2 left-4 size-4 -translate-y-1/2 text-gray-400" />
                             <input
                                 type="text"
                                 placeholder="Cari kegiatan..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-11 pr-4 py-2.5 rounded-full border border-[#b1b1b1] focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 text-sm font-sans outline-hidden transition"
+                                className="w-full rounded-full border border-[#b1b1b1] py-2.5 pr-4 pl-11 font-sans text-sm outline-hidden transition focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20"
                             />
                         </div>
 
                         {/* Category Pills */}
-                        <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+                        <div className="flex scrollbar-none items-center gap-2 overflow-x-auto pb-1 md:pb-0">
                             {categories.map((cat) => {
                                 const active = selectedCategory === cat;
                                 return (
@@ -140,10 +156,10 @@ export default function KegiatanPage() {
                                         key={cat}
                                         type="button"
                                         onClick={() => setSelectedCategory(cat)}
-                                        className={`px-5 py-2 rounded-full text-xs sm:text-sm font-poppins transition-all shrink-0 ${
+                                        className={`shrink-0 rounded-full px-5 py-2 font-poppins text-xs transition-all sm:text-sm ${
                                             active
-                                                ? 'bg-[#1d2b2d] text-white font-semibold shadow-xs'
-                                                : 'bg-white border border-[#1d2b2d] text-[#1d2b2d] hover:bg-gray-50'
+                                                ? 'bg-[#1d2b2d] font-semibold text-white shadow-xs'
+                                                : 'border border-[#1d2b2d] bg-white text-[#1d2b2d] hover:bg-gray-50'
                                         }`}
                                     >
                                         {cat}
@@ -156,15 +172,16 @@ export default function KegiatanPage() {
             </section>
 
             {/* Kegiatan Cards Grid */}
-            <section className="py-12 sm:py-16 bg-[#fbfdfd]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <section className="bg-[#fbfdfd] py-12 sm:py-16">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     {filteredActivities.length === 0 ? (
-                        <div className="text-center py-16 bg-white rounded-2xl border border-[#e4eaec] p-8">
-                            <p className="text-base font-semibold text-gray-700 font-poppins">
+                        <div className="rounded-2xl border border-[#e4eaec] bg-white p-8 py-16 text-center">
+                            <p className="font-poppins text-base font-semibold text-gray-700">
                                 Tidak ada kegiatan yang cocok
                             </p>
-                            <p className="text-xs text-gray-500 mt-1">
-                                Coba ubah kata kunci pencarian atau pilih kategori lain.
+                            <p className="mt-1 text-xs text-gray-500">
+                                Coba ubah kata kunci pencarian atau pilih
+                                kategori lain.
                             </p>
                             <button
                                 type="button"
@@ -172,49 +189,51 @@ export default function KegiatanPage() {
                                     setSearchQuery('');
                                     setSelectedCategory('Semua');
                                 }}
-                                className="mt-4 px-4 py-2 bg-[#14bace] text-white rounded-lg text-xs font-semibold"
+                                className="mt-4 rounded-lg bg-[#14bace] px-4 py-2 text-xs font-semibold text-white"
                             >
                                 Reset Filter
                             </button>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
                             {filteredActivities.map((act) => (
                                 <div
                                     key={act.id}
-                                    className="group rounded-2xl bg-white border border-[#e4eaec] overflow-hidden shadow-sm hover:shadow-xl transition-all duration-200 flex flex-col justify-between"
+                                    className="group flex flex-col justify-between overflow-hidden rounded-2xl border border-[#e4eaec] bg-white shadow-sm transition-all duration-200 hover:shadow-xl"
                                 >
                                     <div>
-                                        <div className="h-52 w-full overflow-hidden bg-gray-100 relative">
+                                        <div className="relative h-52 w-full overflow-hidden bg-gray-100">
                                             <img
                                                 src={act.image}
                                                 alt={act.title}
-                                                className="size-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
                                             />
-                                            <span className="absolute top-3.5 left-3.5 px-3 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider bg-white/95 text-[#087f8c] shadow-xs">
+                                            <span className="absolute top-3.5 left-3.5 rounded-md bg-white/95 px-3 py-1 text-[11px] font-bold tracking-wider text-[#087f8c] uppercase shadow-xs">
                                                 {act.category}
                                             </span>
                                         </div>
 
                                         <div className="p-6">
-                                            <div className="flex items-center gap-2 text-xs text-gray-400 mb-2">
+                                            <div className="mb-2 flex items-center gap-2 text-xs text-gray-400">
                                                 <Calendar className="size-3.5 text-[#14bace]" />
                                                 <span>{act.date}</span>
                                             </div>
 
-                                            <h3 className="font-poppins font-bold text-lg text-[#1d2b2d] group-hover:text-[#14bace] transition-colors leading-snug">
+                                            <h3 className="font-poppins text-lg leading-snug font-bold text-[#1d2b2d] transition-colors group-hover:text-[#14bace]">
                                                 {act.title}
                                             </h3>
 
-                                            <p className="mt-2.5 text-xs sm:text-sm text-gray-600 leading-relaxed font-sans line-clamp-3">
+                                            <p className="mt-2.5 line-clamp-3 font-sans text-xs leading-relaxed text-gray-600 sm:text-sm">
                                                 {act.description}
                                             </p>
                                         </div>
                                     </div>
 
-                                    <div className="px-6 pb-6 pt-3 border-t border-gray-100 flex items-center gap-2 text-xs text-gray-500">
-                                        <MapPin className="size-4 text-[#14bace] shrink-0" />
-                                        <span className="truncate">{act.location}</span>
+                                    <div className="flex items-center gap-2 border-t border-gray-100 px-6 pt-3 pb-6 text-xs text-gray-500">
+                                        <MapPin className="size-4 shrink-0 text-[#14bace]" />
+                                        <span className="truncate">
+                                            {act.location}
+                                        </span>
                                     </div>
                                 </div>
                             ))}

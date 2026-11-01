@@ -88,12 +88,24 @@ export function AppSidebar() {
     ];
 
     return (
-        <Sidebar collapsible="icon" variant="inset" className="border-r border-[#e4eaec] bg-white">
+        <Sidebar
+            collapsible="icon"
+            variant="inset"
+            className="border-r border-[#e4eaec] bg-white"
+        >
             <SidebarHeader className="border-b border-[#f0f4f5] pb-3">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild className="hover:bg-transparent">
-                            <Link href={dashboard()} prefetch className="flex items-center gap-3">
+                        <SidebarMenuButton
+                            size="lg"
+                            asChild
+                            className="hover:bg-transparent"
+                        >
+                            <Link
+                                href={dashboard()}
+                                prefetch
+                                className="flex items-center gap-3"
+                            >
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>
@@ -106,13 +118,14 @@ export function AppSidebar() {
 
                 {/* Security Reminder Box (From Figma) */}
                 {state !== 'collapsed' && (
-                    <div className="mx-3 mt-auto rounded-xl bg-[#f7f9fa] border border-[#e4eaec] p-3 text-left">
-                        <div className="flex items-center gap-2 text-[#087f8c] font-semibold text-xs font-poppins">
+                    <div className="mx-3 mt-auto rounded-xl border border-[#e4eaec] bg-[#f7f9fa] p-3 text-left">
+                        <div className="flex items-center gap-2 font-poppins text-xs font-semibold text-[#087f8c]">
                             <ShieldCheck className="size-4 shrink-0" />
                             <span>Ruang aman untuk peduli</span>
                         </div>
-                        <p className="mt-1.5 text-[11px] leading-relaxed text-[#718083] font-poppins">
-                            Data anak bersifat rahasia. Gunakan hanya untuk tujuan pendampingan dan amanah donasi.
+                        <p className="mt-1.5 font-poppins text-[11px] leading-relaxed text-[#718083]">
+                            Data anak bersifat rahasia. Gunakan hanya untuk
+                            tujuan pendampingan dan amanah donasi.
                         </p>
                     </div>
                 )}
@@ -126,7 +139,7 @@ export function AppSidebar() {
                         href="/logout"
                         method="post"
                         as="button"
-                        className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-colors"
+                        className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs font-medium text-rose-600 transition-colors hover:bg-rose-50 hover:text-rose-700"
                     >
                         <LogOut className="size-4 shrink-0" />
                         <span>Keluar Akun (Logout)</span>

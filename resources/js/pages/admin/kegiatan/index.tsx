@@ -7,20 +7,21 @@ export default function KegiatanAdmin() {
         <>
             <Head title="Pengelolaan Kegiatan" />
             <div className="flex flex-col gap-6 p-6 font-poppins">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <div className="flex items-center gap-2 text-xs font-semibold text-[#087f8c] bg-[#e8f8fa] px-2.5 py-1 rounded-md w-fit mb-2">
+                        <div className="mb-2 flex w-fit items-center gap-2 rounded-md bg-[#e8f8fa] px-2.5 py-1 text-xs font-semibold text-[#087f8c]">
                             <CalendarDays className="size-3.5" />
                             Aktivitas & Program
                         </div>
                         <h1 className="text-2xl font-bold text-[#1b2929]">
                             Pengelolaan Kegiatan Yayasan
                         </h1>
-                        <p className="text-sm text-[#718083] mt-1">
-                            Publikasikan agenda pendampingan, santunan, dan dokumentasi kegiatan.
+                        <p className="mt-1 text-sm text-[#718083]">
+                            Publikasikan agenda pendampingan, santunan, dan
+                            dokumentasi kegiatan.
                         </p>
                     </div>
-                    <Button className="bg-[#12b8c8] hover:bg-[#0fa0ae] text-white flex items-center gap-2">
+                    <Button className="flex items-center gap-2 bg-[#12b8c8] text-white hover:bg-[#0fa0ae]">
                         <Plus className="size-4" /> Tambah Kegiatan
                     </Button>
                 </div>
@@ -28,7 +29,10 @@ export default function KegiatanAdmin() {
                 <div className="rounded-xl border border-[#e4eaec] bg-white p-6 shadow-xs">
                     <div className="flex items-center gap-3 text-sm text-[#718083]">
                         <CalendarDays className="size-5 text-[#087f8c]" />
-                        <span>Modul Pengelolaan Kegiatan (Phase 5). Dilengkapi integrasi AI untuk ringkasan artikel kegiatan.</span>
+                        <span>
+                            Modul Pengelolaan Kegiatan (Phase 5). Dilengkapi
+                            integrasi AI untuk ringkasan artikel kegiatan.
+                        </span>
                     </div>
                 </div>
             </div>
@@ -42,4 +46,3 @@ KegiatanAdmin.layout = {
         { title: 'Pengelolaan Kegiatan', href: '/admin/kegiatan' },
     ],
 };
-

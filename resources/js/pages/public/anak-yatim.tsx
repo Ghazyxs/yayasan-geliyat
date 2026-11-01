@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { Search, ChevronRight, Heart, Shield, GraduationCap, MapPin } from 'lucide-react';
+import {
+    Search,
+    ChevronRight,
+    Heart,
+    Shield,
+    GraduationCap,
+    MapPin,
+} from 'lucide-react';
 import PublicLayout from '@/layouts/public-layout';
 
 interface AnakBinaan {
@@ -84,7 +91,8 @@ export default function AnakYatimPage() {
     const [searchQuery, setSearchQuery] = useState('');
 
     const filtered = mockAnakList.filter((item) => {
-        const matchesJenjang = selectedJenjang === 'Semua' || item.jenjang === selectedJenjang;
+        const matchesJenjang =
+            selectedJenjang === 'Semua' || item.jenjang === selectedJenjang;
         const matchesSearch =
             item.alias.toLowerCase().includes(searchQuery.toLowerCase()) ||
             item.kelurahan.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -98,54 +106,66 @@ export default function AnakYatimPage() {
             <Head title="Anak Yatim Binaan - Yayasan Geliyat" />
 
             {/* Banner Header with Breadcrumbs */}
-            <div className="bg-gradient-to-r from-[#d1f6fa]/60 via-[#e8f8fa] to-[#f7fcfd] border-b border-[#e4eaec] py-10 sm:py-14">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h1 className="font-poppins font-bold text-3xl sm:text-4xl text-[#1d2b2d]">
+            <div className="border-b border-[#e4eaec] bg-gradient-to-r from-[#d1f6fa]/60 via-[#e8f8fa] to-[#f7fcfd] py-10 sm:py-14">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <h1 className="font-poppins text-3xl font-bold text-[#1d2b2d] sm:text-4xl">
                         Anak Yatim Binaan
                     </h1>
-                    <nav className="flex items-center gap-2 mt-2 text-sm text-gray-500 font-poppins">
-                        <Link href="/" className="hover:text-[#14bace] transition-colors">
+                    <nav className="mt-2 flex items-center gap-2 font-poppins text-sm text-gray-500">
+                        <Link
+                            href="/"
+                            className="transition-colors hover:text-[#14bace]"
+                        >
                             Beranda
                         </Link>
                         <ChevronRight className="size-4 text-gray-400" />
-                        <span className="font-semibold text-[#186972]">Anak Binaan</span>
+                        <span className="font-semibold text-[#186972]">
+                            Anak Binaan
+                        </span>
                     </nav>
-                    <p className="mt-3 text-sm sm:text-base text-gray-600 max-w-2xl font-sans">
-                        Mendukung pemenuhan pendidikan, nutrisi, dan masa depan sekitar 420 anak yatim yang tersebar di lima kelurahan wilayah Ujungberung, Kota Bandung.
+                    <p className="mt-3 max-w-2xl font-sans text-sm text-gray-600 sm:text-base">
+                        Mendukung pemenuhan pendidikan, nutrisi, dan masa depan
+                        sekitar 420 anak yatim yang tersebar di lima kelurahan
+                        wilayah Ujungberung, Kota Bandung.
                     </p>
                 </div>
             </div>
 
             {/* Privacy Alert Box (From Report & Figma) */}
-            <div className="bg-white border-b border-[#e4eaec] py-4">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="p-3.5 rounded-xl bg-[#f7f9fa] border border-[#e4eaec] flex items-start gap-3 text-xs text-gray-600 font-sans">
-                        <Shield className="size-4 text-[#14bace] shrink-0 mt-0.5" />
+            <div className="border-b border-[#e4eaec] bg-white py-4">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="flex items-start gap-3 rounded-xl border border-[#e4eaec] bg-[#f7f9fa] p-3.5 font-sans text-xs text-gray-600">
+                        <Shield className="mt-0.5 size-4 shrink-0 text-[#14bace]" />
                         <p className="leading-relaxed">
-                            <strong>Prinsip Perlindungan Privasi Anak:</strong> Identitas lengkap, NIK, dan dokumen resmi anak disimpan secara rahasia di sistem internal dan hanya dapat diakses oleh petugas yayasan berwenang. Informasi publik ini disajikan terbatas untuk calon Orang Tua Asuh.
+                            <strong>Prinsip Perlindungan Privasi Anak:</strong>{' '}
+                            Identitas lengkap, NIK, dan dokumen resmi anak
+                            disimpan secara rahasia di sistem internal dan hanya
+                            dapat diakses oleh petugas yayasan berwenang.
+                            Informasi publik ini disajikan terbatas untuk calon
+                            Orang Tua Asuh.
                         </p>
                     </div>
                 </div>
             </div>
 
             {/* Filter & Search Bar */}
-            <section className="py-6 bg-white border-b border-[#e4eaec] sticky top-20 z-40 shadow-xs">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+            <section className="sticky top-20 z-40 border-b border-[#e4eaec] bg-white py-6 shadow-xs">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="flex flex-col items-stretch justify-between gap-4 md:flex-row md:items-center">
                         {/* Search Input */}
                         <div className="relative w-full md:w-80">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
+                            <Search className="absolute top-1/2 left-4 size-4 -translate-y-1/2 text-gray-400" />
                             <input
                                 type="text"
                                 placeholder="Cari nama inisial, kelurahan, atau hobi..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full pl-11 pr-4 py-2.5 rounded-full border border-[#65777a] focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 text-sm font-sans outline-hidden transition"
+                                className="w-full rounded-full border border-[#65777a] py-2.5 pr-4 pl-11 font-sans text-sm outline-hidden transition focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20"
                             />
                         </div>
 
                         {/* Jenjang Filter Buttons */}
-                        <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+                        <div className="flex scrollbar-none items-center gap-2 overflow-x-auto pb-1 md:pb-0">
                             {jenjangFilters.map((j) => {
                                 const active = selectedJenjang === j;
                                 return (
@@ -153,10 +173,10 @@ export default function AnakYatimPage() {
                                         key={j}
                                         type="button"
                                         onClick={() => setSelectedJenjang(j)}
-                                        className={`px-5 py-2 rounded-full text-xs sm:text-sm font-poppins transition-all shrink-0 ${
+                                        className={`shrink-0 rounded-full px-5 py-2 font-poppins text-xs transition-all sm:text-sm ${
                                             active
-                                                ? 'bg-[#1d2b2d] text-white font-semibold shadow-xs'
-                                                : 'bg-white border border-[#1d2b2d] text-[#1d2b2d] hover:bg-gray-50'
+                                                ? 'bg-[#1d2b2d] font-semibold text-white shadow-xs'
+                                                : 'border border-[#1d2b2d] bg-white text-[#1d2b2d] hover:bg-gray-50'
                                         }`}
                                     >
                                         {j}
@@ -169,25 +189,25 @@ export default function AnakYatimPage() {
             </section>
 
             {/* Cards Grid */}
-            <section className="py-12 sm:py-16 bg-[#fbfdfd]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <section className="bg-[#fbfdfd] py-12 sm:py-16">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                         {filtered.map((anak) => (
                             <div
                                 key={anak.id}
-                                className="rounded-2xl border border-[#e2e8f0] bg-white p-6 shadow-sm hover:shadow-lg transition-all duration-200 flex flex-col justify-between"
+                                className="flex flex-col justify-between rounded-2xl border border-[#e2e8f0] bg-white p-6 shadow-sm transition-all duration-200 hover:shadow-lg"
                             >
                                 <div>
                                     {/* Avatar & Header */}
-                                    <div className="flex items-center gap-4 pb-4 border-b border-gray-100">
-                                        <div className="size-16 rounded-2xl bg-[#e8f8fa] flex items-center justify-center text-[#14bace] font-bold text-lg font-poppins border border-[#14bace]/30 shadow-xs">
+                                    <div className="flex items-center gap-4 border-b border-gray-100 pb-4">
+                                        <div className="flex size-16 items-center justify-center rounded-2xl border border-[#14bace]/30 bg-[#e8f8fa] font-poppins text-lg font-bold text-[#14bace] shadow-xs">
                                             {anak.alias.substring(0, 2)}
                                         </div>
                                         <div>
-                                            <h3 className="font-poppins font-bold text-base text-[#1d2b2d]">
+                                            <h3 className="font-poppins text-base font-bold text-[#1d2b2d]">
                                                 {anak.alias}
                                             </h3>
-                                            <div className="flex items-center gap-2 mt-0.5">
+                                            <div className="mt-0.5 flex items-center gap-2">
                                                 <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#087f8c]">
                                                     <GraduationCap className="size-3.5" />
                                                     <span>{anak.kelas}</span>
@@ -197,30 +217,40 @@ export default function AnakYatimPage() {
                                     </div>
 
                                     {/* Attributes */}
-                                    <div className="mt-4 space-y-2 text-xs font-sans text-gray-600">
+                                    <div className="mt-4 space-y-2 font-sans text-xs text-gray-600">
                                         <div className="flex items-center justify-between">
-                                            <span className="text-gray-400">Wilayah Binaan:</span>
-                                            <span className="font-semibold text-[#1d2b2d] flex items-center gap-1">
+                                            <span className="text-gray-400">
+                                                Wilayah Binaan:
+                                            </span>
+                                            <span className="flex items-center gap-1 font-semibold text-[#1d2b2d]">
                                                 <MapPin className="size-3 text-[#14bace]" />
                                                 Kel. {anak.kelurahan}
                                             </span>
                                         </div>
                                         <div className="flex items-center justify-between">
-                                            <span className="text-gray-400">Hobi:</span>
-                                            <span className="font-medium text-gray-700">{anak.hobi}</span>
+                                            <span className="text-gray-400">
+                                                Hobi:
+                                            </span>
+                                            <span className="font-medium text-gray-700">
+                                                {anak.hobi}
+                                            </span>
                                         </div>
                                         <div className="flex items-center justify-between">
-                                            <span className="text-gray-400">Cita-Cita:</span>
-                                            <span className="font-medium text-[#186972]">{anak.citaCita}</span>
+                                            <span className="text-gray-400">
+                                                Cita-Cita:
+                                            </span>
+                                            <span className="font-medium text-[#186972]">
+                                                {anak.citaCita}
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Footer CTA */}
-                                <div className="mt-6 pt-4 border-t border-gray-100">
+                                <div className="mt-6 border-t border-gray-100 pt-4">
                                     <Link
                                         href={`/donasi?anak=${encodeURIComponent(anak.alias)}`}
-                                        className="w-full py-2.5 rounded-xl bg-[#e8f8fa] hover:bg-[#14bace] hover:text-white text-[#087f8c] font-poppins font-semibold text-xs flex items-center justify-center gap-2 transition"
+                                        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#e8f8fa] py-2.5 font-poppins text-xs font-semibold text-[#087f8c] transition hover:bg-[#14bace] hover:text-white"
                                     >
                                         <Heart className="size-3.5 fill-current" />
                                         <span>Bantu Jadi Orang Tua Asuh</span>

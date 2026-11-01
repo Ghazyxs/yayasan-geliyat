@@ -9,8 +9,8 @@
 
 @theme {
     --font-sans:
-        'Poppins', 'Inter', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
-        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Poppins', 'Inter', 'Instrument Sans', ui-sans-serif, system-ui,
+        sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
     --font-poppins: 'Poppins', sans-serif;
     --font-inter: 'Inter', sans-serif;
