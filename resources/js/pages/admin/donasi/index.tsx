@@ -7,22 +7,27 @@ export default function DonasiAdmin() {
         <>
             <Head title="Pengelolaan Donasi" />
             <div className="flex flex-col gap-6 p-6 font-poppins">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <div className="flex items-center gap-2 text-xs font-semibold text-[#087f8c] bg-[#e8f8fa] px-2.5 py-1 rounded-md w-fit mb-2">
+                        <div className="mb-2 flex w-fit items-center gap-2 rounded-md bg-[#e8f8fa] px-2.5 py-1 text-xs font-semibold text-[#087f8c]">
                             <HeartHandshake className="size-3.5" />
                             Amanah Donatur
                         </div>
                         <h1 className="text-2xl font-bold text-[#1b2929]">
                             Pengelolaan & Verifikasi Donasi
                         </h1>
-                        <p className="text-sm text-[#718083] mt-1">
-                            Verifikasi bukti transfer WhatsApp dan kelola alokasi donasi anak yatim.
+                        <p className="mt-1 text-sm text-[#718083]">
+                            Verifikasi bukti transfer WhatsApp dan kelola
+                            alokasi donasi anak yatim.
                         </p>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Button variant="outline" className="flex items-center gap-2">
-                            <Clock className="size-4 text-amber-500" /> 3 Menunggu Verifikasi
+                        <Button
+                            variant="outline"
+                            className="flex items-center gap-2"
+                        >
+                            <Clock className="size-4 text-amber-500" /> 3
+                            Menunggu Verifikasi
                         </Button>
                     </div>
                 </div>
@@ -30,7 +35,10 @@ export default function DonasiAdmin() {
                 <div className="rounded-xl border border-[#e4eaec] bg-white p-6 shadow-xs">
                     <div className="flex items-center gap-3 text-sm text-[#718083]">
                         <CheckCircle2 className="size-5 text-[#087f8c]" />
-                        <span>Modul Pengelolaan Donasi (Phase 4). Dilengkapi pencocokan bukti transfer WhatsApp.</span>
+                        <span>
+                            Modul Pengelolaan Donasi (Phase 4). Dilengkapi
+                            pencocokan bukti transfer WhatsApp.
+                        </span>
                     </div>
                 </div>
             </div>
@@ -44,4 +52,3 @@ DonasiAdmin.layout = {
         { title: 'Pengelolaan Donasi', href: '/admin/donasi' },
     ],
 };
-

@@ -4,13 +4,13 @@ export default function AppLogo({ className = '' }: { className?: string }) {
             <img
                 src="/images/logo.png"
                 alt="Yayasan Geliyat"
-                className="size-8 object-contain shrink-0 rounded-md"
+                className="size-8 shrink-0 rounded-md object-contain"
             />
             <div className="flex flex-col text-left">
-                <span className="font-poppins font-bold text-sm tracking-wide text-[#1b2929] dark:text-white leading-tight">
+                <span className="font-poppins text-sm leading-tight font-bold tracking-wide text-[#1b2929] dark:text-white">
                     GELIYAT
                 </span>
-                <span className="font-poppins text-[10px] text-[#087f8c] dark:text-[#14bace] tracking-wider leading-tight">
+                <span className="font-poppins text-[10px] leading-tight tracking-wider text-[#087f8c] dark:text-[#14bace]">
                     Gerakan Peduli Yatim
                 </span>
             </div>

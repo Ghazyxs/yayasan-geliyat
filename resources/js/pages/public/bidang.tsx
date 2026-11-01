@@ -1,5 +1,13 @@
 import { Head, Link } from '@inertiajs/react';
-import { BookOpen, Heart, Sparkles, Users, ChevronRight, ArrowRight, CheckCircle2 } from 'lucide-react';
+import {
+    BookOpen,
+    Heart,
+    Sparkles,
+    Users,
+    ChevronRight,
+    ArrowRight,
+    CheckCircle2,
+} from 'lucide-react';
 import PublicLayout from '@/layouts/public-layout';
 
 export default function BidangPage() {
@@ -72,73 +80,89 @@ export default function BidangPage() {
             <Head title="Bidang Yayasan - Empat Pilar Program Geliyat" />
 
             {/* Banner Header with Breadcrumbs */}
-            <div className="bg-gradient-to-r from-[#d1f6fa]/60 via-[#e8f8fa] to-[#f7fcfd] border-b border-[#e4eaec] py-10 sm:py-14">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h1 className="font-poppins font-bold text-3xl sm:text-4xl text-[#1d2b2d]">
+            <div className="border-b border-[#e4eaec] bg-gradient-to-r from-[#d1f6fa]/60 via-[#e8f8fa] to-[#f7fcfd] py-10 sm:py-14">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <h1 className="font-poppins text-3xl font-bold text-[#1d2b2d] sm:text-4xl">
                         Bidang Yayasan
                     </h1>
-                    <nav className="flex items-center gap-2 mt-2 text-sm text-gray-500 font-poppins">
-                        <Link href="/" className="hover:text-[#14bace] transition-colors">
+                    <nav className="mt-2 flex items-center gap-2 font-poppins text-sm text-gray-500">
+                        <Link
+                            href="/"
+                            className="transition-colors hover:text-[#14bace]"
+                        >
                             Beranda
                         </Link>
                         <ChevronRight className="size-4 text-gray-400" />
-                        <span className="font-semibold text-[#186972]">Empat Bidang</span>
+                        <span className="font-semibold text-[#186972]">
+                            Empat Bidang
+                        </span>
                     </nav>
-                    <p className="mt-4 max-w-3xl text-sm sm:text-base text-gray-600 leading-relaxed font-sans">
-                        Yayasan Geliyat mengelola empat bidang utama untuk memperkuat pelayanan sosial, pendidikan, kemandirian ekonomi, dan pembinaan keagamaan bagi 420+ anak yatim serta keluarga binaan di lima kelurahan wilayah Ujungberung.
+                    <p className="mt-4 max-w-3xl font-sans text-sm leading-relaxed text-gray-600 sm:text-base">
+                        Yayasan Geliyat mengelola empat bidang utama untuk
+                        memperkuat pelayanan sosial, pendidikan, kemandirian
+                        ekonomi, dan pembinaan keagamaan bagi 420+ anak yatim
+                        serta keluarga binaan di lima kelurahan wilayah
+                        Ujungberung.
                     </p>
                 </div>
             </div>
 
             {/* List of 4 Fields */}
-            <section className="py-16 sm:py-20 bg-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+            <section className="bg-white py-16 sm:py-20">
+                <div className="mx-auto max-w-7xl space-y-16 px-4 sm:px-6 lg:px-8">
                     {bidangList.map((bidang, idx) => (
                         <div
                             key={bidang.title}
-                            className={`grid grid-cols-1 lg:grid-cols-12 gap-10 items-center ${
+                            className={`grid grid-cols-1 items-center gap-10 lg:grid-cols-12 ${
                                 idx % 2 === 1 ? 'lg:flex-row-reverse' : ''
                             }`}
                         >
                             {/* Image side */}
-                            <div className={`lg:col-span-5 ${idx % 2 === 1 ? 'lg:order-2' : ''}`}>
-                                <div className="rounded-3xl overflow-hidden shadow-md border border-[#e4eaec] relative group">
+                            <div
+                                className={`lg:col-span-5 ${idx % 2 === 1 ? 'lg:order-2' : ''}`}
+                            >
+                                <div className="group relative overflow-hidden rounded-3xl border border-[#e4eaec] shadow-md">
                                     <img
                                         src={bidang.image}
                                         alt={bidang.title}
-                                        className="w-full h-72 sm:h-80 object-cover group-hover:scale-105 transition-transform duration-300"
+                                        className="h-72 w-full object-cover transition-transform duration-300 group-hover:scale-105 sm:h-80"
                                     />
-                                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-xs px-3.5 py-1 rounded-full text-xs font-bold text-[#087f8c] font-poppins shadow-xs">
+                                    <div className="absolute top-4 left-4 rounded-full bg-white/90 px-3.5 py-1 font-poppins text-xs font-bold text-[#087f8c] shadow-xs backdrop-blur-xs">
                                         Bidang 0{idx + 1}
                                     </div>
                                 </div>
                             </div>
 
                             {/* Details side */}
-                            <div className={`lg:col-span-7 flex flex-col items-start ${idx % 2 === 1 ? 'lg:order-1' : ''}`}>
-                                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#e8f8fa] text-[#087f8c] font-poppins text-xs font-semibold mb-3">
+                            <div
+                                className={`flex flex-col items-start lg:col-span-7 ${idx % 2 === 1 ? 'lg:order-1' : ''}`}
+                            >
+                                <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-[#e8f8fa] px-3 py-1 font-poppins text-xs font-semibold text-[#087f8c]">
                                     <bidang.icon className="size-3.5" />
                                     <span>Pilar Geliyat</span>
                                 </div>
 
-                                <h2 className="font-poppins font-bold text-2xl sm:text-3xl text-[#1d2b2d]">
+                                <h2 className="font-poppins text-2xl font-bold text-[#1d2b2d] sm:text-3xl">
                                     {bidang.title}
                                 </h2>
-                                <p className="font-poppins text-xs sm:text-sm font-semibold text-[#186972] mt-1">
+                                <p className="mt-1 font-poppins text-xs font-semibold text-[#186972] sm:text-sm">
                                     {bidang.subtitle}
                                 </p>
-                                <p className="mt-3 text-sm text-gray-600 leading-relaxed font-sans">
+                                <p className="mt-3 font-sans text-sm leading-relaxed text-gray-600">
                                     {bidang.description}
                                 </p>
 
                                 {/* Programs sub-list */}
-                                <div className="mt-6 w-full space-y-2.5 pt-4 border-t border-gray-100">
-                                    <p className="text-xs font-bold font-poppins uppercase tracking-wider text-gray-400">
+                                <div className="mt-6 w-full space-y-2.5 border-t border-gray-100 pt-4">
+                                    <p className="font-poppins text-xs font-bold tracking-wider text-gray-400 uppercase">
                                         Program Unggulan:
                                     </p>
                                     {bidang.programs.map((prog) => (
-                                        <div key={prog} className="flex items-start gap-2.5 text-xs sm:text-sm text-gray-700 font-sans">
-                                            <CheckCircle2 className="size-4 text-[#14bace] shrink-0 mt-0.5" />
+                                        <div
+                                            key={prog}
+                                            className="flex items-start gap-2.5 font-sans text-xs text-gray-700 sm:text-sm"
+                                        >
+                                            <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#14bace]" />
                                             <span>{prog}</span>
                                         </div>
                                     ))}
@@ -147,7 +171,7 @@ export default function BidangPage() {
                                 <div className="mt-8">
                                     <Link
                                         href="/donasi"
-                                        className="bg-[#14bace] hover:bg-[#087f8c] text-white font-poppins text-xs sm:text-sm font-semibold px-5 py-2.5 rounded-xl inline-flex items-center gap-2 transition shadow-sm"
+                                        className="inline-flex items-center gap-2 rounded-xl bg-[#14bace] px-5 py-2.5 font-poppins text-xs font-semibold text-white shadow-sm transition hover:bg-[#087f8c] sm:text-sm"
                                     >
                                         <span>Dukung Program Ini</span>
                                         <ArrowRight className="size-3.5" />

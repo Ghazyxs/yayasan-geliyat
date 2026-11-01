@@ -20,7 +20,7 @@ export function NavMain({
 
     return (
         <SidebarGroup className="px-2 py-0">
-            <SidebarGroupLabel className="text-[10px] font-semibold text-[#718083] uppercase tracking-wider">
+            <SidebarGroupLabel className="text-[10px] font-semibold tracking-wider text-[#718083] uppercase">
                 {label}
             </SidebarGroupLabel>
             <SidebarMenu className="gap-1.5">

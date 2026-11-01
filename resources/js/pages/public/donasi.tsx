@@ -48,7 +48,9 @@ export default function DonasiPage() {
         e.preventDefault();
 
         const cleanPhone = '6282120854460'; // Nomor Admin Yayasan Geliyat
-        const formattedNominal = nominal ? Number(nominal).toLocaleString('id-ID') : '0';
+        const formattedNominal = nominal
+            ? Number(nominal).toLocaleString('id-ID')
+            : '0';
 
         const textMessage = `*KONFIRMASI DONASI - YAYASAN GELIYAT*
 ----------------------------------------
@@ -71,55 +73,82 @@ _Saya telah melakukan transfer ke rekening yayasan dan melampirkan bukti transfe
             <Head title="Donasi Digital - Yayasan Geliyat Mahdiesa Nahate" />
 
             {/* Banner Header with Breadcrumbs */}
-            <div className="bg-gradient-to-r from-[#d1f6fa]/60 via-[#e8f8fa] to-[#f7fcfd] border-b border-[#e4eaec] py-10 sm:py-14">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h1 className="font-poppins font-bold text-3xl sm:text-4xl text-[#1d2b2d]">
+            <div className="border-b border-[#e4eaec] bg-gradient-to-r from-[#d1f6fa]/60 via-[#e8f8fa] to-[#f7fcfd] py-10 sm:py-14">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <h1 className="font-poppins text-3xl font-bold text-[#1d2b2d] sm:text-4xl">
                         Donasi & Sedekah
                     </h1>
-                    <nav className="flex items-center gap-2 mt-2 text-sm text-gray-500 font-poppins">
-                        <Link href="/" className="hover:text-[#14bace] transition-colors">
+                    <nav className="mt-2 flex items-center gap-2 font-poppins text-sm text-gray-500">
+                        <Link
+                            href="/"
+                            className="transition-colors hover:text-[#14bace]"
+                        >
                             Beranda
                         </Link>
                         <ChevronRight className="size-4 text-gray-400" />
-                        <span className="font-semibold text-[#186972]">Donasi Digital</span>
+                        <span className="font-semibold text-[#186972]">
+                            Donasi Digital
+                        </span>
                     </nav>
-                    <p className="mt-3 text-sm sm:text-base text-gray-600 max-w-2xl font-sans">
-                        Penyaluran sedekah dan program orang tua asuh yang amanah, langsung membina 420 anak yatim di wilayah Ujungberung, Kota Bandung.
+                    <p className="mt-3 max-w-2xl font-sans text-sm text-gray-600 sm:text-base">
+                        Penyaluran sedekah dan program orang tua asuh yang
+                        amanah, langsung membina 420 anak yatim di wilayah
+                        Ujungberung, Kota Bandung.
                     </p>
                 </div>
             </div>
 
             {/* Panduan Berdonasi (5 Tahapan - Matching Figma 314:2918) */}
-            <section className="py-10 bg-white border-b border-[#e4eaec]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center max-w-xl mx-auto mb-8">
-                        <span className="text-xs font-bold text-[#14bace] uppercase tracking-wider font-poppins">
+            <section className="border-b border-[#e4eaec] bg-white py-10">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="mx-auto mb-8 max-w-xl text-center">
+                        <span className="font-poppins text-xs font-bold tracking-wider text-[#14bace] uppercase">
                             Alur Sederhana
                         </span>
-                        <h2 className="mt-1 text-2xl font-bold font-poppins text-[#1d2b2d]">
+                        <h2 className="mt-1 font-poppins text-2xl font-bold text-[#1d2b2d]">
                             5 Langkah Mudah Berdonasi
                         </h2>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 lg:grid-cols-5">
                         {[
-                            { num: '1', title: 'Pilih Rekening', desc: 'Pilih rekening resmi bank yayasan' },
-                            { num: '2', title: 'Transfer Dana', desc: 'Transfer sesuai nominal kebaikan Anda' },
-                            { num: '3', title: 'Isi Formulir', desc: 'Lengkapi identitas & pesan doa di bawah' },
-                            { num: '4', title: 'Kirim Bukti', desc: 'Kirim bukti via WhatsApp admin otomatis' },
-                            { num: '5', title: 'Verifikasi', desc: 'Admin mencatat donasi ke rekap digital' },
+                            {
+                                num: '1',
+                                title: 'Pilih Rekening',
+                                desc: 'Pilih rekening resmi bank yayasan',
+                            },
+                            {
+                                num: '2',
+                                title: 'Transfer Dana',
+                                desc: 'Transfer sesuai nominal kebaikan Anda',
+                            },
+                            {
+                                num: '3',
+                                title: 'Isi Formulir',
+                                desc: 'Lengkapi identitas & pesan doa di bawah',
+                            },
+                            {
+                                num: '4',
+                                title: 'Kirim Bukti',
+                                desc: 'Kirim bukti via WhatsApp admin otomatis',
+                            },
+                            {
+                                num: '5',
+                                title: 'Verifikasi',
+                                desc: 'Admin mencatat donasi ke rekap digital',
+                            },
                         ].map((step) => (
                             <div
                                 key={step.num}
-                                className="p-4 rounded-xl border border-[#e4eaec] bg-[#fbfdfd] flex flex-col items-center text-center group hover:border-[#14bace]/40 transition"
+                                className="group flex flex-col items-center rounded-xl border border-[#e4eaec] bg-[#fbfdfd] p-4 text-center transition hover:border-[#14bace]/40"
                             >
-                                <div className="size-9 rounded-full bg-[#e8f8fa] text-[#087f8c] font-bold font-poppins text-sm flex items-center justify-center mb-3 group-hover:bg-[#14bace] group-hover:text-white transition">
+                                <div className="mb-3 flex size-9 items-center justify-center rounded-full bg-[#e8f8fa] font-poppins text-sm font-bold text-[#087f8c] transition group-hover:bg-[#14bace] group-hover:text-white">
                                     {step.num}
                                 </div>
-                                <h4 className="font-poppins font-bold text-xs sm:text-sm text-[#1d2b2d]">
+                                <h4 className="font-poppins text-xs font-bold text-[#1d2b2d] sm:text-sm">
                                     {step.title}
                                 </h4>
-                                <p className="text-[11px] text-gray-500 mt-1 leading-snug font-sans">
+                                <p className="mt-1 font-sans text-[11px] leading-snug text-gray-500">
                                     {step.desc}
                                 </p>
                             </div>
@@ -129,17 +158,18 @@ _Saya telah melakukan transfer ke rekening yayasan dan melampirkan bukti transfe
             </section>
 
             {/* Rekening & Form Pendataan (Matching Figma 314:2951) */}
-            <section className="py-12 sm:py-16 bg-[#fbfdfd]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+            <section className="bg-[#fbfdfd] py-12 sm:py-16">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                    <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-12">
                         {/* Kolom Kiri: Rekening Resmi & Catatan */}
-                        <div className="lg:col-span-5 space-y-6">
+                        <div className="space-y-6 lg:col-span-5">
                             <div>
-                                <h3 className="font-poppins font-bold text-xl text-[#1d2b2d]">
+                                <h3 className="font-poppins text-xl font-bold text-[#1d2b2d]">
                                     Rekening Resmi Yayasan
                                 </h3>
-                                <p className="text-xs text-gray-500 mt-1 font-sans">
-                                    Seluruh donasi disalurkan melalui rekening resmi berbadan hukum:
+                                <p className="mt-1 font-sans text-xs text-gray-500">
+                                    Seluruh donasi disalurkan melalui rekening
+                                    resmi berbadan hukum:
                                 </p>
                             </div>
 
@@ -148,39 +178,44 @@ _Saya telah melakukan transfer ke rekening yayasan dan melampirkan bukti transfe
                                 {rekeningList.map((rek) => (
                                     <div
                                         key={rek.nomor}
-                                        className="p-5 rounded-2xl bg-white border border-[#e4eaec] shadow-sm hover:shadow-md transition flex flex-col justify-between"
+                                        className="flex flex-col justify-between rounded-2xl border border-[#e4eaec] bg-white p-5 shadow-sm transition hover:shadow-md"
                                     >
-                                        <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+                                        <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                                             <div className="flex items-center gap-2.5">
                                                 <CreditCard className="size-5 text-[#14bace]" />
-                                                <span className="font-poppins font-bold text-sm text-[#1d2b2d]">
+                                                <span className="font-poppins text-sm font-bold text-[#1d2b2d]">
                                                     {rek.bank}
                                                 </span>
                                             </div>
-                                            <span className="text-[11px] px-2 py-0.5 rounded-md font-semibold bg-[#e8f8fa] text-[#087f8c]">
+                                            <span className="rounded-md bg-[#e8f8fa] px-2 py-0.5 text-[11px] font-semibold text-[#087f8c]">
                                                 {rek.icon}
                                             </span>
                                         </div>
 
                                         <div className="mt-4 flex items-center justify-between">
                                             <div>
-                                                <p className="font-mono font-bold text-lg text-[#1d2b2d] tracking-wider">
+                                                <p className="font-mono text-lg font-bold tracking-wider text-[#1d2b2d]">
                                                     {rek.nomor}
                                                 </p>
-                                                <p className="text-xs text-gray-500 mt-0.5">
+                                                <p className="mt-0.5 text-xs text-gray-500">
                                                     a.n. {rek.atasNama}
                                                 </p>
                                             </div>
                                             <button
                                                 type="button"
-                                                onClick={() => copyToClipboard(rek.nomor)}
-                                                className="p-2.5 rounded-xl border border-gray-200 hover:border-[#14bace] hover:bg-[#e8f8fa] text-gray-600 hover:text-[#087f8c] transition flex items-center gap-1.5 text-xs font-semibold"
+                                                onClick={() =>
+                                                    copyToClipboard(rek.nomor)
+                                                }
+                                                className="flex items-center gap-1.5 rounded-xl border border-gray-200 p-2.5 text-xs font-semibold text-gray-600 transition hover:border-[#14bace] hover:bg-[#e8f8fa] hover:text-[#087f8c]"
                                                 title="Salin Nomor Rekening"
                                             >
-                                                {copiedRekening === rek.nomor ? (
+                                                {copiedRekening ===
+                                                rek.nomor ? (
                                                     <>
                                                         <Check className="size-4 text-emerald-600" />
-                                                        <span className="text-emerald-600">Disalin</span>
+                                                        <span className="text-emerald-600">
+                                                            Disalin
+                                                        </span>
                                                     </>
                                                 ) : (
                                                     <>
@@ -195,28 +230,37 @@ _Saya telah melakukan transfer ke rekening yayasan dan melampirkan bukti transfe
                             </div>
 
                             {/* Catatan Penting Card (From Figma) */}
-                            <div className="p-4 rounded-xl bg-amber-50/70 border border-amber-200/60 flex items-start gap-3">
-                                <AlertCircle className="size-5 text-amber-600 shrink-0 mt-0.5" />
+                            <div className="flex items-start gap-3 rounded-xl border border-amber-200/60 bg-amber-50/70 p-4">
+                                <AlertCircle className="mt-0.5 size-5 shrink-0 text-amber-600" />
                                 <div>
-                                    <h4 className="font-poppins font-bold text-xs text-amber-900">
+                                    <h4 className="font-poppins text-xs font-bold text-amber-900">
                                         Pemberitahuan Rekening Resmi
                                     </h4>
-                                    <p className="text-[11px] text-amber-800 leading-relaxed mt-1 font-sans">
-                                        Pastikan transfer ditujukan ke rekening atas nama <strong>Yayasan Geliyat Mahdiesa Nahate</strong>. Yayasan tidak pernah menggunakan rekening atas nama perorangan.
+                                    <p className="mt-1 font-sans text-[11px] leading-relaxed text-amber-800">
+                                        Pastikan transfer ditujukan ke rekening
+                                        atas nama{' '}
+                                        <strong>
+                                            Yayasan Geliyat Mahdiesa Nahate
+                                        </strong>
+                                        . Yayasan tidak pernah menggunakan
+                                        rekening atas nama perorangan.
                                     </p>
                                 </div>
                             </div>
 
                             {/* Orang Tua Asuh Highlight */}
-                            <div className="p-5 rounded-2xl bg-gradient-to-br from-[#14bace]/10 to-[#186972]/10 border border-[#14bace]/30">
+                            <div className="rounded-2xl border border-[#14bace]/30 bg-gradient-to-br from-[#14bace]/10 to-[#186972]/10 p-5">
                                 <div className="flex items-center gap-3">
                                     <HeartHandshake className="size-6 text-[#14bace]" />
                                     <div>
-                                        <h4 className="font-poppins font-bold text-sm text-[#1d2b2d]">
+                                        <h4 className="font-poppins text-sm font-bold text-[#1d2b2d]">
                                             Program Orang Tua Asuh
                                         </h4>
-                                        <p className="text-xs text-gray-600 mt-0.5">
-                                            Mulai dari <strong>Rp10.000 / bulan</strong> (sukarela) untuk mendukung satu anak binaan hingga jenjang SMA / kuliah.
+                                        <p className="mt-0.5 text-xs text-gray-600">
+                                            Mulai dari{' '}
+                                            <strong>Rp10.000 / bulan</strong>{' '}
+                                            (sukarela) untuk mendukung satu anak
+                                            binaan hingga jenjang SMA / kuliah.
                                         </p>
                                     </div>
                                 </div>
@@ -225,21 +269,26 @@ _Saya telah melakukan transfer ke rekening yayasan dan melampirkan bukti transfe
 
                         {/* Kolom Kanan: Formulir Konfirmasi Donasi */}
                         <div className="lg:col-span-7">
-                            <div className="rounded-3xl bg-white border border-[#e4eaec] p-6 sm:p-8 shadow-sm">
-                                <div className="pb-4 border-b border-gray-100">
-                                    <h3 className="font-poppins font-bold text-xl text-[#1d2b2d]">
+                            <div className="rounded-3xl border border-[#e4eaec] bg-white p-6 shadow-sm sm:p-8">
+                                <div className="border-b border-gray-100 pb-4">
+                                    <h3 className="font-poppins text-xl font-bold text-[#1d2b2d]">
                                         Formulir Konfirmasi Donasi
                                     </h3>
-                                    <p className="text-xs text-gray-500 mt-1 font-sans">
-                                        Isi form konfirmasi singkat di bawah ini untuk pengalihan langsung ke WhatsApp admin yayasan:
+                                    <p className="mt-1 font-sans text-xs text-gray-500">
+                                        Isi form konfirmasi singkat di bawah ini
+                                        untuk pengalihan langsung ke WhatsApp
+                                        admin yayasan:
                                     </p>
                                 </div>
 
-                                <form onSubmit={handleKirimWhatsApp} className="mt-6 space-y-5">
+                                <form
+                                    onSubmit={handleKirimWhatsApp}
+                                    className="mt-6 space-y-5"
+                                >
                                     {/* Nama & WhatsApp */}
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                         <div>
-                                            <label className="block text-xs font-semibold text-[#1d2b2d] font-poppins mb-1.5">
+                                            <label className="mb-1.5 block font-poppins text-xs font-semibold text-[#1d2b2d]">
                                                 Nama Lengkap / Hamba Allah *
                                             </label>
                                             <input
@@ -247,12 +296,16 @@ _Saya telah melakukan transfer ke rekening yayasan dan melampirkan bukti transfe
                                                 required
                                                 placeholder="Contoh: Ahmad Fauzan"
                                                 value={namaDonatur}
-                                                onChange={(e) => setNamaDonatur(e.target.value)}
-                                                className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 text-sm font-sans outline-hidden"
+                                                onChange={(e) =>
+                                                    setNamaDonatur(
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                className="w-full rounded-xl border border-gray-200 px-3.5 py-2.5 font-sans text-sm outline-hidden focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20"
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-xs font-semibold text-[#1d2b2d] font-poppins mb-1.5">
+                                            <label className="mb-1.5 block font-poppins text-xs font-semibold text-[#1d2b2d]">
                                                 Nomor WhatsApp *
                                             </label>
                                             <input
@@ -260,27 +313,37 @@ _Saya telah melakukan transfer ke rekening yayasan dan melampirkan bukti transfe
                                                 required
                                                 placeholder="Contoh: 08123456789"
                                                 value={noWhatsApp}
-                                                onChange={(e) => setNoWhatsApp(e.target.value)}
-                                                className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 text-sm font-sans outline-hidden"
+                                                onChange={(e) =>
+                                                    setNoWhatsApp(
+                                                        e.target.value,
+                                                    )
+                                                }
+                                                className="w-full rounded-xl border border-gray-200 px-3.5 py-2.5 font-sans text-sm outline-hidden focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20"
                                             />
                                         </div>
                                     </div>
 
                                     {/* Jenis Donasi */}
                                     <div>
-                                        <label className="block text-xs font-semibold text-[#1d2b2d] font-poppins mb-1.5">
+                                        <label className="mb-1.5 block font-poppins text-xs font-semibold text-[#1d2b2d]">
                                             Jenis Donasi *
                                         </label>
-                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                                            {['Donasi Umum', 'Orang Tua Asuh', 'Santunan / Sembako'].map((j) => (
+                                        <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+                                            {[
+                                                'Donasi Umum',
+                                                'Orang Tua Asuh',
+                                                'Santunan / Sembako',
+                                            ].map((j) => (
                                                 <button
                                                     key={j}
                                                     type="button"
-                                                    onClick={() => setJenisDonasi(j)}
-                                                    className={`py-2 px-3 rounded-xl text-xs font-poppins font-medium border text-center transition ${
+                                                    onClick={() =>
+                                                        setJenisDonasi(j)
+                                                    }
+                                                    className={`rounded-xl border px-3 py-2 text-center font-poppins text-xs font-medium transition ${
                                                         jenisDonasi === j
-                                                            ? 'border-[#14bace] bg-[#e8f8fa] text-[#087f8c] font-semibold'
-                                                            : 'border-gray-200 hover:bg-gray-50 text-gray-600'
+                                                            ? 'border-[#14bace] bg-[#e8f8fa] font-semibold text-[#087f8c]'
+                                                            : 'border-gray-200 text-gray-600 hover:bg-gray-50'
                                                     }`}
                                                 >
                                                     {j}
@@ -291,26 +354,36 @@ _Saya telah melakukan transfer ke rekening yayasan dan melampirkan bukti transfe
 
                                     {/* Pilihan Rekening Tujuan */}
                                     <div>
-                                        <label className="block text-xs font-semibold text-[#1d2b2d] font-poppins mb-1.5">
+                                        <label className="mb-1.5 block font-poppins text-xs font-semibold text-[#1d2b2d]">
                                             Rekening Tujuan Transfer *
                                         </label>
                                         <select
                                             value={rekeningTujuan}
-                                            onChange={(e) => setRekeningTujuan(e.target.value)}
-                                            className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 text-sm font-sans outline-hidden bg-white"
+                                            onChange={(e) =>
+                                                setRekeningTujuan(
+                                                    e.target.value,
+                                                )
+                                            }
+                                            className="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 font-sans text-sm outline-hidden focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20"
                                         >
-                                            <option value="BSI - 7256194821">Bank Syariah Indonesia (BSI) - 7256194821</option>
-                                            <option value="BRI - 0123-01-098765-53-1">Bank Rakyat Indonesia (BRI) - 0123-01-098765-53-1</option>
+                                            <option value="BSI - 7256194821">
+                                                Bank Syariah Indonesia (BSI) -
+                                                7256194821
+                                            </option>
+                                            <option value="BRI - 0123-01-098765-53-1">
+                                                Bank Rakyat Indonesia (BRI) -
+                                                0123-01-098765-53-1
+                                            </option>
                                         </select>
                                     </div>
 
                                     {/* Nominal Donasi */}
                                     <div>
-                                        <label className="block text-xs font-semibold text-[#1d2b2d] font-poppins mb-1.5">
+                                        <label className="mb-1.5 block font-poppins text-xs font-semibold text-[#1d2b2d]">
                                             Nominal Donasi (Rp) *
                                         </label>
                                         <div className="relative mb-2">
-                                            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-bold text-gray-400 font-sans">
+                                            <span className="absolute top-1/2 left-3.5 -translate-y-1/2 font-sans text-sm font-bold text-gray-400">
                                                 Rp
                                             </span>
                                             <input
@@ -320,8 +393,10 @@ _Saya telah melakukan transfer ke rekening yayasan dan melampirkan bukti transfe
                                                 step="1000"
                                                 placeholder="Contoh: 100000"
                                                 value={nominal}
-                                                onChange={(e) => setNominal(e.target.value)}
-                                                className="w-full pl-12 pr-4 py-2.5 rounded-xl border border-gray-200 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 text-sm font-sans outline-hidden"
+                                                onChange={(e) =>
+                                                    setNominal(e.target.value)
+                                                }
+                                                className="w-full rounded-xl border border-gray-200 py-2.5 pr-4 pl-12 font-sans text-sm outline-hidden focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20"
                                             />
                                         </div>
 
@@ -331,10 +406,15 @@ _Saya telah melakukan transfer ke rekening yayasan dan melampirkan bukti transfe
                                                 <button
                                                     key={val}
                                                     type="button"
-                                                    onClick={() => setNominal(val)}
-                                                    className="px-2.5 py-1 rounded-lg text-xs font-mono font-medium border border-gray-200 hover:border-[#14bace] hover:bg-[#e8f8fa] text-gray-600 transition"
+                                                    onClick={() =>
+                                                        setNominal(val)
+                                                    }
+                                                    className="rounded-lg border border-gray-200 px-2.5 py-1 font-mono text-xs font-medium text-gray-600 transition hover:border-[#14bace] hover:bg-[#e8f8fa]"
                                                 >
-                                                    Rp {Number(val).toLocaleString('id-ID')}
+                                                    Rp{' '}
+                                                    {Number(val).toLocaleString(
+                                                        'id-ID',
+                                                    )}
                                                 </button>
                                             ))}
                                         </div>
@@ -342,15 +422,17 @@ _Saya telah melakukan transfer ke rekening yayasan dan melampirkan bukti transfe
 
                                     {/* Pesan & Doa */}
                                     <div>
-                                        <label className="block text-xs font-semibold text-[#1d2b2d] font-poppins mb-1.5">
+                                        <label className="mb-1.5 block font-poppins text-xs font-semibold text-[#1d2b2d]">
                                             Pesan & Doa Kebaikan (Opsional)
                                         </label>
                                         <textarea
                                             rows={3}
                                             placeholder="Tuliskan doa atau harapan untuk adik-adik yatim binaan..."
                                             value={pesanDoa}
-                                            onChange={(e) => setPesanDoa(e.target.value)}
-                                            className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 text-sm font-sans outline-hidden"
+                                            onChange={(e) =>
+                                                setPesanDoa(e.target.value)
+                                            }
+                                            className="w-full rounded-xl border border-gray-200 px-3.5 py-2.5 font-sans text-sm outline-hidden focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20"
                                         />
                                     </div>
 
@@ -358,13 +440,17 @@ _Saya telah melakukan transfer ke rekening yayasan dan melampirkan bukti transfe
                                     <div className="pt-2">
                                         <button
                                             type="submit"
-                                            className="w-full py-3.5 px-6 rounded-xl bg-[#14bace] hover:bg-[#087f8c] active:scale-[0.99] text-white font-poppins font-bold text-sm flex items-center justify-center gap-2 shadow-md shadow-[#14bace]/25 transition"
+                                            className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#14bace] px-6 py-3.5 font-poppins text-sm font-bold text-white shadow-md shadow-[#14bace]/25 transition hover:bg-[#087f8c] active:scale-[0.99]"
                                         >
                                             <Send className="size-4" />
-                                            <span>Konfirmasi Donasi via WhatsApp</span>
+                                            <span>
+                                                Konfirmasi Donasi via WhatsApp
+                                            </span>
                                         </button>
-                                        <p className="text-[11px] text-gray-400 text-center mt-2.5 font-sans">
-                                            Sistem akan membuka WhatsApp secara otomatis dengan pesan konfirmasi yang sudah terformat rapi.
+                                        <p className="mt-2.5 text-center font-sans text-[11px] text-gray-400">
+                                            Sistem akan membuka WhatsApp secara
+                                            otomatis dengan pesan konfirmasi
+                                            yang sudah terformat rapi.
                                         </p>
                                     </div>
                                 </form>
