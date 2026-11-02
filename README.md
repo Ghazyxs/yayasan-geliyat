@@ -50,3 +50,83 @@ Designed with a **mobile-first, human-centric approach**, the platform empowers 
 - **Styling & UI**: Tailwind CSS v4, Radix UI Primitives, Lucide Icons, Poppins & Inter Typography
 - **Database**: MySQL / SQLite
 - **Testing & Quality**: Pest PHP, Laravel Pint
+
+---
+
+## 🚀 Getting Started (Installation)
+
+Follow these steps to set up the project locally on your machine:
+
+### 1. Prerequisites
+Ensure you have the following installed:
+- **PHP** >= 8.2 & **Composer**
+- **Node.js** >= 18.x & **npm**
+- **MySQL** (via XAMPP, Laragon, or native service)
+- **Git**
+
+### 2. Clone the Repository
+```bash
+git clone https://github.com/Ghazyxs/yayasan-geliyat.git
+cd yayasan-geliyat
+```
+
+### 3. Install Dependencies
+```bash
+composer install
+npm install
+```
+
+### 4. Configure Environment
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+Update your `.env` file with your local MySQL credentials:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=geliyat
+DB_USERNAME=root
+DB_PASSWORD=
+```
+*(Make sure you have created an empty database named `geliyat` in phpMyAdmin or your MySQL client).*
+
+### 5. Run Migrations & Seeders
+```bash
+php artisan migrate --seed
+```
+
+### 6. Run the Development Server
+Open two terminal sessions:
+```bash
+# Terminal 1: Start Laravel backend
+php artisan serve
+
+# Terminal 2: Start Vite frontend bundler
+npm run dev
+```
+Visit **[http://localhost:8000](http://localhost:8000)** in your browser.
+
+---
+
+## 🔑 Default Demo Credentials
+
+After running `php artisan db:seed`, you can log in at [`http://localhost:8000/login`](http://localhost:8000/login) using the following accounts:
+
+| Role | Email | Password | Access Scope |
+| :--- | :--- | :--- | :--- |
+| **Super Admin (Chairman)** | `ketua@geliyat.or.id` | `password` | All Modules + Finance & User Management |
+| **Admin (Humanitarian & Orphans)** | `admin@geliyat.or.id` | `password` | Operational Dashboard, Orphans, Donations, Events, Reports |
+
+---
+
+## 🤝 Project Team (Warjett X Yayasan Geliyat)
+
+Developed with dedication for **Yayasan Geliyat** to support orphan empowerment and donor transparency.
+
+---
+
+## 📄 License
+
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
