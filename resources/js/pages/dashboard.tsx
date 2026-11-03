@@ -10,9 +10,6 @@ import {
     TrendingDown,
     ShieldCheck,
     GraduationCap,
-    Clock,
-    CheckCircle2,
-    Sparkles,
     LogOut,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -146,7 +143,10 @@ export default function Dashboard() {
                 <div className="flex flex-wrap items-center gap-2">
                     {/* Fast Role Switch — hanya tampil di local development */}
                     {isLocalEnv && (
-                        <div className="flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 p-1 text-xs shadow-xs" title="Dev only — tidak tampil di production">
+                        <div
+                            className="flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 p-1 text-xs shadow-xs"
+                            title="Dev only — tidak tampil di production"
+                        >
                             <span className="px-2 text-[10px] font-medium text-amber-500">
                                 Dev:
                             </span>

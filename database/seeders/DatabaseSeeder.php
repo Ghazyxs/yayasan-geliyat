@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,35 +11,20 @@ class DatabaseSeeder extends Seeder
 
     /**
      * Seed the application's database.
+     *
+     * Urutan pemanggilan seeder:
+     * 1. BidangSeeder — Master unit kerja (Kemanusiaan, Pendidikan, Keagamaan, Ekonomi)
+     * 2. UserSeeder — Akun default Super Admin (bidang_id NULL) dan Admin (bidang_id Kemanusiaan)
+     *
+     * Kebijakan Data Operasional:
+     * Tidak ada seeding dummy untuk tabel anak_yatim, donasi, maupun transaksi_keuangan
+     * guna menjamin kebersihan database utama untuk operasional nyata.
      */
     public function run(): void
     {
-        // Super Admin (Ketua Yayasan)
-        User::updateOrCreate(
-            ['email' => 'ketua@geliyat.or.id'],
-            [
-                'name' => 'H. Ahmad Fauzi',
-                'password' => 'password',
-                'role' => 'super_admin',
-                'bidang' => 'Pimpinan Yayasan',
-                'phone' => '081234567890',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ]
-        );
-
-        // Admin Operasional (Bidang Kemanusiaan & Anak Yatim)
-        User::updateOrCreate(
-            ['email' => 'admin@geliyat.or.id'],
-            [
-                'name' => 'Ibu Siti Rahmah',
-                'password' => 'password',
-                'role' => 'admin',
-                'bidang' => 'Kemanusiaan & Yatim',
-                'phone' => '081298765432',
-                'is_active' => true,
-                'email_verified_at' => now(),
-            ]
-        );
+        $this->call([
+            BidangSeeder::class,
+            UserSeeder::class,
+        ]);
     }
 }

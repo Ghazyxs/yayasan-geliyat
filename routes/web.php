@@ -1,6 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\AnakYatimController;
+use App\Http\Controllers\Admin\DonasiController;
+use App\Http\Controllers\PublicDonasiController;
+use App\Models\Kegiatan;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,7 +20,8 @@ Route::inertia('/bidang', 'public/bidang')->name('bidang');
 Route::inertia('/kegiatan', 'public/kegiatan')->name('kegiatan');
 Route::inertia('/anak-yatim', 'public/anak-yatim')->name('anak-yatim');
 Route::inertia('/profil', 'public/profil')->name('profil');
-Route::inertia('/donasi', 'public/donasi')->name('donasi');
+Route::get('/donasi', [PublicDonasiController::class, 'index'])->name('donasi');
+Route::post('/donasi', [PublicDonasiController::class, 'store'])->name('donasi.store');
 
 // Dashboard & Protected Admin/Super Admin Routes
 Route::middleware(['auth', 'role:admin,super_admin'])->group(function () {
@@ -23,9 +29,31 @@ Route::middleware(['auth', 'role:admin,super_admin'])->group(function () {
 
     // Admin & Super Admin Shared Modules
     Route::prefix('admin')->name('admin.')->group(function () {
-        Route::inertia('anak-yatim', 'admin/anak-yatim/index')->name('anak-yatim');
-        Route::inertia('donasi', 'admin/donasi/index')->name('donasi');
+        Route::get('anak-yatim', [AnakYatimController::class, 'index'])->name('anak-yatim');
+        Route::post('anak-yatim', [AnakYatimController::class, 'store'])->name('anak-yatim.store');
+        Route::get('anak-yatim/{anak_yatim}', [AnakYatimController::class, 'show'])->name('anak-yatim.show');
+        Route::get('anak-yatim/{anak_yatim}/sensitive', [AnakYatimController::class, 'sensitive'])->name('anak-yatim.sensitive');
+        Route::match(['put', 'patch'], 'anak-yatim/{anak_yatim}', [AnakYatimController::class, 'update'])->name('anak-yatim.update');
+        Route::delete('anak-yatim/{anak_yatim}', [AnakYatimController::class, 'destroy'])->name('anak-yatim.destroy');
+
+        Route::get('donasi', [DonasiController::class, 'index'])->name('donasi');
+        Route::post('donasi', [DonasiController::class, 'store'])->name('donasi.store');
+        Route::get('donasi/{donasi}', [DonasiController::class, 'show'])->name('donasi.show');
+        Route::get('donasi/{donasi}/bukti-transfer', [DonasiController::class, 'buktiTransfer'])->name('donasi.bukti');
+        Route::match(['post', 'patch'], 'donasi/{donasi}/verify', [DonasiController::class, 'verify'])->name('donasi.verify');
+        Route::match(['post', 'patch'], 'donasi/{donasi}/reject', [DonasiController::class, 'reject'])->name('donasi.reject');
+        Route::match(['post', 'patch'], 'donasi/{donasi}/cancel', [DonasiController::class, 'cancel'])->name('donasi.cancel');
+
         Route::inertia('kegiatan', 'admin/kegiatan/index')->name('kegiatan');
+        Route::get('kegiatan/{kegiatan}', function (Kegiatan $kegiatan) {
+            Gate::authorize('view', $kegiatan);
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $kegiatan,
+            ]);
+        })->name('kegiatan.show');
+
         Route::inertia('laporan', 'admin/laporan/index')->name('laporan');
 
         // Super Admin Restricted Modules
