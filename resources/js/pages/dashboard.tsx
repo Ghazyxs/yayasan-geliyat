@@ -20,9 +20,13 @@ import { dashboard } from '@/routes';
 import type { User } from '@/types';
 
 export default function Dashboard() {
-    const { auth } = usePage().props as unknown as { auth: { user: User } };
+    const { auth, appEnv } = usePage().props as unknown as {
+        auth: { user: User };
+        appEnv: string;
+    };
     const user = auth?.user;
     const isSuperAdmin = user?.role === 'super_admin';
+    const isLocalEnv = appEnv === 'local';
 
     // Chart bar data (Mei - Okt 2026 in millions)
     const monthlyData = [
@@ -138,28 +142,30 @@ export default function Dashboard() {
                     </p>
                 </div>
 
-                {/* Role Switcher & Account Controls */}
+                {/* Role Switcher (Development Only) & Account Controls */}
                 <div className="flex flex-wrap items-center gap-2">
-                    {/* Fast Role Switch for Testing */}
-                    <div className="flex items-center gap-1.5 rounded-xl border border-[#e4eaec] bg-white p-1 text-xs shadow-xs">
-                        <span className="px-2 text-[10px] font-medium text-gray-400">
-                            Uji Peran:
-                        </span>
-                        <a
-                            href="/switch-role/super_admin"
-                            className={`rounded-lg px-2.5 py-1 font-medium transition-colors ${isSuperAdmin ? 'bg-purple-100 font-semibold text-purple-700' : 'text-gray-600 hover:bg-gray-100'}`}
-                            title="Beralih ke Super Admin (Ketua)"
-                        >
-                            Super Admin
-                        </a>
-                        <a
-                            href="/switch-role/admin"
-                            className={`rounded-lg px-2.5 py-1 font-medium transition-colors ${!isSuperAdmin ? 'bg-teal-100 font-semibold text-teal-800' : 'text-gray-600 hover:bg-gray-100'}`}
-                            title="Beralih ke Admin (Bidang Kemanusiaan)"
-                        >
-                            Admin Yatim
-                        </a>
-                    </div>
+                    {/* Fast Role Switch — hanya tampil di local development */}
+                    {isLocalEnv && (
+                        <div className="flex items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 p-1 text-xs shadow-xs" title="Dev only — tidak tampil di production">
+                            <span className="px-2 text-[10px] font-medium text-amber-500">
+                                Dev:
+                            </span>
+                            <a
+                                href="/switch-role/super_admin"
+                                className={`rounded-lg px-2.5 py-1 font-medium transition-colors ${isSuperAdmin ? 'bg-purple-100 font-semibold text-purple-700' : 'text-gray-600 hover:bg-gray-100'}`}
+                                title="Beralih ke Super Admin (Ketua)"
+                            >
+                                Super Admin
+                            </a>
+                            <a
+                                href="/switch-role/admin"
+                                className={`rounded-lg px-2.5 py-1 font-medium transition-colors ${!isSuperAdmin ? 'bg-teal-100 font-semibold text-teal-800' : 'text-gray-600 hover:bg-gray-100'}`}
+                                title="Beralih ke Admin (Bidang Kemanusiaan)"
+                            >
+                                Admin Yatim
+                            </a>
+                        </div>
+                    )}
 
                     <div className="flex items-center gap-2.5 rounded-xl border border-[#e4eaec] bg-white p-2 shadow-xs">
                         <div
