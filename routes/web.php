@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\Admin\AnakYatimController;
 use App\Http\Controllers\Admin\DonasiController;
+use App\Http\Controllers\Admin\RekeningYayasanController;
+use App\Http\Controllers\Admin\TransaksiKeuanganController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PublicDonasiController;
 use App\Models\Kegiatan;
 use App\Models\User;
@@ -25,7 +28,7 @@ Route::post('/donasi', [PublicDonasiController::class, 'store'])->name('donasi.s
 
 // Dashboard & Protected Admin/Super Admin Routes
 Route::middleware(['auth', 'role:admin,super_admin'])->group(function () {
-    Route::inertia('dashboard', 'dashboard')->name('dashboard');
+    Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     // Admin & Super Admin Shared Modules
     Route::prefix('admin')->name('admin.')->group(function () {
@@ -58,7 +61,14 @@ Route::middleware(['auth', 'role:admin,super_admin'])->group(function () {
 
         // Super Admin Restricted Modules
         Route::middleware(['role:super_admin'])->group(function () {
-            Route::inertia('keuangan', 'admin/keuangan/index')->name('keuangan');
+            Route::get('rekening', [RekeningYayasanController::class, 'index'])->name('rekening');
+            Route::post('rekening', [RekeningYayasanController::class, 'store'])->name('rekening.store');
+            Route::match(['put', 'patch'], 'rekening/{rekening}', [RekeningYayasanController::class, 'update'])->name('rekening.update');
+            Route::patch('rekening/{rekening}/toggle-active', [RekeningYayasanController::class, 'toggleActive'])->name('rekening.toggle-active');
+            Route::delete('rekening/{rekening}', [RekeningYayasanController::class, 'destroy'])->name('rekening.destroy');
+
+            Route::get('keuangan', [TransaksiKeuanganController::class, 'index'])->name('keuangan');
+            Route::post('transaksi', [TransaksiKeuanganController::class, 'store'])->name('transaksi.store');
             Route::inertia('pengguna', 'admin/pengguna/index')->name('pengguna');
         });
     });

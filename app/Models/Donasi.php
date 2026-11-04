@@ -19,6 +19,11 @@ use Illuminate\Support\Str;
  * @property string $nama_donatur
  * @property string $jenis_donasi
  * @property int|null $anak_yatim_id
+ * @property int|null $rekening_id
+ * @property string|null $rekening_nama_bank
+ * @property string|null $rekening_nomor
+ * @property string|null $rekening_atas_nama
+ * @property string $rekening_tujuan
  * @property int $nominal
  * @property string $status_verifikasi
  * @property int|null $verified_by
@@ -30,6 +35,10 @@ use Illuminate\Support\Str;
     'no_whatsapp',
     'jenis_donasi',
     'anak_yatim_id',
+    'rekening_id',
+    'rekening_nama_bank',
+    'rekening_nomor',
+    'rekening_atas_nama',
     'rekening_tujuan',
     'nominal',
     'pesan_doa',
@@ -108,12 +117,64 @@ class Donasi extends Model
         return $kode;
     }
 
+    /**
+     * Dapatkan daftar rekening resmi aktif untuk donasi.
+     * Jika database master rekening sudah memiliki data, gunakan data aktif dari database.
+     * Jika database master rekening masih kosong sama sekali (fase transisi awal),
+     * gunakan fallback konfigurasi REKENING_RESMI agar tidak merusak sistem & pengujian lama.
+     *
+     * @return array<int, array{id: int|null, kode: string, bank: string, nomor: string, atas_nama: string, icon: string}>
+     */
+    public static function daftarRekeningAktif(): array
+    {
+        if (RekeningYayasan::query()->exists()) {
+            return RekeningYayasan::aktif()
+                ->orderBy('nama_bank')
+                ->get()
+                ->map(fn (RekeningYayasan $r) => [
+                    'id' => $r->id,
+                    'kode' => "{$r->nama_bank} - {$r->nomor_rekening}",
+                    'bank' => $r->nama_bank,
+                    'nomor' => $r->nomor_rekening,
+                    'atas_nama' => $r->atas_nama,
+                    'icon' => $r->icon ?? 'BANK',
+                ])
+                ->values()
+                ->all();
+        }
+
+        return self::REKENING_RESMI;
+    }
+
+    /**
+     * Terapkan snapshot rekening yayasan ke atribut donasi secara permanen.
+     *
+     * @param  array<string, mixed>  $attributes
+     */
+    public static function terapkanSnapshotRekening(array &$attributes, ?RekeningYayasan $rekening = null): void
+    {
+        if ($rekening !== null) {
+            $attributes['rekening_id'] = $rekening->id;
+            $attributes['rekening_nama_bank'] = $rekening->nama_bank;
+            $attributes['rekening_nomor'] = $rekening->nomor_rekening;
+            $attributes['rekening_atas_nama'] = $rekening->atas_nama;
+            $attributes['rekening_tujuan'] = "{$rekening->nama_bank} - {$rekening->nomor_rekening}";
+        }
+    }
+
     protected function casts(): array
     {
         return [
             'nominal' => 'integer',
+            'rekening_id' => 'integer',
             'verified_at' => 'datetime',
         ];
+    }
+
+    /** @return BelongsTo<RekeningYayasan, $this> */
+    public function rekening(): BelongsTo
+    {
+        return $this->belongsTo(RekeningYayasan::class, 'rekening_id');
     }
 
     /** @return BelongsTo<AnakYatim, $this> */
@@ -216,6 +277,7 @@ class Donasi extends Model
             TransaksiKeuangan::create([
                 'kode_transaksi' => sprintf('TRX-%s-D%06d', now()->format('Ymd'), $donasi->id),
                 'tipe' => TransaksiKeuangan::TIPE_PEMASUKAN,
+                'sumber_dana' => TransaksiKeuangan::SUMBER_DONASI,
                 'kategori' => 'Donasi Terverifikasi',
                 'nominal' => $donasi->nominal,
                 'tanggal_transaksi' => now()->toDateString(),

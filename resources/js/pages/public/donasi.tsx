@@ -19,6 +19,7 @@ import {
 import PublicLayout from '@/layouts/public-layout';
 
 interface RekeningItem {
+    id?: number;
     kode: string;
     bank: string;
     nomor: string;
@@ -102,6 +103,7 @@ export default function DonasiPage({
             no_whatsapp: string;
             jenis_donasi: string;
             anak_yatim_id: string;
+            rekening_id: number | null;
             rekening_tujuan: string;
             nominal: string;
             pesan_doa: string;
@@ -111,6 +113,7 @@ export default function DonasiPage({
             no_whatsapp: '',
             jenis_donasi: daftarJenis[0] ?? 'Donasi Umum',
             anak_yatim_id: '',
+            rekening_id: daftarRekening[0]?.id ?? null,
             rekening_tujuan: daftarRekening[0]?.kode ?? 'BSI - 7256194821',
             nominal: '',
             pesan_doa: '',
@@ -646,12 +649,19 @@ export default function DonasiPage({
                                         <select
                                             id="rekening_tujuan"
                                             value={data.rekening_tujuan}
-                                            onChange={(e) =>
-                                                setData(
-                                                    'rekening_tujuan',
-                                                    e.target.value,
-                                                )
-                                            }
+                                            onChange={(e) => {
+                                                const val = e.target.value;
+                                                const selected =
+                                                    daftarRekening.find(
+                                                        (r) => r.kode === val,
+                                                    );
+                                                setData((prev) => ({
+                                                    ...prev,
+                                                    rekening_tujuan: val,
+                                                    rekening_id:
+                                                        selected?.id ?? null,
+                                                }));
+                                            }}
                                             className="w-full rounded-xl border border-[#e4eaec] bg-white px-3.5 py-2.5 font-sans text-sm text-slate-800 outline-hidden focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20"
                                         >
                                             {daftarRekening.map((rek) => (

@@ -9,6 +9,7 @@ use App\Http\Requests\Donasi\StoreAdminDonasiRequest;
 use App\Http\Requests\Donasi\VerifyDonasiRequest;
 use App\Models\AnakYatim;
 use App\Models\Donasi;
+use App\Models\RekeningYayasan;
 use App\Models\User;
 use DomainException;
 use Illuminate\Database\Eloquent\Builder;
@@ -124,7 +125,7 @@ class DonasiController extends Controller
                 'tanggal' => $tanggal,
             ],
             'jenisDonasiList' => Donasi::JENIS_DONASI_LIST,
-            'rekeningList' => Donasi::REKENING_RESMI,
+            'rekeningList' => Donasi::daftarRekeningAktif(),
             'anakYatimList' => $anakYatimList,
             'permissions' => [
                 'is_super_admin' => $user->isSuperAdmin(),
@@ -169,8 +170,18 @@ class DonasiController extends Controller
         $filename = Str::uuid()->toString().'.'.$ext;
         $buktiPath = $file->storeAs('bukti-transfer/'.now()->format('Y/m'), $filename, 'local');
 
-        $donasi = DB::transaction(function () use ($validated, $anakYatimId, $buktiPath) {
-            return Donasi::create([
+        $rekening = null;
+        if (! empty($validated['rekening_id'])) {
+            $rekening = RekeningYayasan::find($validated['rekening_id']);
+        } elseif (! empty($validated['rekening_tujuan'])) {
+            $rekening = RekeningYayasan::where(function ($query) use ($validated) {
+                $query->whereRaw("CONCAT(nama_bank, ' - ', nomor_rekening) = ?", [trim($validated['rekening_tujuan'])])
+                    ->orWhere('nomor_rekening', trim($validated['rekening_tujuan']));
+            })->first();
+        }
+
+        $donasi = DB::transaction(function () use ($validated, $anakYatimId, $buktiPath, $rekening) {
+            $attributes = [
                 'kode_donasi' => Donasi::generateKodeDonasi(),
                 'nama_donatur' => trim($validated['nama_donatur']),
                 'no_whatsapp' => trim($validated['no_whatsapp']),
@@ -181,7 +192,11 @@ class DonasiController extends Controller
                 'pesan_doa' => ! empty($validated['pesan_doa']) ? trim($validated['pesan_doa']) : null,
                 'bukti_transfer' => $buktiPath,
                 'status_verifikasi' => Donasi::STATUS_MENUNGGU,
-            ]);
+            ];
+
+            Donasi::terapkanSnapshotRekening($attributes, $rekening);
+
+            return Donasi::create($attributes);
         });
 
         return redirect()
@@ -378,9 +393,9 @@ class DonasiController extends Controller
                 'tanggal_transaksi' => $donasi->transaksi->tanggal_transaksi?->format('Y-m-d'),
                 'keterangan' => $donasi->transaksi->keterangan,
             ] : null,
-            'can_verify' => Gate::forUser($user)->allows('verify', $donasi),
-            'can_reject' => Gate::forUser($user)->allows('reject', $donasi),
-            'can_cancel' => Gate::forUser($user)->allows('cancel', $donasi),
+            'can_verify' => $donasi->status_verifikasi === Donasi::STATUS_MENUNGGU && Gate::forUser($user)->allows('verify', $donasi),
+            'can_reject' => $donasi->status_verifikasi === Donasi::STATUS_MENUNGGU && Gate::forUser($user)->allows('reject', $donasi),
+            'can_cancel' => $donasi->status_verifikasi === Donasi::STATUS_TERVERIFIKASI && Gate::forUser($user)->allows('cancel', $donasi),
         ];
     }
 }

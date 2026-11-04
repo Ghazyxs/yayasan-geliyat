@@ -114,6 +114,7 @@ interface PaginatedDonasi {
 }
 
 interface RekeningItem {
+    id?: number;
     kode: string;
     bank: string;
     nomor: string;
@@ -292,6 +293,7 @@ export default function DonasiAdmin({
         no_whatsapp: string;
         jenis_donasi: string;
         anak_yatim_id: string;
+        rekening_id: number | null;
         rekening_tujuan: string;
         nominal: string;
         pesan_doa: string;
@@ -301,6 +303,7 @@ export default function DonasiAdmin({
         no_whatsapp: '',
         jenis_donasi: jenisDonasiList[0] ?? 'Donasi Umum',
         anak_yatim_id: '',
+        rekening_id: rekeningList[0]?.id ?? null,
         rekening_tujuan: rekeningList[0]?.kode ?? 'BSI - 7256194821',
         nominal: '',
         pesan_doa: '',
@@ -950,38 +953,42 @@ export default function DonasiAdmin({
                                                             Detail
                                                         </Button>
 
-                                                        {item.can_verify && (
-                                                            <Button
-                                                                type="button"
-                                                                size="sm"
-                                                                onClick={() =>
-                                                                    openVerifyModal(
-                                                                        item,
-                                                                    )
-                                                                }
-                                                                className="h-7 bg-[#14bace] px-2.5 text-[11px] font-semibold text-white shadow-none hover:bg-[#0fa0ae]"
-                                                            >
-                                                                <CheckCircle2 className="mr-1 size-3.5" />
-                                                                Verifikasi
-                                                            </Button>
-                                                        )}
+                                                        {item.can_verify &&
+                                                            item.status_verifikasi ===
+                                                                'menunggu' && (
+                                                                <Button
+                                                                    type="button"
+                                                                    size="sm"
+                                                                    onClick={() =>
+                                                                        openVerifyModal(
+                                                                            item,
+                                                                        )
+                                                                    }
+                                                                    className="h-7 bg-[#14bace] px-2.5 text-[11px] font-semibold text-white shadow-none hover:bg-[#0fa0ae]"
+                                                                >
+                                                                    <CheckCircle2 className="mr-1 size-3.5" />
+                                                                    Verifikasi
+                                                                </Button>
+                                                            )}
 
-                                                        {item.can_reject && (
-                                                            <Button
-                                                                type="button"
-                                                                variant="outline"
-                                                                size="sm"
-                                                                onClick={() =>
-                                                                    openRejectModal(
-                                                                        item,
-                                                                    )
-                                                                }
-                                                                className="h-7 border-rose-200 bg-white px-2.5 text-[11px] font-medium text-rose-600 shadow-none hover:bg-rose-50 hover:text-rose-700"
-                                                            >
-                                                                <XCircle className="mr-1 size-3.5" />
-                                                                Tolak
-                                                            </Button>
-                                                        )}
+                                                        {item.can_reject &&
+                                                            item.status_verifikasi ===
+                                                                'menunggu' && (
+                                                                <Button
+                                                                    type="button"
+                                                                    variant="outline"
+                                                                    size="sm"
+                                                                    onClick={() =>
+                                                                        openRejectModal(
+                                                                            item,
+                                                                        )
+                                                                    }
+                                                                    className="h-7 border-rose-200 bg-white px-2.5 text-[11px] font-medium text-rose-600 shadow-none hover:bg-rose-50 hover:text-rose-700"
+                                                                >
+                                                                    <XCircle className="mr-1 size-3.5" />
+                                                                    Tolak
+                                                                </Button>
+                                                            )}
 
                                                         {item.can_cancel &&
                                                             item.status_verifikasi ===
@@ -1386,32 +1393,36 @@ export default function DonasiAdmin({
                                 </Button>
 
                                 <div className="flex flex-wrap items-center gap-2">
-                                    {detailItem.can_reject && (
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            onClick={() =>
-                                                openRejectModal(detailItem)
-                                            }
-                                            className="border-rose-200 bg-white text-xs font-medium text-rose-600 shadow-none hover:bg-rose-50"
-                                        >
-                                            <XCircle className="mr-1.5 size-3.5" />
-                                            Tolak Donasi
-                                        </Button>
-                                    )}
+                                    {detailItem.can_reject &&
+                                        detailItem.status_verifikasi ===
+                                            'menunggu' && (
+                                            <Button
+                                                type="button"
+                                                variant="outline"
+                                                onClick={() =>
+                                                    openRejectModal(detailItem)
+                                                }
+                                                className="border-rose-200 bg-white text-xs font-medium text-rose-600 shadow-none hover:bg-rose-50"
+                                            >
+                                                <XCircle className="mr-1.5 size-3.5" />
+                                                Tolak Donasi
+                                            </Button>
+                                        )}
 
-                                    {detailItem.can_verify && (
-                                        <Button
-                                            type="button"
-                                            onClick={() =>
-                                                openVerifyModal(detailItem)
-                                            }
-                                            className="bg-[#14bace] text-xs font-semibold text-white shadow-none hover:bg-[#0fa0ae]"
-                                        >
-                                            <CheckCircle2 className="mr-1.5 size-3.5" />
-                                            Verifikasi & Catat Kas
-                                        </Button>
-                                    )}
+                                    {detailItem.can_verify &&
+                                        detailItem.status_verifikasi ===
+                                            'menunggu' && (
+                                            <Button
+                                                type="button"
+                                                onClick={() =>
+                                                    openVerifyModal(detailItem)
+                                                }
+                                                className="bg-[#14bace] text-xs font-semibold text-white shadow-none hover:bg-[#0fa0ae]"
+                                            >
+                                                <CheckCircle2 className="mr-1.5 size-3.5" />
+                                                Verifikasi & Catat Kas
+                                            </Button>
+                                        )}
 
                                     {detailItem.can_cancel &&
                                         detailItem.status_verifikasi ===
@@ -1883,12 +1894,17 @@ export default function DonasiAdmin({
                                 </label>
                                 <select
                                     value={createForm.data.rekening_tujuan}
-                                    onChange={(e) =>
-                                        createForm.setData(
-                                            'rekening_tujuan',
-                                            e.target.value,
-                                        )
-                                    }
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        const selected = rekeningList.find(
+                                            (r) => r.kode === val,
+                                        );
+                                        createForm.setData((prev) => ({
+                                            ...prev,
+                                            rekening_tujuan: val,
+                                            rekening_id: selected?.id ?? null,
+                                        }));
+                                    }}
                                     className="w-full rounded-lg border border-[#e4eaec] bg-white px-3 py-2 text-xs text-slate-800 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-hidden"
                                 >
                                     {rekeningList.map((rek) => (

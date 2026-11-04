@@ -4,6 +4,7 @@ import {
     UsersRound,
     HeartHandshake,
     CalendarDays,
+    CreditCard,
     Wallet,
     ChartNoAxesCombined,
     ShieldCheck,
@@ -56,6 +57,11 @@ export function AppSidebar() {
         },
         ...(isSuperAdmin
             ? [
+                  {
+                      title: 'Rekening Yayasan',
+                      href: '/admin/rekening',
+                      icon: CreditCard,
+                  },
                   {
                       title: 'Keuangan',
                       href: '/admin/keuangan',

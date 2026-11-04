@@ -3,10 +3,12 @@
 namespace App\Http\Requests\Donasi;
 
 use App\Models\Donasi;
+use App\Models\RekeningYayasan;
 use Closure;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class StorePublicDonasiRequest extends FormRequest
 {
@@ -42,6 +44,11 @@ class StorePublicDonasiRequest extends FormRequest
                 'nullable',
                 'integer',
                 Rule::exists('anak_yatim', 'id'),
+            ],
+            'rekening_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('rekening_yayasan', 'id')->where('is_active', true),
             ],
             'rekening_tujuan' => ['required', 'string', 'max:100'],
             'nominal' => ['required', 'integer', 'min:10000', 'max:100000000000'],
@@ -98,6 +105,7 @@ class StorePublicDonasiRequest extends FormRequest
             'jenis_donasi.required' => 'Jenis donasi wajib dipilih.',
             'jenis_donasi.in' => 'Jenis donasi yang dipilih tidak valid.',
             'anak_yatim_id.exists' => 'Data anak binaan yang dipilih tidak ditemukan.',
+            'rekening_id.exists' => 'Rekening tujuan transfer tidak aktif atau tidak ditemukan.',
             'rekening_tujuan.required' => 'Rekening tujuan transfer wajib dipilih.',
             'nominal.required' => 'Nominal donasi wajib diisi.',
             'nominal.integer' => 'Nominal donasi harus berupa angka.',
@@ -108,5 +116,34 @@ class StorePublicDonasiRequest extends FormRequest
             'bukti_transfer.mimetypes' => 'Tipe MIME file bukti transfer tidak diizinkan.',
             'bukti_transfer.max' => 'Ukuran file bukti transfer maksimal 5 MB.',
         ];
+    }
+
+    /**
+     * Pastikan rekening tujuan yang dipilih tidak dalam status nonaktif.
+     */
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $v) {
+            $rekeningId = $this->input('rekening_id');
+            $rekeningTujuan = trim((string) $this->input('rekening_tujuan'));
+
+            if ($rekeningId) {
+                $rekening = RekeningYayasan::find($rekeningId);
+                if ($rekening && ! $rekening->is_active) {
+                    $v->errors()->add('rekening_id', 'Rekening tujuan transfer sedang nonaktif dan tidak dapat menerima donasi baru.');
+                }
+            } elseif ($rekeningTujuan !== '' && RekeningYayasan::query()->exists()) {
+                $isInactive = RekeningYayasan::where('is_active', false)
+                    ->where(function ($query) use ($rekeningTujuan) {
+                        $query->where('nomor_rekening', $rekeningTujuan)
+                            ->orWhereRaw("CONCAT(nama_bank, ' - ', nomor_rekening) = ?", [$rekeningTujuan]);
+                    })
+                    ->exists();
+
+                if ($isInactive) {
+                    $v->errors()->add('rekening_tujuan', 'Rekening tujuan transfer sedang nonaktif dan tidak dapat menerima donasi baru.');
+                }
+            }
+        });
     }
 }

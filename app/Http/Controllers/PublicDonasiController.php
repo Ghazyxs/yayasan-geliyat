@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Donasi\StorePublicDonasiRequest;
 use App\Models\AnakYatim;
 use App\Models\Donasi;
+use App\Models\RekeningYayasan;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -26,7 +27,7 @@ class PublicDonasiController extends Controller
             ->get(['id', 'alias', 'jenjang', 'kelas', 'kelurahan', 'status_asuh']);
 
         return Inertia::render('public/donasi', [
-            'rekeningList' => Donasi::REKENING_RESMI,
+            'rekeningList' => Donasi::daftarRekeningAktif(),
             'jenisDonasiList' => Donasi::JENIS_DONASI_LIST,
             'anakYatimList' => $anakYatimList,
             'donasiSubmitted' => $request->session()->get('donasi_submitted'),
@@ -59,8 +60,18 @@ class PublicDonasiController extends Controller
             ? (int) $validated['anak_yatim_id']
             : null;
 
-        $donasi = DB::transaction(function () use ($validated, $anakYatimId, $buktiPath) {
-            return Donasi::create([
+        $rekening = null;
+        if (! empty($validated['rekening_id'])) {
+            $rekening = RekeningYayasan::find($validated['rekening_id']);
+        } elseif (! empty($validated['rekening_tujuan'])) {
+            $rekening = RekeningYayasan::where(function ($query) use ($validated) {
+                $query->whereRaw("CONCAT(nama_bank, ' - ', nomor_rekening) = ?", [trim($validated['rekening_tujuan'])])
+                    ->orWhere('nomor_rekening', trim($validated['rekening_tujuan']));
+            })->first();
+        }
+
+        $donasi = DB::transaction(function () use ($validated, $anakYatimId, $buktiPath, $rekening) {
+            $attributes = [
                 'kode_donasi' => Donasi::generateKodeDonasi(),
                 'nama_donatur' => trim($validated['nama_donatur']),
                 'no_whatsapp' => trim($validated['no_whatsapp']),
@@ -71,7 +82,11 @@ class PublicDonasiController extends Controller
                 'pesan_doa' => ! empty($validated['pesan_doa']) ? trim($validated['pesan_doa']) : null,
                 'bukti_transfer' => $buktiPath,
                 'status_verifikasi' => Donasi::STATUS_MENUNGGU,
-            ]);
+            ];
+
+            Donasi::terapkanSnapshotRekening($attributes, $rekening);
+
+            return Donasi::create($attributes);
         });
 
         return redirect()
