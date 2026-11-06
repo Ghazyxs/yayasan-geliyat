@@ -4,6 +4,7 @@ import {
     UsersRound,
     HeartHandshake,
     CalendarDays,
+    CreditCard,
     Wallet,
     ChartNoAxesCombined,
     ShieldCheck,
@@ -57,6 +58,11 @@ export function AppSidebar() {
         ...(isSuperAdmin
             ? [
                   {
+                      title: 'Rekening Yayasan',
+                      href: '/admin/rekening',
+                      icon: CreditCard,
+                  },
+                  {
                       title: 'Keuangan',
                       href: '/admin/keuangan',
                       icon: Wallet,
@@ -93,7 +99,7 @@ export function AppSidebar() {
             variant="inset"
             className="border-r border-[#e4eaec] bg-white"
         >
-            <SidebarHeader className="border-b border-[#f0f4f5] pb-3">
+            <SidebarHeader className="border-b border-[#f0f4f5] bg-white pb-3">
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton
@@ -113,14 +119,14 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
 
-            <SidebarContent className="gap-4 pt-3">
+            <SidebarContent className="gap-4 bg-white pt-3">
                 <NavMain items={mainNavItems} label="RUANG KERJA" />
 
                 {/* Security Reminder Box (From Figma) */}
                 {state !== 'collapsed' && (
                     <div className="mx-3 mt-auto rounded-xl border border-[#e4eaec] bg-[#f7f9fa] p-3 text-left">
                         <div className="flex items-center gap-2 font-poppins text-xs font-semibold text-[#087f8c]">
-                            <ShieldCheck className="size-4 shrink-0" />
+                            <ShieldCheck className="size-4 shrink-0 text-[#14bace]" />
                             <span>Ruang aman untuk peduli</span>
                         </div>
                         <p className="mt-1.5 font-poppins text-[11px] leading-relaxed text-[#718083]">
@@ -131,7 +137,7 @@ export function AppSidebar() {
                 )}
             </SidebarContent>
 
-            <SidebarFooter className="border-t border-[#f0f4f5] pt-2">
+            <SidebarFooter className="border-t border-[#f0f4f5] bg-white pt-2">
                 <NavMain items={publicSiteItem} label="TAUTAN SITUS" />
                 <NavUser />
                 <div className="px-2 pt-1 pb-1">

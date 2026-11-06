@@ -7,6 +7,8 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
@@ -18,14 +20,19 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property string $email
  * @property Carbon|null $email_verified_at
  * @property string $password
+ * @property string $role
+ * @property int|null $bidang_id
+ * @property string|null $phone
+ * @property bool $is_active
  * @property string|null $two_factor_secret
  * @property string|null $two_factor_recovery_codes
  * @property Carbon|null $two_factor_confirmed_at
  * @property string|null $remember_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read Bidang|null $bidang
  */
-#[Fillable(['name', 'email', 'password', 'role', 'bidang', 'phone', 'is_active'])]
+#[Fillable(['name', 'email', 'password', 'role', 'bidang_id', 'phone', 'is_active'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -44,7 +51,43 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
             'is_active' => 'boolean',
+            'bidang_id' => 'integer',
         ];
+    }
+
+    /**
+     * Relasi ke unit kerja / bidang yayasan.
+     * Bernilai NULL untuk Super Admin (karena memiliki wewenang lintas seluruh bidang).
+     *
+     * @return BelongsTo<Bidang, $this>
+     */
+    public function bidang(): BelongsTo
+    {
+        return $this->belongsTo(Bidang::class, 'bidang_id');
+    }
+
+    /** @return HasMany<AnakYatim, $this> */
+    public function anakYatimDibuat(): HasMany
+    {
+        return $this->hasMany(AnakYatim::class, 'created_by');
+    }
+
+    /** @return HasMany<Donasi, $this> */
+    public function donasiDiverifikasi(): HasMany
+    {
+        return $this->hasMany(Donasi::class, 'verified_by');
+    }
+
+    /** @return HasMany<TransaksiKeuangan, $this> */
+    public function transaksiDicatat(): HasMany
+    {
+        return $this->hasMany(TransaksiKeuangan::class, 'created_by');
+    }
+
+    /** @return HasMany<Kegiatan, $this> */
+    public function kegiatanDibuat(): HasMany
+    {
+        return $this->hasMany(Kegiatan::class, 'created_by');
     }
 
     public function isSuperAdmin(): bool

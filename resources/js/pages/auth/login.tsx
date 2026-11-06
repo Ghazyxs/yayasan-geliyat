@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Form, Head, Link } from '@inertiajs/react';
+import { Form, Head, Link, usePage } from '@inertiajs/react';
 import { ShieldCheck, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import InputError from '@/components/input-error';
 import PasswordInput from '@/components/password-input';
@@ -19,10 +19,14 @@ type Props = {
 };
 
 export default function Login({ status, canResetPassword }: Props) {
+    const { appEnv } = usePage().props as unknown as { appEnv: string };
+    const isLocalEnv = appEnv === 'local';
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [remember, setRemember] = useState(true);
 
+    // Fungsi ini hanya dipakai pada lingkungan development lokal
     const fillTestAccount = (userEmail: string) => {
         setEmail(userEmail);
         setPassword('password');
@@ -261,37 +265,39 @@ export default function Login({ status, canResetPassword }: Props) {
                         </div>
                     </div>
 
-                    {/* Testing Convenience: Demo Credentials Pills */}
-                    <div className="mt-6 rounded-lg border border-dashed border-gray-200 bg-gray-50 p-3 text-xs">
-                        <div className="mb-2 flex items-center justify-between font-medium text-gray-500">
-                            <span>Akun Demo Pengurus:</span>
-                            <span className="text-[10px] text-gray-400">
-                                Klik untuk isi otomatis
-                            </span>
+                    {/* Testing Convenience: Demo Credentials Pills — hanya di local development */}
+                    {isLocalEnv && (
+                        <div className="mt-6 rounded-lg border border-dashed border-amber-200 bg-amber-50 p-3 text-xs">
+                            <div className="mb-2 flex items-center justify-between font-medium text-amber-600">
+                                <span>Akun Demo (Dev Only):</span>
+                                <span className="text-[10px] text-amber-400">
+                                    Klik untuk isi otomatis
+                                </span>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        fillTestAccount('ketua@geliyat.or.id')
+                                    }
+                                    className="flex items-center gap-1.5 rounded-md border border-amber-200 bg-white px-2.5 py-1.5 text-[11px] font-medium text-[#1b2929] transition-colors hover:border-[#14bace] hover:text-[#087f8c]"
+                                >
+                                    <span className="size-1.5 rounded-full bg-purple-500" />
+                                    Super Admin (Ketua)
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() =>
+                                        fillTestAccount('admin@geliyat.or.id')
+                                    }
+                                    className="flex items-center gap-1.5 rounded-md border border-amber-200 bg-white px-2.5 py-1.5 text-[11px] font-medium text-[#1b2929] transition-colors hover:border-[#14bace] hover:text-[#087f8c]"
+                                >
+                                    <span className="size-1.5 rounded-full bg-teal-500" />
+                                    Admin (Bidang Kemanusiaan)
+                                </button>
+                            </div>
                         </div>
-                        <div className="flex flex-wrap gap-2">
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    fillTestAccount('ketua@geliyat.or.id')
-                                }
-                                className="flex items-center gap-1.5 rounded-md border border-gray-200 bg-white px-2.5 py-1.5 text-[11px] font-medium text-[#1b2929] transition-colors hover:border-[#14bace] hover:text-[#087f8c]"
-                            >
-                                <span className="size-1.5 rounded-full bg-purple-500" />
-                                Super Admin (Ketua)
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    fillTestAccount('admin@geliyat.or.id')
-                                }
-                                className="flex items-center gap-1.5 rounded-md border border-gray-200 bg-white px-2.5 py-1.5 text-[11px] font-medium text-[#1b2929] transition-colors hover:border-[#14bace] hover:text-[#087f8c]"
-                            >
-                                <span className="size-1.5 rounded-full bg-teal-500" />
-                                Admin (Bidang Kemanusiaan)
-                            </button>
-                        </div>
-                    </div>
+                    )}
                 </div>
 
                 {/* Bottom Copyright */}

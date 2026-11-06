@@ -27,18 +27,23 @@ export function Breadcrumbs({
                                 <Fragment key={index}>
                                     <BreadcrumbItem>
                                         {isLast ? (
-                                            <BreadcrumbPage>
+                                            <BreadcrumbPage className="font-poppins text-xs font-semibold text-slate-800">
                                                 {item.title}
                                             </BreadcrumbPage>
                                         ) : (
                                             <BreadcrumbLink asChild>
-                                                <Link href={item.href}>
+                                                <Link
+                                                    href={item.href}
+                                                    className="font-poppins text-xs text-slate-500 transition-colors hover:text-[#14bace]"
+                                                >
                                                     {item.title}
                                                 </Link>
                                             </BreadcrumbLink>
                                         )}
                                     </BreadcrumbItem>
-                                    {!isLast && <BreadcrumbSeparator />}
+                                    {!isLast && (
+                                        <BreadcrumbSeparator className="text-slate-400" />
+                                    )}
                                 </Fragment>
                             );
                         })}
