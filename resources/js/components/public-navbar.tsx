@@ -60,6 +60,7 @@ export default function PublicNavbar() {
                                 <Link
                                     key={item.href}
                                     href={item.href}
+                                    prefetch={false}
                                     className="group relative flex flex-col items-center py-2 font-poppins text-sm lg:text-base"
                                 >
                                     <span
@@ -107,6 +108,7 @@ export default function PublicNavbar() {
                         ) : (
                             <Link
                                 href="/login"
+                                prefetch={false}
                                 className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-[#718083] transition-colors hover:text-[#1d2b2d]"
                                 title="Login Pengurus"
                             >
@@ -117,6 +119,7 @@ export default function PublicNavbar() {
 
                         <Link
                             href="/donasi"
+                            prefetch={false}
                             className="flex items-center gap-2 rounded-lg bg-[#14bace] px-5 py-2.5 font-poppins text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:bg-[#087f8c] active:scale-95 lg:text-base"
                         >
                             <span>Donasi</span>
@@ -157,6 +160,7 @@ export default function PublicNavbar() {
                             <Link
                                 key={item.href}
                                 href={item.href}
+                                prefetch={false}
                                 onClick={() => setMobileMenuOpen(false)}
                                 className={`flex items-center justify-between rounded-lg px-3 py-2.5 font-poppins text-sm transition-colors ${
                                     active
