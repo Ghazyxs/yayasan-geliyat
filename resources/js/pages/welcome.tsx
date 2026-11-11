@@ -52,7 +52,7 @@ export default function Welcome() {
 
             {/* Hero Section */}
             <section className="relative overflow-hidden border-b border-[#e4eaec] bg-gradient-to-b from-[#eef9fa] via-[#f7fcfd] to-[#fbfdfd] py-16 sm:py-24">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" >
                     <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
                         {/* Text Content */}
                         <div className="flex flex-col items-start lg:col-span-7">
