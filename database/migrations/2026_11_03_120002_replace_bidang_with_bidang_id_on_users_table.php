@@ -90,7 +90,7 @@ return new class extends Migration
 
                 $rawBidang = trim((string) $user->bidang);
 
-                // Jika user memiliki nilai bidang, validasi pemetaannya
+                // Jika user memiliki nilai bidang, validasi pemetaannya dengan baik
                 if ($rawBidang !== '') {
                     $normalized = $this->normalizeString($rawBidang);
                     $targetKode = $this->canonicalMap[$normalized] ?? null;
