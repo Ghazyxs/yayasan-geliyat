@@ -84,6 +84,23 @@ class Donasi extends Model
     ];
 
     /**
+     * Pilihan nominal donasi yang tersedia pada formulir publik.
+     *
+     * @var list<int>
+     */
+    public const NOMINAL_PILIHAN_PUBLIK = [
+        5000,
+        10000,
+        15000,
+        20000,
+        25000,
+        50000,
+        100000,
+    ];
+
+    public const REKENING_DEFAULT_PUBLIK = 'Pembayaran Digital';
+
+    /**
      * Daftar rekening resmi Yayasan Geliyat Mahdiesa Nahate.
      *
      * @var array<int, array{kode: string, bank: string, nomor: string, atas_nama: string, icon: string}>

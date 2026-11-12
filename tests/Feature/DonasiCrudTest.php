@@ -108,55 +108,56 @@ beforeEach(function () {
     $this->anakPendidikan->bidang()->attach($this->bidangPendidikan->id);
 });
 
-test('public donor can view donation page and submit donation with proof of transfer in waiting status without creating transaction', function () {
-    // 1. Halaman publik donasi menampilkan rekening yayasan & daftar anak yatim tanpa data sensitif
+test('public donor can view simplified donation page and submit preset nominal donation in waiting status without creating transaction', function () {
+    // 1. Halaman publik donasi menampilkan pilihan nominal preset yang disederhanakan
     $this->get(route('donasi'))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('public/donasi')
-            ->has('rekeningList', 2)
-            ->has('jenisDonasiList', 5)
-            ->has('anakYatimList', 2)
-            ->missing('anakYatimList.0.nik')
-            ->missing('anakYatimList.0.alamat_detail')
-            ->missing('anakYatimList.0.nama_lengkap')
+            ->has('nominalOptions', 7)
+            ->where('nominalOptions', [5000, 10000, 15000, 20000, 25000, 50000, 100000])
+            ->missing('rekeningList')
+            ->missing('anakYatimList')
         );
 
-    // 2. Donatur mengajukan donasi Orang Tua Asuh dengan unggah bukti transfer
-    $buktiFile = buatFileJpgTest('bukti-transfer-bsi.jpg');
-
+    // 2. Donatur mengajukan donasi menggunakan pilihan nominal (termasuk Rp5.000) tanpa jenis_donasi, rekening_tujuan, dan bukti_transfer
     $response = $this->post(route('donasi.store'), [
         'nama_donatur' => 'H. Abdullah Syakir',
         'no_whatsapp' => '081234567890',
-        'jenis_donasi' => Donasi::JENIS_ORANG_TUA_ASUH,
-        'anak_yatim_id' => $this->anakKemanusiaan->id,
-        'rekening_tujuan' => 'BSI - 7256194821',
-        'nominal' => 350000,
+        'nominal' => 5000,
         'pesan_doa' => 'Semoga ananda sehat dan semangat belajar.',
-        'bukti_transfer' => $buktiFile,
     ]);
 
     $response->assertRedirect(route('donasi'))
         ->assertSessionHas('success')
-        ->assertSessionHas('donasi_submitted');
+        ->assertSessionHas('donasi_submitted', fn (array $submitted) => $submitted['nama_donatur'] === 'H. Abdullah Syakir'
+            && $submitted['nominal'] === 5000
+            && $submitted['status_verifikasi'] === Donasi::STATUS_MENUNGGU
+        );
 
     // 3. Donasi tersimpan di database dengan status 'menunggu'
     $donasi = Donasi::where('nama_donatur', 'H. Abdullah Syakir')->firstOrFail();
     expect($donasi->status_verifikasi)->toBe(Donasi::STATUS_MENUNGGU);
-    expect($donasi->nominal)->toBe(350000);
-    expect($donasi->anak_yatim_id)->toBe($this->anakKemanusiaan->id);
+    expect($donasi->nominal)->toBe(5000);
+    expect($donasi->jenis_donasi)->toBe(Donasi::JENIS_DONASI_UMUM);
+    expect($donasi->rekening_tujuan)->toBe(Donasi::REKENING_DEFAULT_PUBLIK);
+    expect($donasi->anak_yatim_id)->toBeNull();
+    expect($donasi->bukti_transfer)->toBeNull();
     expect($donasi->verified_by)->toBeNull();
     expect($donasi->verified_at)->toBeNull();
 
-    // 4. Bukti transfer tersimpan di storage private ('local')
-    expect($donasi->bukti_transfer)->not->toBeNull();
-    Storage::disk('local')->assertExists($donasi->bukti_transfer);
+    // 4. Nominal bebas yang tidak ada pada daftar pilihan ditolak oleh validasi
+    $this->from(route('donasi'))->post(route('donasi.store'), [
+        'nama_donatur' => 'Donatur Nominal Bebas',
+        'no_whatsapp' => '081234567890',
+        'nominal' => 12000,
+    ])->assertRedirect(route('donasi'))
+        ->assertSessionHasErrors('nominal');
 
-    // 5. Donasi berstatus menunggu TIDAK menghasilkan transaksi pemasukan & TIDAK mengubah status asuh anak
+    // 5. Donasi berstatus menunggu TIDAK menghasilkan transaksi pemasukan
     expect(TransaksiKeuangan::count())->toBe(0);
     expect(TransaksiKeuangan::saldo())->toBe(0);
     expect(Donasi::totalTerverifikasi())->toBe(0);
-    expect($this->anakKemanusiaan->fresh()->status_asuh)->toBe(AnakYatim::STATUS_ASUH_BELUM);
 });
 
 test('file upload validation rejects invalid mime types, oversized files, and malicious filenames', function () {

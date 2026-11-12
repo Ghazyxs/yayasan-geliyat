@@ -39,7 +39,9 @@ class StorePublicDonasiRequest extends FormRequest
         return [
             'nama_donatur' => ['required', 'string', 'max:255'],
             'no_whatsapp' => ['required', 'string', 'max:30', 'regex:/^[0-9+\-\s()]{8,25}$/'],
-            'jenis_donasi' => ['required', 'string', Rule::in(Donasi::JENIS_DONASI_LIST)],
+            'nominal' => ['required', 'integer', Rule::in(Donasi::NOMINAL_PILIHAN_PUBLIK)],
+            'pesan_doa' => ['nullable', 'string', 'max:1000'],
+            'jenis_donasi' => ['nullable', 'string', Rule::in(Donasi::JENIS_DONASI_LIST)],
             'anak_yatim_id' => [
                 'nullable',
                 'integer',
@@ -50,47 +52,50 @@ class StorePublicDonasiRequest extends FormRequest
                 'integer',
                 Rule::exists('rekening_yayasan', 'id')->where('is_active', true),
             ],
-            'rekening_tujuan' => ['required', 'string', 'max:100'],
-            'nominal' => ['required', 'integer', 'min:10000', 'max:100000000000'],
-            'pesan_doa' => ['nullable', 'string', 'max:1000'],
+            'rekening_tujuan' => ['nullable', 'string', 'max:100'],
             'bukti_transfer' => [
-                'required',
+                'nullable',
                 'file',
                 'mimes:jpg,jpeg,png,webp,pdf',
                 'mimetypes:image/jpeg,image/png,image/webp,application/pdf',
                 'max:5120',
-                function (string $attribute, mixed $value, Closure $fail): void {
-                    if (! $value instanceof UploadedFile) {
-                        $fail('File bukti transfer tidak valid.');
-
-                        return;
-                    }
-
-                    $originalName = $value->getClientOriginalName();
-
-                    if ($originalName === '' || mb_strlen($originalName) > 200) {
-                        $fail('Nama file bukti transfer tidak valid atau terlalu panjang.');
-
-                        return;
-                    }
-
-                    if (
-                        str_contains($originalName, '..')
-                        || str_contains($originalName, '/')
-                        || str_contains($originalName, '\\')
-                        || str_contains($originalName, "\0")
-                    ) {
-                        $fail('Nama file bukti transfer mengandung karakter yang tidak diizinkan.');
-
-                        return;
-                    }
-
-                    if (preg_match('/\.(php\d*|phtml|phar|exe|sh|bat|cmd|js|jsp|asp|aspx|cgi|pl|py|svg|html|htm)(\.|$)/i', $originalName)) {
-                        $fail('Ekstensi atau nama file bukti transfer tidak diizinkan.');
-                    }
-                },
+                $this->buktiTransferFileRule(),
             ],
         ];
+    }
+
+    protected function buktiTransferFileRule(): Closure
+    {
+        return function (string $attribute, mixed $value, Closure $fail): void {
+            if (! $value instanceof UploadedFile) {
+                $fail('File bukti transfer tidak valid.');
+
+                return;
+            }
+
+            $originalName = $value->getClientOriginalName();
+
+            if ($originalName === '' || mb_strlen($originalName) > 200) {
+                $fail('Nama file bukti transfer tidak valid atau terlalu panjang.');
+
+                return;
+            }
+
+            if (
+                str_contains($originalName, '..')
+                || str_contains($originalName, '/')
+                || str_contains($originalName, '\\')
+                || str_contains($originalName, "\0")
+            ) {
+                $fail('Nama file bukti transfer mengandung karakter yang tidak diizinkan.');
+
+                return;
+            }
+
+            if (preg_match('/\.(php\d*|phtml|phar|exe|sh|bat|cmd|js|jsp|asp|aspx|cgi|pl|py|svg|html|htm)(\.|$)/i', $originalName)) {
+                $fail('Ekstensi atau nama file bukti transfer tidak diizinkan.');
+            }
+        };
     }
 
     /**
@@ -102,13 +107,14 @@ class StorePublicDonasiRequest extends FormRequest
             'nama_donatur.required' => 'Nama donatur wajib diisi.',
             'no_whatsapp.required' => 'Nomor WhatsApp wajib diisi.',
             'no_whatsapp.regex' => 'Format nomor WhatsApp tidak valid.',
+            'nominal.required' => 'Silakan pilih nominal donasi terlebih dahulu.',
+            'nominal.integer' => 'Nominal donasi harus berupa angka.',
+            'nominal.in' => 'Pilihan nominal donasi tidak valid. Silakan pilih nominal yang tersedia.',
             'jenis_donasi.required' => 'Jenis donasi wajib dipilih.',
             'jenis_donasi.in' => 'Jenis donasi yang dipilih tidak valid.',
             'anak_yatim_id.exists' => 'Data anak binaan yang dipilih tidak ditemukan.',
             'rekening_id.exists' => 'Rekening tujuan transfer tidak aktif atau tidak ditemukan.',
             'rekening_tujuan.required' => 'Rekening tujuan transfer wajib dipilih.',
-            'nominal.required' => 'Nominal donasi wajib diisi.',
-            'nominal.integer' => 'Nominal donasi harus berupa angka.',
             'nominal.min' => 'Nominal donasi minimal Rp 10.000.',
             'bukti_transfer.required' => 'Bukti transfer wajib diunggah.',
             'bukti_transfer.file' => 'Bukti transfer harus berupa file.',

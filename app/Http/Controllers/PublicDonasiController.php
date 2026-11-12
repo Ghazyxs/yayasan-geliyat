@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Donasi\StorePublicDonasiRequest;
-use App\Models\AnakYatim;
 use App\Models\Donasi;
 use App\Models\RekeningYayasan;
 use Illuminate\Http\RedirectResponse;
@@ -16,49 +15,42 @@ use Inertia\Response;
 class PublicDonasiController extends Controller
 {
     /**
-     * Tampilkan halaman donasi publik beserta rekening yayasan dan daftar anak binaan aktif.
+     * Tampilkan halaman donasi publik dengan pilihan nominal yang tersedia.
      */
     public function index(Request $request): Response
     {
-        // Hanya ekspos kolom non-sensitif (alias, jenjang, kelas, kelurahan, status_asuh) sesuai UU PDP.
-        $anakYatimList = AnakYatim::query()
-            ->where('status_binaan', 'aktif')
-            ->orderBy('alias')
-            ->get(['id', 'alias', 'jenjang', 'kelas', 'kelurahan', 'status_asuh']);
-
         return Inertia::render('public/donasi', [
-            'rekeningList' => Donasi::daftarRekeningAktif(),
-            'jenisDonasiList' => Donasi::JENIS_DONASI_LIST,
-            'anakYatimList' => $anakYatimList,
+            'nominalOptions' => Donasi::NOMINAL_PILIHAN_PUBLIK,
             'donasiSubmitted' => $request->session()->get('donasi_submitted'),
         ]);
     }
 
     /**
-     * Simpan pengajuan donasi baru dari donatur publik dengan status menunggu verifikasi.
+     * Simpan pengajuan donasi baru dari donatur publik.
      */
     public function store(StorePublicDonasiRequest $request): RedirectResponse
     {
         $validated = $request->validated();
 
-        $file = $request->file('bukti_transfer');
-        $ext = strtolower((string) ($file->guessExtension() ?: $file->getClientOriginalExtension()));
-        if (! in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'pdf'], true)) {
-            $ext = 'jpg';
+        $buktiPath = null;
+        if ($request->hasFile('bukti_transfer')) {
+            $file = $request->file('bukti_transfer');
+            $ext = strtolower((string) ($file->guessExtension() ?: $file->getClientOriginalExtension()));
+            if (! in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'pdf'], true)) {
+                $ext = 'jpg';
+            }
+
+            $filename = Str::uuid()->toString().'.'.$ext;
+            $buktiPath = $file->storeAs('bukti-transfer/'.now()->format('Y/m'), $filename, 'local');
         }
 
-        $filename = Str::uuid()->toString().'.'.$ext;
-        $buktiPath = $file->storeAs('bukti-transfer/'.now()->format('Y/m'), $filename, 'local');
+        $jenisDonasi = ! empty($validated['jenis_donasi'])
+            ? $validated['jenis_donasi']
+            : Donasi::JENIS_DONASI_UMUM;
 
-        $jenisTargetAnak = [
-            Donasi::JENIS_ORANG_TUA_ASUH,
-            Donasi::JENIS_SANTUNAN_RUTIN,
-            Donasi::JENIS_BIMBEL_SINAR,
-        ];
-
-        $anakYatimId = (! empty($validated['anak_yatim_id']) && in_array($validated['jenis_donasi'], $jenisTargetAnak, true))
-            ? (int) $validated['anak_yatim_id']
-            : null;
+        $rekeningTujuan = ! empty($validated['rekening_tujuan'])
+            ? trim($validated['rekening_tujuan'])
+            : Donasi::REKENING_DEFAULT_PUBLIK;
 
         $rekening = null;
         if (! empty($validated['rekening_id'])) {
@@ -70,14 +62,14 @@ class PublicDonasiController extends Controller
             })->first();
         }
 
-        $donasi = DB::transaction(function () use ($validated, $anakYatimId, $buktiPath, $rekening) {
+        $donasi = DB::transaction(function () use ($validated, $jenisDonasi, $rekeningTujuan, $buktiPath, $rekening) {
             $attributes = [
                 'kode_donasi' => Donasi::generateKodeDonasi(),
                 'nama_donatur' => trim($validated['nama_donatur']),
                 'no_whatsapp' => trim($validated['no_whatsapp']),
-                'jenis_donasi' => $validated['jenis_donasi'],
-                'anak_yatim_id' => $anakYatimId,
-                'rekening_tujuan' => trim($validated['rekening_tujuan']),
+                'jenis_donasi' => $jenisDonasi,
+                'anak_yatim_id' => null,
+                'rekening_tujuan' => $rekeningTujuan,
                 'nominal' => (int) $validated['nominal'],
                 'pesan_doa' => ! empty($validated['pesan_doa']) ? trim($validated['pesan_doa']) : null,
                 'bukti_transfer' => $buktiPath,
@@ -93,14 +85,12 @@ class PublicDonasiController extends Controller
             ->route('donasi')
             ->with(
                 'success',
-                "Pengajuan donasi ({$donasi->kode_donasi}) berhasil dikirim dan sedang menunggu verifikasi admin."
+                "Pengajuan donasi ({$donasi->kode_donasi}) sebesar Rp ".number_format($donasi->nominal, 0, ',', '.').' berhasil dicatat.'
             )
             ->with('donasi_submitted', [
                 'kode_donasi' => $donasi->kode_donasi,
                 'nama_donatur' => $donasi->nama_donatur,
-                'jenis_donasi' => $donasi->jenis_donasi,
                 'nominal' => $donasi->nominal,
-                'rekening_tujuan' => $donasi->rekening_tujuan,
                 'status_verifikasi' => $donasi->status_verifikasi,
             ]);
     }
