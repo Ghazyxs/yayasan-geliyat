@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AnakYatimController;
 use App\Http\Controllers\Admin\DonasiController;
 use App\Http\Controllers\Admin\RekeningYayasanController;
 use App\Http\Controllers\Admin\TransaksiKeuanganController;
+use App\Http\Controllers\Api\MidtransWebhookController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PublicAnakYatimController;
 use App\Http\Controllers\PublicBidangController;
@@ -32,6 +33,11 @@ Route::get('/anak-yatim/{anak_yatim}', [PublicAnakYatimController::class, 'show'
 Route::inertia('/profil', 'public/profil')->name('profil');
 Route::get('/donasi', [PublicDonasiController::class, 'index'])->name('donasi');
 Route::post('/donasi', [PublicDonasiController::class, 'store'])->name('donasi.store');
+Route::get('/donasi/status/{kode}', [PublicDonasiController::class, 'checkStatus'])->name('donasi.status');
+
+// Midtrans Webhook (CSRF-exempt)
+Route::post('/midtrans/webhook', [MidtransWebhookController::class, 'handle'])->name('midtrans.webhook');
+Route::post('/api/midtrans/webhook', [MidtransWebhookController::class, 'handle']);
 
 // Dashboard & Protected Admin/Super Admin Routes
 Route::middleware(['auth', 'role:admin,super_admin'])->group(function () {

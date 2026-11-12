@@ -27,6 +27,18 @@ use Illuminate\Support\Str;
  * @property int $nominal
  * @property string $status_verifikasi
  * @property int|null $verified_by
+ * @property string|null $no_whatsapp
+ * @property string|null $email_donatur
+ * @property string|null $metode_pembayaran
+ * @property string|null $snap_token
+ * @property string|null $snap_redirect_url
+ * @property string|null $midtrans_transaction_id
+ * @property string|null $midtrans_transaction_status
+ * @property string|null $midtrans_payment_type
+ * @property string|null $midtrans_fraud_status
+ * @property array<string, mixed>|null $midtrans_payload
+ * @property \Illuminate\Support\Carbon|null $paid_at
+ * @property \Illuminate\Support\Carbon|null $payment_expires_at
  */
 #[Table('donasi')]
 #[Fillable([
@@ -47,9 +59,22 @@ use Illuminate\Support\Str;
     'verified_at',
     'verified_by',
     'catatan_verifikasi',
+    'metode_pembayaran',
+    'email_donatur',
+    'snap_token',
+    'snap_redirect_url',
+    'midtrans_transaction_id',
+    'midtrans_transaction_status',
+    'midtrans_payment_type',
+    'midtrans_fraud_status',
+    'midtrans_payload',
+    'midtrans_notified_at',
+    'paid_at',
+    'payment_expires_at',
 ])]
 class Donasi extends Model
 {
+    public const METODE_MIDTRANS = 'midtrans';
     public const STATUS_MENUNGGU = 'menunggu';
 
     public const STATUS_TERVERIFIKASI = 'terverifikasi';
@@ -185,7 +210,16 @@ class Donasi extends Model
             'nominal' => 'integer',
             'rekening_id' => 'integer',
             'verified_at' => 'datetime',
+            'midtrans_payload' => 'array',
+            'midtrans_notified_at' => 'datetime',
+            'paid_at' => 'datetime',
+            'payment_expires_at' => 'datetime',
         ];
+    }
+
+    public function isMidtrans(): bool
+    {
+        return $this->metode_pembayaran === self::METODE_MIDTRANS;
     }
 
     /** @return BelongsTo<RekeningYayasan, $this> */
@@ -372,6 +406,124 @@ class Donasi extends Model
             }
 
             $donasi->sinkronkanStatusAsuh();
+
+            return $donasi->refresh();
+        });
+    }
+
+    /**
+     * Proses notifikasi status transaksi dari Midtrans (Webhook).
+     * Idempoten: pemanggilan berulang tidak akan menggandakan pencatatan kas.
+     *
+     * @param  array<string, mixed>  $payload
+     *
+     * @throws DomainException
+     */
+    public static function prosesNotifikasiMidtrans(array $payload): self
+    {
+        $orderId = (string) ($payload['order_id'] ?? '');
+        $transactionStatus = (string) ($payload['transaction_status'] ?? '');
+        $fraudStatus = (string) ($payload['fraud_status'] ?? '');
+        $paymentType = (string) ($payload['payment_type'] ?? '');
+        $transactionId = (string) ($payload['transaction_id'] ?? '');
+
+        return DB::transaction(function () use ($orderId, $transactionStatus, $fraudStatus, $paymentType, $transactionId, $payload) {
+            /** @var self $donasi */
+            $donasi = self::query()->where('kode_donasi', $orderId)->lockForUpdate()->firstOrFail();
+
+            $commonUpdates = [
+                'metode_pembayaran' => self::METODE_MIDTRANS,
+                'midtrans_transaction_id' => $transactionId ?: $donasi->midtrans_transaction_id,
+                'midtrans_transaction_status' => $transactionStatus,
+                'midtrans_payment_type' => $paymentType ?: $donasi->midtrans_payment_type,
+                'midtrans_fraud_status' => $fraudStatus ?: $donasi->midtrans_fraud_status,
+                'midtrans_payload' => $payload,
+                'midtrans_notified_at' => now(),
+            ];
+
+            // 1. Sukses / Lunas: settlement ATAU (capture dengan fraud_status accept)
+            if ($transactionStatus === 'settlement' || ($transactionStatus === 'capture' && $fraudStatus === 'accept')) {
+                // Idempoten: Jika sudah terverifikasi, perbarui metadata notifikasi tanpa duplikasi transaksi buku kas
+                if ($donasi->status_verifikasi !== self::STATUS_TERVERIFIKASI) {
+                    $commonUpdates['status_verifikasi'] = self::STATUS_TERVERIFIKASI;
+                    $commonUpdates['verified_at'] = now();
+                    $commonUpdates['paid_at'] = now();
+                    $commonUpdates['catatan_verifikasi'] = "Pembayaran Midtrans berhasil ({$paymentType})";
+                }
+
+                $donasi->update($commonUpdates);
+
+                // Catat transaksi keuangan otomatis hanya jika belum pernah dicatat
+                $sudahDicatat = TransaksiKeuangan::query()
+                    ->where('donasi_id', $donasi->id)
+                    ->exists();
+
+                if (! $sudahDicatat) {
+                    $paymentLabel = $paymentType ? strtoupper(str_replace('_', ' ', $paymentType)) : 'MIDTRANS';
+                    TransaksiKeuangan::create([
+                        'kode_transaksi' => sprintf('TRX-%s-D%06d', now()->format('Ymd'), $donasi->id),
+                        'tipe' => TransaksiKeuangan::TIPE_PEMASUKAN,
+                        'sumber_dana' => TransaksiKeuangan::SUMBER_DONASI,
+                        'kategori' => 'Donasi Terverifikasi',
+                        'nominal' => $donasi->nominal,
+                        'tanggal_transaksi' => now()->toDateString(),
+                        'donasi_id' => $donasi->id,
+                        'status_transaksi' => TransaksiKeuangan::STATUS_VALID,
+                        'keterangan' => "Penerimaan {$donasi->jenis_donasi} dari {$donasi->nama_donatur} ({$donasi->kode_donasi}) [{$paymentLabel}]",
+                        'created_by' => null, // Dicatat otomatis oleh sistem
+                    ]);
+                }
+
+                $donasi->sinkronkanStatusAsuh();
+
+                return $donasi->refresh();
+            }
+
+            // 2. Pending: Menunggu pembayaran oleh donatur
+            if ($transactionStatus === 'pending') {
+                if ($donasi->status_verifikasi === self::STATUS_MENUNGGU) {
+                    $commonUpdates['catatan_verifikasi'] = "Menunggu pembayaran ({$paymentType})";
+                    $donasi->update($commonUpdates);
+                } else {
+                    $donasi->update([
+                        'midtrans_transaction_id' => $commonUpdates['midtrans_transaction_id'],
+                        'midtrans_transaction_status' => $transactionStatus,
+                        'midtrans_payload' => $payload,
+                        'midtrans_notified_at' => now(),
+                    ]);
+                }
+
+                return $donasi->refresh();
+            }
+
+            // 3. Expire / Cancel: Kedaluwarsa atau Dibatalkan
+            if ($transactionStatus === 'expire' || $transactionStatus === 'cancel') {
+                if ($donasi->status_verifikasi !== self::STATUS_TERVERIFIKASI) {
+                    $commonUpdates['status_verifikasi'] = self::STATUS_DIBATALKAN;
+                    $commonUpdates['catatan_verifikasi'] = $transactionStatus === 'expire'
+                        ? 'Waktu pembayaran Midtrans kedaluwarsa.'
+                        : 'Pembayaran Midtrans dibatalkan.';
+                }
+                $donasi->update($commonUpdates);
+                $donasi->sinkronkanStatusAsuh();
+
+                return $donasi->refresh();
+            }
+
+            // 4. Deny: Ditolak oleh payment provider / fraud detection
+            if ($transactionStatus === 'deny') {
+                if ($donasi->status_verifikasi !== self::STATUS_TERVERIFIKASI) {
+                    $commonUpdates['status_verifikasi'] = self::STATUS_DITOLAK;
+                    $commonUpdates['catatan_verifikasi'] = 'Pembayaran ditolak oleh Midtrans.';
+                }
+                $donasi->update($commonUpdates);
+                $donasi->sinkronkanStatusAsuh();
+
+                return $donasi->refresh();
+            }
+
+            // Fallback status lainnya
+            $donasi->update($commonUpdates);
 
             return $donasi->refresh();
         });

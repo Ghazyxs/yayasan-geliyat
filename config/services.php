@@ -28,6 +28,18 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    /*
+    | Midtrans Payment Gateway (Snap).
+    | Server Key HANYA dipakai di backend dan tidak pernah dikirim ke frontend.
+    | Client Key bersifat publik (dipakai snap.js di browser).
+    */
+    'midtrans' => [
+        'server_key' => env('MIDTRANS_SERVER_KEY'),
+        'client_key' => env('MIDTRANS_CLIENT_KEY'),
+        'is_production' => (bool) env('MIDTRANS_IS_PRODUCTION', false),
+        'expiry_minutes' => (int) env('MIDTRANS_EXPIRY_MINUTES', 1440),
+    ],
+
     'slack' => [
         'notifications' => [
             'bot_user_oauth_token' => env('SLACK_BOT_USER_OAUTH_TOKEN'),

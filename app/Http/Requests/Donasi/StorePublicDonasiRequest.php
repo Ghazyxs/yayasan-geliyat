@@ -39,6 +39,7 @@ class StorePublicDonasiRequest extends FormRequest
         return [
             'nama_donatur' => ['required', 'string', 'max:255'],
             'no_whatsapp' => ['required', 'string', 'max:30', 'regex:/^[0-9+\-\s()]{8,25}$/'],
+            'email' => ['nullable', 'email', 'max:255'],
             'nominal' => ['required', 'integer', Rule::in(Donasi::NOMINAL_PILIHAN_PUBLIK)],
             'pesan_doa' => ['nullable', 'string', 'max:1000'],
             'jenis_donasi' => ['nullable', 'string', Rule::in(Donasi::JENIS_DONASI_LIST)],
