@@ -115,6 +115,14 @@ export default function PublicFooter() {
                             </li>
                             <li>
                                 <Link
+                                    href="/rekap-kegiatan"
+                                    className="transition-colors hover:text-white hover:underline"
+                                >
+                                    Rekap Kegiatan Tahunan
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
                                     href="/anak-yatim"
                                     className="transition-colors hover:text-white hover:underline"
                                 >
