@@ -71,13 +71,12 @@ const DEFAULT_REKENING: RekeningItem[] = [
 
 const DEFAULT_JENIS_DONASI = [
     'Donasi Umum',
-    'Orang Tua Asuh',
     'Santunan Rutin',
     'Bimbel Sinar',
     'Zakat',
 ];
 
-const JENIS_DENGAN_ANak = ['Orang Tua Asuh', 'Santunan Rutin', 'Bimbel Sinar'];
+const JENIS_DENGAN_ANak = ['Santunan Rutin', 'Bimbel Sinar'];
 
 export default function DonasiPage({
     rekeningList = DEFAULT_REKENING,
@@ -91,8 +90,11 @@ export default function DonasiPage({
 
     const daftarRekening =
         rekeningList.length > 0 ? rekeningList : DEFAULT_REKENING;
+    const filteredJenis = jenisDonasiList.filter(
+        (jenis) => jenis !== 'Orang Tua Asuh',
+    );
     const daftarJenis =
-        jenisDonasiList.length > 0 ? jenisDonasiList : DEFAULT_JENIS_DONASI;
+        filteredJenis.length > 0 ? filteredJenis : DEFAULT_JENIS_DONASI;
 
     const [copiedRekening, setCopiedRekening] = useState<string | null>(null);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -205,7 +207,7 @@ export default function DonasiPage({
                         </span>
                     </nav>
                     <p className="mt-3 max-w-2xl font-sans text-sm text-slate-600 sm:text-base">
-                        Penyaluran sedekah dan program orang tua asuh yang
+                        Penyaluran infaq, sedekah, dan santunan pendidikan yang
                         amanah, langsung membina 420 anak yatim di wilayah
                         Ujungberung, Kota Bandung.
                     </p>
@@ -444,19 +446,19 @@ export default function DonasiPage({
                                 </div>
                             </div>
 
-                            {/* Orang Tua Asuh Highlight */}
+                            {/* Komitmen Penyaluran Highlight */}
                             <div className="rounded-2xl border border-[#cbebf0] bg-[#f7fcfd] p-5">
                                 <div className="flex items-center gap-3">
                                     <HeartHandshake className="size-6 shrink-0 text-[#14bace]" />
                                     <div>
                                         <h4 className="font-poppins text-sm font-bold text-slate-800">
-                                            Program Orang Tua Asuh
+                                            Komitmen Penyaluran Amanah
                                         </h4>
                                         <p className="mt-0.5 text-xs text-slate-600">
-                                            Mulai dari{' '}
-                                            <strong>Rp10.000 / bulan</strong>{' '}
-                                            (sukarela) untuk mendukung satu anak
-                                            binaan hingga jenjang SMA / kuliah.
+                                            Setiap donasi diverifikasi dan
+                                            dicatat secara transparan untuk
+                                            mendukung pendidikan serta
+                                            kesejahteraan anak binaan.
                                         </p>
                                     </div>
                                 </div>
@@ -587,8 +589,7 @@ export default function DonasiPage({
                                             >
                                                 <UserCheck className="size-4 text-[#14bace]" />
                                                 Pilih Anak Binaan Tujuan
-                                                (Opsional / Khusus Orang Tua
-                                                Asuh)
+                                                (Opsional)
                                             </label>
                                             <select
                                                 id="anak_yatim_id"
@@ -614,10 +615,6 @@ export default function DonasiPage({
                                                         {anak.jenjang} (
                                                         {anak.kelas}) • Kel.{' '}
                                                         {anak.kelurahan}
-                                                        {anak.status_asuh ===
-                                                        'belum_diasuh'
-                                                            ? ' [Belum Diasuh]'
-                                                            : ' [Aktif Diasuh]'}
                                                     </option>
                                                 ))}
                                             </select>

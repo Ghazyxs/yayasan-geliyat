@@ -14,10 +14,26 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property int $id
  * @property string $kode
  * @property string $nama
+ * @property string|null $subjudul
  * @property string|null $deskripsi
+ * @property string|null $deskripsi_lengkap
+ * @property string|null $gambar
+ * @property array<int, string>|null $tujuan
+ * @property array<int, array<string, string>|string>|null $program_kerja
+ * @property array<string, string>|null $informasi_tambahan
  */
 #[Table('bidang')]
-#[Fillable(['kode', 'nama', 'deskripsi'])]
+#[Fillable([
+    'kode',
+    'nama',
+    'subjudul',
+    'deskripsi',
+    'deskripsi_lengkap',
+    'gambar',
+    'tujuan',
+    'program_kerja',
+    'informasi_tambahan',
+])]
 class Bidang extends Model
 {
     public const KEMANUSIAAN = 'kemanusiaan';
@@ -27,6 +43,15 @@ class Bidang extends Model
     public const KEAGAMAAN = 'keagamaan';
 
     public const EKONOMI = 'ekonomi';
+
+    protected function casts(): array
+    {
+        return [
+            'tujuan' => 'array',
+            'program_kerja' => 'array',
+            'informasi_tambahan' => 'array',
+        ];
+    }
 
     /** @return HasMany<User, $this> */
     public function users(): HasMany

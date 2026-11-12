@@ -16,16 +16,27 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $judul
  * @property int|null $bidang_id
  * @property string $kategori
+ * @property string|null $ringkasan
+ * @property string $deskripsi
+ * @property string|null $isi_berita
+ * @property string $lokasi
+ * @property \Illuminate\Support\Carbon $tanggal_kegiatan
+ * @property string|null $gambar
+ * @property array<int, array{url: string, caption?: string}>|null $dokumentasi
+ * @property int $created_by
  */
 #[Table('kegiatan')]
 #[Fillable([
     'judul',
     'bidang_id',
     'kategori',
+    'ringkasan',
     'deskripsi',
+    'isi_berita',
     'lokasi',
     'tanggal_kegiatan',
     'gambar',
+    'dokumentasi',
     'created_by',
 ])]
 class Kegiatan extends Model
@@ -34,6 +45,7 @@ class Kegiatan extends Model
     {
         return [
             'tanggal_kegiatan' => 'date',
+            'dokumentasi' => 'array',
         ];
     }
 

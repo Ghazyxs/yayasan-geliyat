@@ -5,7 +5,11 @@ use App\Http\Controllers\Admin\DonasiController;
 use App\Http\Controllers\Admin\RekeningYayasanController;
 use App\Http\Controllers\Admin\TransaksiKeuanganController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PublicAnakYatimController;
+use App\Http\Controllers\PublicBidangController;
 use App\Http\Controllers\PublicDonasiController;
+use App\Http\Controllers\PublicHomeController;
+use App\Http\Controllers\PublicKegiatanController;
 use App\Models\Kegiatan;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
@@ -18,10 +22,13 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Public / Company Profile Routes
-Route::inertia('/', 'welcome')->name('home');
-Route::inertia('/bidang', 'public/bidang')->name('bidang');
-Route::inertia('/kegiatan', 'public/kegiatan')->name('kegiatan');
-Route::inertia('/anak-yatim', 'public/anak-yatim')->name('anak-yatim');
+Route::get('/', [PublicHomeController::class, 'index'])->name('home');
+Route::get('/bidang', [PublicBidangController::class, 'index'])->name('bidang');
+Route::get('/bidang/{bidang}', [PublicBidangController::class, 'show'])->name('bidang.show');
+Route::get('/kegiatan', [PublicKegiatanController::class, 'index'])->name('kegiatan');
+Route::get('/kegiatan/{kegiatan}', [PublicKegiatanController::class, 'show'])->name('kegiatan.show');
+Route::get('/anak-yatim', [PublicAnakYatimController::class, 'index'])->name('anak-yatim');
+Route::get('/anak-yatim/{anak_yatim}', [PublicAnakYatimController::class, 'show'])->name('anak-yatim.show');
 Route::inertia('/profil', 'public/profil')->name('profil');
 Route::get('/donasi', [PublicDonasiController::class, 'index'])->name('donasi');
 Route::post('/donasi', [PublicDonasiController::class, 'store'])->name('donasi.store');

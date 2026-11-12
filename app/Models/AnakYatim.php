@@ -34,6 +34,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'nama_lengkap',
     'alias',
     'jenis_kelamin',
+    'tempat_lahir',
     'tanggal_lahir',
     'jenjang',
     'kelas',
@@ -44,6 +45,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'no_telepon_wali',
     'hobi',
     'cita_cita',
+    'potensi',
+    'prestasi',
+    'foto',
+    'izin_publikasi_foto',
     'status_binaan',
     'status_asuh',
     'created_by',
@@ -71,6 +76,8 @@ class AnakYatim extends Model
         return [
             'nik' => 'encrypted',
             'tanggal_lahir' => 'date',
+            'prestasi' => 'array',
+            'izin_publikasi_foto' => 'boolean',
         ];
     }
 
