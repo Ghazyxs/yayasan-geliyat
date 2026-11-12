@@ -131,6 +131,7 @@ export default function PublicNavbar() {
                     <div className="flex items-center gap-2 md:hidden">
                         <Link
                             href="/donasi"
+                            prefetch={false}
                             className="flex items-center gap-1 rounded-md bg-[#14bace] px-3 py-1.5 text-xs font-semibold text-white"
                         >
                             <span>Donasi</span>

@@ -46,7 +46,8 @@ export default function PublicFooter() {
                         <ul className="flex flex-col gap-2.5 text-sm text-gray-300">
                             <li>
                                 <Link
-                                    href="/bidang"
+                                    href="/bidang/pendidikan"
+                                    prefetch={false}
                                     className="transition-colors hover:text-white hover:underline"
                                 >
                                     Bimbel Sinar (SD)
@@ -54,7 +55,8 @@ export default function PublicFooter() {
                             </li>
                             <li>
                                 <Link
-                                    href="/bidang"
+                                    href="/bidang/kemanusiaan"
+                                    prefetch={false}
                                     className="transition-colors hover:text-white hover:underline"
                                 >
                                     Santunan Rutin
@@ -62,15 +64,17 @@ export default function PublicFooter() {
                             </li>
                             <li>
                                 <Link
-                                    href="/bidang"
+                                    href="/bidang/keagamaan"
+                                    prefetch={false}
                                     className="transition-colors hover:text-white hover:underline"
                                 >
-                                    Orang Tua Asuh
+                                    Gemar & Tahfidz
                                 </Link>
                             </li>
                             <li>
                                 <Link
-                                    href="/bidang"
+                                    href="/bidang/ekonomi"
+                                    prefetch={false}
                                     className="transition-colors hover:text-white hover:underline"
                                 >
                                     Koperasi Berdaya
