@@ -70,15 +70,15 @@ class LaporanTahunan extends Model
 
         $laporan = new self();
         $laporan->tahun = $tahun;
-        $laporan->judul = "Laporan Kegiatan Tahunan Yayasan Geliyat Tahun {$tahun}";
+        $laporan->judul = "Laporan Kegiatan Tahunan Yayasan Geliyat Mahdiesa Nahate Tahun {$tahun}";
         $laporan->nomor_dokumen = sprintf('01/LKT/YGM/XII/%04d', $tahun);
         $laporan->tanggal_penerbitan = Carbon::create($tahun, 12, 31);
-        $laporan->latar_belakang = "Yayasan Geliyat Mahdiesa Nahate berkedudukan di Kecamatan Ujungberung, Kota Bandung, senantiasa berkomitmen menjalankan amanah kepedulian sosial bagi anak-anak yatim dan dhuafa. Sepanjang tahun {$tahun}, yayasan mengoptimalkan kolaborasi seluruh bidang kerja (Pendidikan, Kemanusiaan, Keagamaan, dan Ekonomi) untuk memberikan dampak nyata yang berkelanjutan dan terukur.";
-        $laporan->tujuan_laporan = "1. Memberikan pertanggungjawaban formal atas amanah donatur, mitra, dan masyarakat sepanjang tahun {$tahun}.\n2. Mendokumentasikan rekam jejak pelaksanaan seluruh program kerja yayasan.\n3. Menjadi acuan evaluasi strategis guna meningkatkan efektivitas pembinaan 420 anak yatim binaan pada periode mendatang.";
-        $laporan->kesimpulan = "Pelaksanaan seluruh program kerja Yayasan Geliyat pada tahun {$tahun} telah berjalan dengan baik, transparan, dan tepat sasaran berkat dukungan para donatur, relawan, pengurus, serta aparat kewilayahan setempat.";
-        $laporan->harapan_evaluasi = "Pada tahun berikutnya, yayasan menargetkan perluasan jangkauan program beasiswa pendidikan perguruan tinggi, peningkatan fasilitas bimbel, dan penguatan kemandirian ekonomi keluarga binaan melalui unit usaha koperasi yayasan.";
-        $laporan->penandatangan_ketua = 'H. Ahmad Fauzi';
-        $laporan->penandatangan_sekretaris = 'M. Ridwan, S.Pd.';
+        $laporan->latar_belakang = "Yayasan Geliyat Mahdiesa Nahate berkedudukan di Kecamatan Ujungberung, Kota Bandung, senantiasa berkomitmen menjalankan amanah kepedulian sosial, pendidikan, pembinaan keagamaan, dan pemberdayaan ekonomi bagi anak yatim serta ibu yatim. Sepanjang tahun {$tahun}, yayasan mengoptimalkan pelaksanaan program kerja pada empat bidang utama untuk memberikan manfaat nyata yang berkelanjutan.";
+        $laporan->tujuan_laporan = "1. Memberikan pertanggungjawaban formal atas amanah donatur, mitra, dan masyarakat sepanjang tahun {$tahun}.\n2. Mendokumentasikan rekam jejak pelaksanaan seluruh program kerja yayasan.\n3. Menjadi acuan evaluasi untuk meningkatkan kualitas pembinaan anak yatim dan pemberdayaan keluarga penerima manfaat pada periode mendatang.";
+        $laporan->kesimpulan = "Pelaksanaan seluruh program kerja Yayasan Geliyat Mahdiesa Nahate pada tahun {$tahun} telah dilaksanakan sesuai data kegiatan yang tercatat, dengan dukungan para donatur, pengurus, dan masyarakat.";
+        $laporan->harapan_evaluasi = "Pada tahun berikutnya, yayasan berkomitmen untuk terus menjaga amanah, profesionalitas, dan keberlanjutan pembinaan guna memperluas manfaat program bagi anak yatim dan ibu yatim.";
+        $laporan->penandatangan_ketua = 'Nina Mahdiah, S.Ag., M.Sos.';
+        $laporan->penandatangan_sekretaris = 'Juaningsih';
         $laporan->is_published = true;
 
         return $laporan;

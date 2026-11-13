@@ -326,9 +326,8 @@
 
         <div class="cover-meta">
             <strong>YAYASAN GELIYAT MAHDIESA NAHATE</strong><br>
-            Akte Notaris & Kemenkumham RI No. AHU-0012345.AH.01.04.Tahun 2020<br>
-            Sekretariat: Jl. Cigending No. 12, Ujungberung, Kota Bandung, Jawa Barat 40611<br>
-            Email: info@geliyat.or.id &bull; Website: www.geliyat.or.id
+            Jl. Kampung Baru RT/RW 02/05 No.42, Kel. Cigending, Kec. Ujungberung, Kota Bandung, 40611<br>
+            Email: geliyatmahdiesanahate@gmail.com &bull; Instagram: @Geliyat MahdiesaNahate
             @if($laporan->nomor_dokumen)
                 <br><span style="font-family: monospace; font-size: 8.5pt; color: #087f8c; margin-top: 4px; display: inline-block;">No. Dokumen: {{ $laporan->nomor_dokumen }}</span>
             @endif
@@ -345,12 +344,12 @@
 
         <h2 class="subsection-title">1.1 Latar Belakang</h2>
         <p class="lead">
-            {{ $laporan->latar_belakang ?: 'Yayasan Geliyat Mahdiesa Nahate berkedudukan di wilayah Kecamatan Ujungberung, Kota Bandung, senantiasa berikhtiar secara konsisten memberikan pengabdian sosial dan pembinaan berkelanjutan bagi 420 anak yatim dan dhuafa di lima kelurahan (Cigending, Pasanggrahan, Pasir Endah, Pasirjati, dan Pasirwangi).' }}
+            {{ $laporan->latar_belakang ?: 'Yayasan Geliyat Mahdiesa Nahate berkedudukan di Kecamatan Ujungberung, Kota Bandung, berlandaskan nilai filosofis "Sebaik-baiknya manusia adalah yang paling bermanfaat bagi orang lain", berkomitmen dalam membina serta memberdayakan anak yatim dan ibu yatim melalui program yang amanah, profesional, dan berkelanjutan.' }}
         </p>
 
         <h2 class="subsection-title">1.2 Tujuan Laporan</h2>
         <div style="white-space: pre-line; line-height: 1.6; text-align: justify; margin-bottom: 16px;">
-            {{ $laporan->tujuan_laporan ?: "1. Memberikan pertanggungjawaban formal atas amanah donatur, mitra, dan masyarakat sepanjang tahun {$laporan->tahun}.\n2. Mendokumentasikan rekam jejak pelaksanaan seluruh program kerja yayasan.\n3. Menjadi acuan evaluasi strategis guna meningkatkan efektivitas pembinaan anak yatim binaan pada periode mendatang." }}
+            {{ $laporan->tujuan_laporan ?: "1. Memberikan pertanggungjawaban formal atas amanah donatur, mitra, dan masyarakat sepanjang tahun {$laporan->tahun}.\n2. Mendokumentasikan rekam jejak pelaksanaan seluruh program kerja yayasan.\n3. Menjadi acuan evaluasi untuk meningkatkan kualitas pembinaan anak yatim dan keluarga penerima manfaat pada periode mendatang." }}
         </div>
 
         <div class="summary-box avoid-break">
@@ -365,11 +364,11 @@
                 </tr>
                 <tr>
                     <td style="font-weight: bold; color: #087f8c;">Bidang Penyelenggara</td>
-                    <td>: Pendidikan, Kemanusiaan, Keagamaan, dan Ekonomi</td>
+                    <td>: Pendidikan, Keagamaan, Kemanusiaan, dan Pengembangan Ekonomi</td>
                 </tr>
                 <tr>
                     <td style="font-weight: bold; color: #087f8c;">Sasaran Utama</td>
-                    <td>: 420 Anak Yatim Binaan di 5 Kelurahan Ujungberung</td>
+                    <td>: Anak Yatim dan Ibu Yatim Binaan Yayasan Geliyat Mahdiesa Nahate</td>
                 </tr>
             </table>
         </div>
@@ -557,17 +556,15 @@
                 <tr>
                     <td>
                         <div style="font-size: 9.5pt; font-weight: bold; color: #334155;">Mengetahui,</div>
-                        <div class="signature-role">Ketua Yayasan Geliyat</div>
+                        <div class="signature-role">Yayasan Geliyat Mahdiesa Nahate</div>
                         <div class="signature-space"></div>
-                        <div class="signature-name">{{ $laporan->penandatangan_ketua ?: 'H. Ahmad Fauzi' }}</div>
-                        <div class="signature-role">NIPY. 2020.01.001</div>
+                        <div class="signature-name">{{ $laporan->penandatangan_ketua ?: 'Nina Mahdiah, S.Ag., M.Sos.' }}</div>
                     </td>
                     <td>
                         <div style="font-size: 9.5pt; font-weight: bold; color: #334155;">Disusun oleh,</div>
                         <div class="signature-role">Sekretaris Yayasan</div>
                         <div class="signature-space"></div>
-                        <div class="signature-name">{{ $laporan->penandatangan_sekretaris ?: 'M. Ridwan, S.Pd.' }}</div>
-                        <div class="signature-role">NIPY. 2020.01.003</div>
+                        <div class="signature-name">{{ $laporan->penandatangan_sekretaris ?: 'Juaningsih' }}</div>
                     </td>
                 </tr>
             </table>

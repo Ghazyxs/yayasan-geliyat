@@ -24,7 +24,7 @@ test('database seeder runs successfully and creates exactly four master bidang',
     );
 
     $kemanusiaan = Bidang::where('kode', Bidang::KEMANUSIAAN)->first();
-    expect($kemanusiaan->nama)->toBe('Bidang Kemanusiaan & Yatim');
+    expect($kemanusiaan->nama)->toBe('Bidang Kemanusiaan');
 });
 
 test('user seeder creates super admin with null bidang_id and admin with valid kemanusiaan bidang_id', function () {

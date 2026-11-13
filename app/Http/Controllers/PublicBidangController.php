@@ -135,10 +135,10 @@ class PublicBidangController extends Controller
             'tujuan' => $tujuan,
             'program_kerja' => $programs,
             'informasi_tambahan' => [
-                'sasaran_utama' => (string) ($info['sasaran_utama'] ?? 'Anak yatim & keluarga binaan di 5 kelurahan Ujungberung'),
+                'sasaran_utama' => (string) ($info['sasaran_utama'] ?? 'Anak yatim & ibu yatim binaan'),
                 'lokasi_pelaksanaan' => (string) ($info['lokasi_pelaksanaan'] ?? 'Kecamatan Ujungberung, Kota Bandung'),
-                'frekuensi_kegiatan' => (string) ($info['frekuensi_kegiatan'] ?? 'Rutin Pekanan & Bulanan'),
-                'koordinator_unit' => (string) ($info['koordinator_unit'] ?? 'Pengurus Bidang ' . $bidang->nama),
+                'frekuensi_kegiatan' => (string) ($info['frekuensi_kegiatan'] ?? 'Rutin Terjadwal'),
+                'koordinator_unit' => (string) ($info['koordinator_unit'] ?? 'Pengurus ' . $bidang->nama),
             ],
             'kegiatan_count' => (int) ($bidang->kegiatan_count ?? 0),
             'anak_yatim_count' => (int) ($bidang->anak_yatim_count ?? 0),

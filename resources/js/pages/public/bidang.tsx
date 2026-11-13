@@ -84,11 +84,10 @@ export default function BidangPage({ bidangList = [] }: BidangPageProps) {
                         </span>
                     </nav>
                     <p className="mt-4 max-w-3xl font-sans text-sm leading-relaxed text-gray-600 sm:text-base">
-                        Yayasan Geliyat mengelola empat bidang utama untuk
-                        memperkuat pelayanan sosial, pendidikan, kemandirian
-                        ekonomi, dan pembinaan keagamaan bagi 420+ anak yatim
-                        serta keluarga binaan di lima kelurahan wilayah
-                        Ujungberung.
+                        Yayasan Geliyat Mahdiesa Nahate mengelola empat bidang
+                        utama — Pendidikan, Keagamaan, Kemanusiaan, dan
+                        Pengembangan Ekonomi — untuk membina anak yatim dan
+                        memberdayakan ibu yatim secara berkelanjutan.
                     </p>
                 </div>
             </div>
@@ -120,9 +119,6 @@ export default function BidangPage({ bidangList = [] }: BidangPageProps) {
                                             className="h-72 w-full object-cover transition-transform duration-300 group-hover:scale-105 sm:h-80"
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-[#1d2b2d]/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                                        <div className="absolute top-4 left-4 rounded-full bg-white/95 px-3.5 py-1 font-poppins text-xs font-bold text-[#087f8c] shadow-xs backdrop-blur-xs">
-                                            Bidang 0{idx + 1}
-                                        </div>
                                         <div className="absolute right-4 bottom-4 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3.5 py-1.5 font-poppins text-xs font-semibold text-[#1d2b2d] opacity-0 shadow-sm transition-all duration-300 group-hover:opacity-100">
                                             <span>Lihat Detail</span>
                                             <ArrowRight className="size-3.5 text-[#14bace]" />
@@ -134,11 +130,6 @@ export default function BidangPage({ bidangList = [] }: BidangPageProps) {
                                 <div
                                     className={`flex flex-col items-start lg:col-span-7 ${idx % 2 === 1 ? 'lg:order-1' : ''}`}
                                 >
-                                    <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-[#e8f8fa] px-3 py-1 font-poppins text-xs font-semibold text-[#087f8c]">
-                                        <IconComponent className="size-3.5" />
-                                        <span>Pilar Geliyat</span>
-                                    </div>
-
                                     <Link
                                         href={detailHref}
                                         prefetch={false}

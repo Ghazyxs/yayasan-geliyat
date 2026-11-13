@@ -53,12 +53,7 @@ export default function LaporanTahunanPage({
             <div className="border-b border-[#e4eaec] bg-gradient-to-r from-[#d1f6fa]/60 via-[#e8f8fa] to-[#f7fcfd] py-10 sm:py-14">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="max-w-3xl">
-                        <div className="inline-flex items-center gap-1.5 rounded-full border border-[#14bace]/40 bg-white/80 px-3 py-1 font-poppins text-xs font-bold text-[#087f8c] shadow-xs backdrop-blur-xs">
-                            <ShieldCheck className="size-3.5 text-[#14bace]" />
-                            Akuntabilitas & Transparansi Publik
-                        </div>
-
-                        <h1 className="mt-3 font-poppins text-3xl font-extrabold tracking-tight text-[#1d2b2d] sm:text-4xl">
+                        <h1 className="font-poppins text-3xl font-extrabold tracking-tight text-[#1d2b2d] sm:text-4xl">
                             Laporan Kegiatan Tahunan Yayasan Geliyat
                         </h1>
 

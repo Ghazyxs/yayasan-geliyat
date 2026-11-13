@@ -11,10 +11,7 @@ interface NavItem {
 const navItems: NavItem[] = [
     { label: 'Beranda', href: '/', match: '/' },
     { label: 'Bidang', href: '/bidang', match: '/bidang' },
-    { label: 'Kegiatan', href: '/kegiatan', match: '/kegiatan' },
-    { label: 'Anak Yatim', href: '/anak-yatim', match: '/anak-yatim' },
     { label: 'Profil', href: '/profil', match: '/profil' },
-    { label: 'Donasi', href: '/donasi', match: '/donasi' },
 ];
 
 export default function PublicNavbar() {
@@ -23,7 +20,9 @@ export default function PublicNavbar() {
         auth?: { user?: { name: string; role?: string } };
     };
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [berandaDropdownOpen, setBerandaDropdownOpen] = useState(false);
     const [profilDropdownOpen, setProfilDropdownOpen] = useState(false);
+    const [mobileBerandaOpen, setMobileBerandaOpen] = useState(true);
     const [mobileProfilOpen, setMobileProfilOpen] = useState(true);
 
     const isCurrent = (match: string) => {
@@ -33,7 +32,13 @@ export default function PublicNavbar() {
         return url.startsWith(match);
     };
 
-    const isProfilActive = url.startsWith('/profil') || url.startsWith('/laporan-tahunan');
+    const isBerandaActive =
+        url === '/' ||
+        url.startsWith('/kegiatan') ||
+        url.startsWith('/berita-umum');
+
+    const isProfilActive =
+        url === '/profil' || url.startsWith('/profil-pimpinan');
 
     return (
         <header className="sticky top-0 z-50 w-full border-b border-[#e4eaec] bg-white/95 backdrop-blur-md transition-all">
@@ -59,6 +64,93 @@ export default function PublicNavbar() {
                     {/* Desktop Navigation Links */}
                     <nav className="hidden items-center gap-5 md:flex lg:gap-7 xl:gap-8">
                         {navItems.map((item) => {
+                            if (item.href === '/') {
+                                return (
+                                    <div
+                                        key={item.href}
+                                        className="relative group flex flex-col items-center py-2"
+                                        onMouseEnter={() => setBerandaDropdownOpen(true)}
+                                        onMouseLeave={() => setBerandaDropdownOpen(false)}
+                                    >
+                                        <div className="flex items-center gap-1 cursor-pointer">
+                                            <Link
+                                                href="/"
+                                                prefetch={false}
+                                                className={`font-poppins text-sm lg:text-base whitespace-nowrap transition-colors duration-150 ${
+                                                    isBerandaActive
+                                                        ? 'font-bold text-[#14bace]'
+                                                        : 'font-medium text-[#1d2b2d] hover:text-[#14bace]'
+                                                }`}
+                                            >
+                                                {item.label}
+                                            </Link>
+                                            <ChevronDown
+                                                className={`size-3.5 transition-transform duration-200 ${
+                                                    berandaDropdownOpen
+                                                        ? 'rotate-180 text-[#14bace]'
+                                                        : 'text-slate-400 group-hover:text-[#14bace]'
+                                                }`}
+                                            />
+                                        </div>
+
+                                        <span
+                                            className={`absolute bottom-0 h-[3px] rounded-full transition-all duration-200 ${
+                                                isBerandaActive
+                                                    ? 'w-6 bg-[#14bace] opacity-100'
+                                                    : 'w-0 bg-[#14bace] opacity-0 group-hover:w-4 group-hover:opacity-60'
+                                            }`}
+                                        />
+
+                                        {/* Dropdown Menu Beranda */}
+                                        <div
+                                            className={`absolute top-full left-1/2 -translate-x-1/2 pt-2 w-60 transition-all duration-150 z-50 ${
+                                                berandaDropdownOpen
+                                                    ? 'opacity-100 visible pointer-events-auto translate-y-0'
+                                                    : 'opacity-0 invisible pointer-events-none -translate-y-1'
+                                            }`}
+                                        >
+                                            <div className="rounded-2xl border border-[#e4eaec] bg-white p-2 shadow-xl ring-1 ring-black/5">
+                                                <Link
+                                                    href="/kegiatan"
+                                                    prefetch={false}
+                                                    onClick={() => setBerandaDropdownOpen(false)}
+                                                    className={`flex flex-col rounded-xl px-3.5 py-2.5 transition-colors ${
+                                                        url.startsWith('/kegiatan')
+                                                            ? 'bg-[#e8f8fa] text-[#087f8c]'
+                                                            : 'text-[#1d2b2d] hover:bg-slate-50'
+                                                    }`}
+                                                >
+                                                    <span className="font-poppins text-xs font-bold">
+                                                        Berita Kegiatan
+                                                    </span>
+                                                    <span className="text-[11px] text-slate-500">
+                                                        Aktivitas dan program yayasan.
+                                                    </span>
+                                                </Link>
+                                                <div className="my-1 border-t border-slate-100" />
+                                                <Link
+                                                    href="/berita-umum"
+                                                    prefetch={false}
+                                                    onClick={() => setBerandaDropdownOpen(false)}
+                                                    className={`flex flex-col rounded-xl px-3.5 py-2.5 transition-colors ${
+                                                        url.startsWith('/berita-umum')
+                                                            ? 'bg-[#e8f8fa] text-[#087f8c]'
+                                                            : 'text-[#1d2b2d] hover:bg-slate-50'
+                                                    }`}
+                                                >
+                                                    <span className="font-poppins text-xs font-bold">
+                                                        Berita Umum
+                                                    </span>
+                                                    <span className="text-[11px] text-slate-500">
+                                                        Artikel, informasi, dan pengumuman.
+                                                    </span>
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            }
+
                             if (item.href === '/profil') {
                                 return (
                                     <div
@@ -119,25 +211,25 @@ export default function PublicNavbar() {
                                                         Profil Yayasan
                                                     </span>
                                                     <span className="text-[11px] text-slate-500">
-                                                        Visi, misi, struktur & legalitas
+                                                        Visi, misi, dan latar belakang.
                                                     </span>
                                                 </Link>
                                                 <div className="my-1 border-t border-slate-100" />
                                                 <Link
-                                                    href="/laporan-tahunan"
+                                                    href="/profil-pimpinan"
                                                     prefetch={false}
                                                     onClick={() => setProfilDropdownOpen(false)}
                                                     className={`flex flex-col rounded-xl px-3.5 py-2.5 transition-colors ${
-                                                        url.startsWith('/laporan-tahunan')
+                                                        url.startsWith('/profil-pimpinan')
                                                             ? 'bg-[#e8f8fa] text-[#087f8c]'
                                                             : 'text-[#1d2b2d] hover:bg-slate-50'
                                                     }`}
                                                 >
                                                     <span className="font-poppins text-xs font-bold">
-                                                        Laporan Tahunan
+                                                        Profil Pimpinan
                                                     </span>
                                                     <span className="text-[11px] text-slate-500">
-                                                        Arsip dokumen resmi kegiatan tahunan
+                                                        Ketua, Sekretaris, dan Bendahara Yayasan.
                                                     </span>
                                                 </Link>
                                             </div>
@@ -247,6 +339,79 @@ export default function PublicNavbar() {
             {mobileMenuOpen && (
                 <div className="animate-in space-y-2 border-t border-[#e4eaec] bg-white px-4 pt-3 pb-6 shadow-lg duration-200 slide-in-from-top-2 md:hidden">
                     {navItems.map((item) => {
+                        if (item.href === '/') {
+                            return (
+                                <div key={item.href} className="space-y-1">
+                                    <button
+                                        type="button"
+                                        onClick={() => setMobileBerandaOpen(!mobileBerandaOpen)}
+                                        className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 font-poppins text-sm transition-colors ${
+                                            isBerandaActive
+                                                ? 'bg-[#e8f8fa] font-semibold text-[#087f8c]'
+                                                : 'text-[#1d2b2d] hover:bg-gray-50'
+                                        }`}
+                                    >
+                                        <span>Beranda</span>
+                                        <ChevronDown
+                                            className={`size-4 transition-transform duration-200 ${
+                                                mobileBerandaOpen ? 'rotate-180' : ''
+                                            }`}
+                                        />
+                                    </button>
+
+                                    {mobileBerandaOpen && (
+                                        <div className="ml-3 space-y-1 border-l-2 border-[#14bace]/40 pl-3">
+                                            <Link
+                                                href="/"
+                                                prefetch={false}
+                                                onClick={() => setMobileMenuOpen(false)}
+                                                className={`flex items-center justify-between rounded-lg px-3 py-2 font-poppins text-xs transition-colors ${
+                                                    url === '/'
+                                                        ? 'bg-[#e8f8fa] font-semibold text-[#087f8c]'
+                                                        : 'text-slate-600 hover:bg-gray-50'
+                                                }`}
+                                            >
+                                                <span>Halaman Utama</span>
+                                                {url === '/' && (
+                                                    <span className="size-1.5 rounded-full bg-[#14bace]" />
+                                                )}
+                                            </Link>
+                                            <Link
+                                                href="/kegiatan"
+                                                prefetch={false}
+                                                onClick={() => setMobileMenuOpen(false)}
+                                                className={`flex items-center justify-between rounded-lg px-3 py-2 font-poppins text-xs transition-colors ${
+                                                    url.startsWith('/kegiatan')
+                                                        ? 'bg-[#e8f8fa] font-semibold text-[#087f8c]'
+                                                        : 'text-slate-600 hover:bg-gray-50'
+                                                }`}
+                                            >
+                                                <span>Berita Kegiatan</span>
+                                                {url.startsWith('/kegiatan') && (
+                                                    <span className="size-1.5 rounded-full bg-[#14bace]" />
+                                                )}
+                                            </Link>
+                                            <Link
+                                                href="/berita-umum"
+                                                prefetch={false}
+                                                onClick={() => setMobileMenuOpen(false)}
+                                                className={`flex items-center justify-between rounded-lg px-3 py-2 font-poppins text-xs transition-colors ${
+                                                    url.startsWith('/berita-umum')
+                                                        ? 'bg-[#e8f8fa] font-semibold text-[#087f8c]'
+                                                        : 'text-slate-600 hover:bg-gray-50'
+                                                }`}
+                                            >
+                                                <span>Berita Umum</span>
+                                                {url.startsWith('/berita-umum') && (
+                                                    <span className="size-1.5 rounded-full bg-[#14bace]" />
+                                                )}
+                                            </Link>
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        }
+
                         if (item.href === '/profil') {
                             return (
                                 <div key={item.href} className="space-y-1">
@@ -285,17 +450,17 @@ export default function PublicNavbar() {
                                                 )}
                                             </Link>
                                             <Link
-                                                href="/laporan-tahunan"
+                                                href="/profil-pimpinan"
                                                 prefetch={false}
                                                 onClick={() => setMobileMenuOpen(false)}
                                                 className={`flex items-center justify-between rounded-lg px-3 py-2 font-poppins text-xs transition-colors ${
-                                                    url.startsWith('/laporan-tahunan')
+                                                    url.startsWith('/profil-pimpinan')
                                                         ? 'bg-[#e8f8fa] font-semibold text-[#087f8c]'
                                                         : 'text-slate-600 hover:bg-gray-50'
                                                 }`}
                                             >
-                                                <span>Laporan Tahunan</span>
-                                                {url.startsWith('/laporan-tahunan') && (
+                                                <span>Profil Pimpinan</span>
+                                                {url.startsWith('/profil-pimpinan') && (
                                                     <span className="size-1.5 rounded-full bg-[#14bace]" />
                                                 )}
                                             </Link>

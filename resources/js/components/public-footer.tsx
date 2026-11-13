@@ -1,9 +1,6 @@
 import { Link } from '@inertiajs/react';
 import {
-    Facebook,
     Instagram,
-    Linkedin,
-    Twitter,
     MapPin,
     Mail,
     Phone,
@@ -17,31 +14,31 @@ export default function PublicFooter() {
                 {/* Main Row */}
                 <div className="grid grid-cols-1 gap-10 border-b border-[#2e373b] pb-12 md:grid-cols-2 lg:grid-cols-12">
                     {/* Brand Column */}
-                    <div className="flex flex-col gap-4 lg:col-span-5">
+                    <div className="flex flex-col gap-4 lg:col-span-4">
                         <div className="flex items-center gap-3">
-                            <div className="flex size-10 items-center justify-center rounded-full bg-[#14bace] text-sm font-bold tracking-wider text-white shadow-sm">
+                            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-[#14bace] text-sm font-bold tracking-wider text-white shadow-sm">
                                 GM
                             </div>
-                            <span className="font-poppins text-xl font-bold tracking-wide text-white">
-                                Yayasan Geliyat
+                            <span className="font-poppins text-lg font-bold tracking-wide text-white">
+                                Yayasan Geliyat Mahdiesa Nahate
                             </span>
                         </div>
                         <p className="max-w-md font-sans text-sm leading-relaxed text-gray-300">
-                            Mengemban misi kemanusiaan berkelanjutan untuk
-                            mewujudkan kesejahteraan sosial melalui sinergi
-                            pendidikan bermartabat dan aksi kemitraan strategis
-                            bagi anak yatim.
+                            Amanah, profesional, dan berkelanjutan dalam membina
+                            serta memberdayakan anak yatim dan ibu yatim agar
+                            tumbuh menjadi generasi yang beriman, berilmu,
+                            mandiri, dan bermanfaat bagi masyarakat.
                         </p>
                         <div className="flex items-center gap-2 pt-2 text-xs font-medium text-[#14bace]">
                             <Heart className="size-4 fill-current text-[#14bace]" />
-                            <span>Yayasan Geliyat Mahdiesa Nahate</span>
+                            <span>Sebaik-baiknya manusia adalah yang paling bermanfaat bagi orang lain</span>
                         </div>
                     </div>
 
-                    {/* Column 1: Program Bantuan */}
+                    {/* Column 1: Bidang & Program */}
                     <div className="flex flex-col gap-4 lg:col-span-2">
                         <h4 className="font-poppins text-xs font-bold tracking-wider text-[#14bace] uppercase">
-                            Program Bantuan
+                            Bidang Program
                         </h4>
                         <ul className="flex flex-col gap-2.5 text-sm text-gray-300">
                             <li>
@@ -50,16 +47,7 @@ export default function PublicFooter() {
                                     prefetch={false}
                                     className="transition-colors hover:text-white hover:underline"
                                 >
-                                    Bimbel Sinar (SD)
-                                </Link>
-                            </li>
-                            <li>
-                                <Link
-                                    href="/bidang/kemanusiaan"
-                                    prefetch={false}
-                                    className="transition-colors hover:text-white hover:underline"
-                                >
-                                    Santunan Rutin
+                                    BINAYA (Pendidikan)
                                 </Link>
                             </li>
                             <li>
@@ -68,7 +56,16 @@ export default function PublicFooter() {
                                     prefetch={false}
                                     className="transition-colors hover:text-white hover:underline"
                                 >
-                                    Gemar & Tahfidz
+                                    BINATUYA (Keagamaan)
+                                </Link>
+                            </li>
+                            <li>
+                                <Link
+                                    href="/bidang/kemanusiaan"
+                                    prefetch={false}
+                                    className="transition-colors hover:text-white hover:underline"
+                                >
+                                    SATIN & UBAY (Kemanusiaan)
                                 </Link>
                             </li>
                             <li>
@@ -77,7 +74,7 @@ export default function PublicFooter() {
                                     prefetch={false}
                                     className="transition-colors hover:text-white hover:underline"
                                 >
-                                    Koperasi Berdaya
+                                    Pengembangan Ekonomi
                                 </Link>
                             </li>
                         </ul>
@@ -94,15 +91,15 @@ export default function PublicFooter() {
                                     href="/profil"
                                     className="transition-colors hover:text-white hover:underline"
                                 >
-                                    Visi & Misi
+                                    Profil, Visi & Misi
                                 </Link>
                             </li>
                             <li>
                                 <Link
-                                    href="/profil"
+                                    href="/bidang"
                                     className="transition-colors hover:text-white hover:underline"
                                 >
-                                    Struktur Pengurus
+                                    Empat Bidang
                                 </Link>
                             </li>
                             <li>
@@ -110,15 +107,15 @@ export default function PublicFooter() {
                                     href="/kegiatan"
                                     className="transition-colors hover:text-white hover:underline"
                                 >
-                                    Dokumentasi Kegiatan
+                                    Kegiatan Yayasan
                                 </Link>
                             </li>
                             <li>
                                 <Link
-                                    href="/rekap-kegiatan"
+                                    href="/laporan-tahunan"
                                     className="transition-colors hover:text-white hover:underline"
                                 >
-                                    Rekap Kegiatan Tahunan
+                                    Laporan Tahunan
                                 </Link>
                             </li>
                             <li>
@@ -133,7 +130,7 @@ export default function PublicFooter() {
                     </div>
 
                     {/* Column 3: Hubungi Kami */}
-                    <div className="flex flex-col gap-4 lg:col-span-3">
+                    <div className="flex flex-col gap-4 lg:col-span-4">
                         <h4 className="font-poppins text-xs font-bold tracking-wider text-[#14bace] uppercase">
                             Hubungi Kami
                         </h4>
@@ -141,60 +138,50 @@ export default function PublicFooter() {
                             <div className="flex items-start gap-2.5">
                                 <MapPin className="mt-0.5 size-4 shrink-0 text-[#14bace]" />
                                 <span className="text-xs leading-relaxed">
-                                    Jl. Kampung Baru Rt.02/05 No.42, Cigending,
-                                    Kec. Ujungberung, Kota Bandung 40611
+                                    Jl. Kampung Baru RT/RW 02/05 No.42, Kel.
+                                    Cigending, Kec. Ujungberung, Kota Bandung,
+                                    40611.
                                 </span>
                             </div>
                             <div className="flex items-center gap-2.5">
                                 <Mail className="size-4 shrink-0 text-[#14bace]" />
-                                <span className="text-xs">
-                                    info@geliyat.or.id
-                                </span>
+                                <a
+                                    href="mailto:geliyatmahdiesanahate@gmail.com"
+                                    className="text-xs transition-colors hover:text-[#14bace] hover:underline"
+                                >
+                                    geliyatmahdiesanahate@gmail.com
+                                </a>
                             </div>
-                            <div className="flex items-center gap-2.5">
-                                <Phone className="size-4 shrink-0 text-[#14bace]" />
-                                <span className="text-xs">
-                                    +62 821-2085-4460
-                                </span>
+                            <div className="flex items-start gap-2.5">
+                                <Phone className="mt-0.5 size-4 shrink-0 text-[#14bace]" />
+                                <div className="flex flex-col gap-1 text-xs">
+                                    <a
+                                        href="tel:+6282126854485"
+                                        className="transition-colors hover:text-[#14bace] hover:underline"
+                                    >
+                                        +62 821-2685-4485 (Ibu Nina Mahdiah,
+                                        S.Ag., M.Sos.)
+                                    </a>
+                                    <a
+                                        href="tel:+6285797243161"
+                                        className="transition-colors hover:text-[#14bace] hover:underline"
+                                    >
+                                        +62 857-9724-3161 (Juaningsih)
+                                    </a>
+                                </div>
                             </div>
 
-                            {/* Social Media Links */}
-                            <div className="flex items-center gap-3 pt-2">
+                            {/* Instagram Link */}
+                            <div className="pt-2">
                                 <a
-                                    href="https://facebook.com"
+                                    href="https://www.instagram.com/geliyatmahdiesanahate/"
                                     target="_blank"
                                     rel="noreferrer"
-                                    aria-label="Facebook Geliyat"
-                                    className="flex size-8 items-center justify-center rounded-lg bg-[#273034] text-gray-300 transition-colors hover:bg-[#14bace] hover:text-white"
-                                >
-                                    <Facebook className="size-4" />
-                                </a>
-                                <a
-                                    href="https://instagram.com"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    aria-label="Instagram Geliyat"
-                                    className="flex size-8 items-center justify-center rounded-lg bg-[#273034] text-gray-300 transition-colors hover:bg-[#14bace] hover:text-white"
+                                    aria-label="Instagram Yayasan Geliyat Mahdiesa Nahate"
+                                    className="inline-flex items-center gap-2.5 rounded-lg bg-[#273034] px-3.5 py-2 text-xs font-medium text-gray-200 transition-colors hover:bg-[#14bace] hover:text-white"
                                 >
                                     <Instagram className="size-4" />
-                                </a>
-                                <a
-                                    href="https://linkedin.com"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    aria-label="LinkedIn Geliyat"
-                                    className="flex size-8 items-center justify-center rounded-lg bg-[#273034] text-gray-300 transition-colors hover:bg-[#14bace] hover:text-white"
-                                >
-                                    <Linkedin className="size-4" />
-                                </a>
-                                <a
-                                    href="https://twitter.com"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    aria-label="Twitter Geliyat"
-                                    className="flex size-8 items-center justify-center rounded-lg bg-[#273034] text-gray-300 transition-colors hover:bg-[#14bace] hover:text-white"
-                                >
-                                    <Twitter className="size-4" />
+                                    <span>@Geliyat MahdiesaNahate</span>
                                 </a>
                             </div>
                         </div>

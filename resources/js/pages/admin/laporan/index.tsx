@@ -61,22 +61,22 @@ export default function LaporanAdmin({ laporanList = [] }: LaporanAdminProps) {
         tujuan_laporan: '',
         kesimpulan: '',
         harapan_evaluasi: '',
-        penandatangan_ketua: 'H. Ahmad Fauzi',
-        penandatangan_sekretaris: 'M. Ridwan, S.Pd.',
+        penandatangan_ketua: 'Nina Mahdiah, S.Ag., M.Sos.',
+        penandatangan_sekretaris: 'Juaningsih',
     });
 
     const handleOpenEdit = (item: AdminLaporanItem) => {
         setEditItem(item);
         editForm.setData({
-            judul: item.judul || `Laporan Kegiatan Tahunan Yayasan Geliyat Tahun ${item.tahun}`,
+            judul: item.judul || `Laporan Kegiatan Tahunan Yayasan Geliyat Mahdiesa Nahate Tahun ${item.tahun}`,
             nomor_dokumen: item.nomor_dokumen || `01/LKT/YGM/XII/${item.tahun}`,
             tanggal_penerbitan: item.tanggal_penerbitan || `${item.tahun}-12-31`,
             latar_belakang: item.latar_belakang || '',
             tujuan_laporan: item.tujuan_laporan || '',
             kesimpulan: item.kesimpulan || '',
             harapan_evaluasi: item.harapan_evaluasi || '',
-            penandatangan_ketua: item.penandatangan_ketua || 'H. Ahmad Fauzi',
-            penandatangan_sekretaris: item.penandatangan_sekretaris || 'M. Ridwan, S.Pd.',
+            penandatangan_ketua: item.penandatangan_ketua || 'Nina Mahdiah, S.Ag., M.Sos.',
+            penandatangan_sekretaris: item.penandatangan_sekretaris || 'Juaningsih',
         });
     };
 

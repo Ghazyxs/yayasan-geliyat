@@ -340,8 +340,9 @@ export default function DonasiPage({
                     </nav>
                     <p className="mt-3 max-w-2xl font-sans text-sm text-slate-600 sm:text-base">
                         Penyaluran infaq, sedekah, dan santunan pendidikan yang
-                        amanah, langsung membina 420 anak yatim di wilayah
-                        Ujungberung, Kota Bandung secara transparan.
+                        amanah untuk membina anak-anak yatim dan memberdayakan
+                        ibu yatim Yayasan Geliyat Mahdiesa Nahate secara
+                        transparan.
                     </p>
                 </div>
             </div>

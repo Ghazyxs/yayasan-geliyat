@@ -84,13 +84,6 @@ export default function BidangDetailPage({
                     {/* Hero Header Grid */}
                     <div className="mt-6 grid grid-cols-1 items-center gap-8 lg:grid-cols-12">
                         <div className="lg:col-span-7">
-                            <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white px-3.5 py-1.5 font-poppins text-xs font-semibold text-[#087f8c] shadow-2xs">
-                                <IconComponent className="size-4 text-[#14bace]" />
-                                <span className="uppercase tracking-wider">
-                                    Pilar Program Yayasan Geliyat
-                                </span>
-                            </div>
-
                             <h1 className="font-poppins text-2xl font-bold text-[#1d2b2d] sm:text-4xl lg:text-5xl">
                                 {bidang.nama}
                             </h1>

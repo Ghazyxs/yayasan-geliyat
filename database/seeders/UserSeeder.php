@@ -56,11 +56,11 @@ class UserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => $superAdminEmail],
             [
-                'name' => env('SEED_SUPER_ADMIN_NAME', 'H. Ahmad Fauzi'),
+                'name' => env('SEED_SUPER_ADMIN_NAME', 'Nina Mahdiah, S.Ag., M.Sos.'),
                 'password' => $superAdminPassword,
                 'role' => 'super_admin',
                 'bidang_id' => null,
-                'phone' => '081234567890',
+                'phone' => '082126854485',
                 'is_active' => true,
                 'email_verified_at' => now(),
             ]
@@ -70,11 +70,11 @@ class UserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => $adminEmail],
             [
-                'name' => env('SEED_ADMIN_NAME', 'Ibu Siti Rahmah'),
+                'name' => env('SEED_ADMIN_NAME', 'Juaningsih'),
                 'password' => $adminPassword,
                 'role' => 'admin',
                 'bidang_id' => $bidangKemanusiaan->id,
-                'phone' => '081298765432',
+                'phone' => '085797243161',
                 'is_active' => true,
                 'email_verified_at' => now(),
             ]

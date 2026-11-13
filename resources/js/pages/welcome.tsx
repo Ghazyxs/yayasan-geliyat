@@ -1,13 +1,9 @@
 import { Head, Link } from '@inertiajs/react';
 import {
     ArrowRight,
-    BookOpen,
-    Heart,
-    Users,
-    Sparkles,
     MapPin,
-    HandHeart,
     Calendar,
+    Newspaper,
 } from 'lucide-react';
 import PublicLayout from '@/layouts/public-layout';
 import { type BidangItem, getBidangIcon } from './public/bidang';
@@ -22,6 +18,8 @@ export default function Welcome({
     bidangList = [],
     kegiatanTerbaru = [],
 }: WelcomeProps) {
+    const latestActivity = kegiatanTerbaru[0] ?? null;
+
     return (
         <PublicLayout>
             <Head title="Yayasan Geliyat Mahdiesa Nahate - Gerakan Peduli Yatim" />
@@ -32,11 +30,6 @@ export default function Welcome({
                     <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
                         {/* Text Content */}
                         <div className="flex flex-col items-start lg:col-span-7">
-                            <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-[#14bace]/10 px-3.5 py-1.5 font-poppins text-xs font-semibold tracking-wider text-[#087f8c] uppercase">
-                                <Sparkles className="size-3.5" />
-                                <span>Gerakan Peduli Yatim</span>
-                            </div>
-
                             <h1 className="font-poppins text-3xl leading-[1.15] font-bold tracking-tight text-[#1d2b2d] sm:text-5xl lg:text-6xl">
                                 Bersama untuk <br />
                                 <span className="text-[#14bace]">
@@ -46,10 +39,10 @@ export default function Welcome({
                             </h1>
 
                             <p className="mt-6 max-w-xl font-sans text-base leading-relaxed text-gray-600 sm:text-lg">
-                                Yayasan Geliyat hadir untuk mendampingi
-                                anak-anak yatim melalui pendidikan bermartabat,
-                                pembinaan karakter, dan berbagai program
-                                kemanusiaan di wilayah Ujungberung, Kota
+                                Yayasan Geliyat Mahdiesa Nahate hadir sebagai
+                                gerakan kepedulian untuk membina dan
+                                memberdayakan anak yatim serta ibu yatim secara
+                                amanah, profesional, dan berkelanjutan di Kota
                                 Bandung.
                             </p>
 
@@ -72,114 +65,116 @@ export default function Welcome({
                                 </Link>
                             </div>
 
-                            {/* Trust Stats Indicator */}
+                            {/* Values & Pillars Indicator */}
                             <div className="mt-12 grid w-full grid-cols-3 gap-6 border-t border-[#e4eaec]/60 pt-8">
                                 <div>
                                     <p className="font-poppins text-2xl font-bold text-[#14bace] sm:text-3xl">
-                                        420+
-                                    </p>
-                                    <p className="mt-0.5 font-sans text-xs text-gray-500">
-                                        Anak Yatim Binaan
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="font-poppins text-2xl font-bold text-[#186972] sm:text-3xl">
-                                        5
-                                    </p>
-                                    <p className="mt-0.5 font-sans text-xs text-gray-500">
-                                        Kelurahan Binaan
-                                    </p>
-                                </div>
-                                <div>
-                                    <p className="font-poppins text-2xl font-bold text-[#1d2b2d] sm:text-3xl">
                                         4
                                     </p>
                                     <p className="mt-0.5 font-sans text-xs text-gray-500">
-                                        Pilar Program Utama
+                                        Bidang Program Utama
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="font-poppins text-xl font-bold text-[#186972] sm:text-2xl">
+                                        Amanah
+                                    </p>
+                                    <p className="mt-0.5 font-sans text-xs text-gray-500">
+                                        Profesional & Berkelanjutan
+                                    </p>
+                                </div>
+                                <div>
+                                    <p className="font-poppins text-xl font-bold text-[#1d2b2d] sm:text-2xl">
+                                        Bandung
+                                    </p>
+                                    <p className="mt-0.5 font-sans text-xs text-gray-500">
+                                        Kec. Ujungberung
                                     </p>
                                 </div>
                             </div>
                         </div>
 
                         {/* Visual Card / Illustration */}
+                        {/* Right Visual Card: Banner Kegiatan Terbaru */}
                         <div className="flex justify-center lg:col-span-5">
                             <div className="relative w-full max-w-md">
                                 <div className="absolute -inset-1 rounded-3xl bg-gradient-to-r from-[#14bace] to-[#186972] opacity-20 blur-xl"></div>
-                                <div className="relative rounded-2xl border border-[#e4eaec] bg-white p-6 shadow-xl">
-                                    <div className="flex items-center gap-4 border-b border-gray-100 pb-4">
-                                        <div className="flex size-14 items-center justify-center rounded-xl bg-[#e8f8fa] text-[#14bace]">
-                                            <HandHeart className="size-7" />
-                                        </div>
-                                        <div>
-                                            <h3 className="font-poppins text-base font-bold text-[#1d2b2d]">
-                                                Gerakan Peduli Yatim
-                                            </h3>
-                                            <p className="font-sans text-xs text-gray-500">
-                                                Ujungberung, Kota Bandung
+                                <div className="relative overflow-hidden rounded-2xl border border-[#e4eaec] bg-white shadow-xl">
+                                    {latestActivity ? (
+                                        <>
+                                            <div className="aspect-[16/10] w-full overflow-hidden bg-gray-100">
+                                                <img
+                                                    src={latestActivity.gambar}
+                                                    alt={latestActivity.judul}
+                                                    className="h-full w-full object-cover"
+                                                />
+                                            </div>
+                                            <div className="p-6">
+                                                <p className="font-poppins text-xs font-semibold tracking-wider text-[#186972] uppercase">
+                                                    Kegiatan Terbaru
+                                                </p>
+                                                <h3 className="mt-1.5 font-poppins text-lg leading-snug font-bold text-[#1d2b2d]">
+                                                    {latestActivity.judul}
+                                                </h3>
+                                                <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500">
+                                                    <span className="inline-flex items-center gap-1.5">
+                                                        <Calendar className="size-3.5 text-[#14bace]" />
+                                                        {
+                                                            latestActivity.tanggal_kegiatan
+                                                        }
+                                                    </span>
+                                                    {latestActivity.lokasi && (
+                                                        <span className="inline-flex items-center gap-1.5">
+                                                            <MapPin className="size-3.5 text-[#14bace]" />
+                                                            {
+                                                                latestActivity.lokasi
+                                                            }
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-gray-600">
+                                                    {latestActivity.ringkasan ||
+                                                        latestActivity.deskripsi}
+                                                </p>
+                                                <Link
+                                                    href={`/kegiatan/${latestActivity.id}`}
+                                                    prefetch={false}
+                                                    className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#14bace] py-3 font-poppins text-sm font-semibold text-white transition hover:bg-[#087f8c]"
+                                                >
+                                                    <span>
+                                                        Lihat Selengkapnya
+                                                    </span>
+                                                    <ArrowRight className="size-4" />
+                                                </Link>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <div className="p-8 text-center">
+                                            <div className="mx-auto mb-4 flex size-14 items-center justify-center rounded-full bg-[#e8f8fa] text-[#186972]">
+                                                <Newspaper className="size-7" />
+                                            </div>
+                                            <p className="font-poppins text-xs font-semibold tracking-wider text-[#186972] uppercase">
+                                                Kegiatan Terbaru
                                             </p>
+                                            <h3 className="mt-2 font-poppins text-lg font-bold text-[#1d2b2d]">
+                                                Belum Ada Kegiatan Terbaru
+                                            </h3>
+                                            <p className="mt-2 text-sm leading-relaxed text-gray-600">
+                                                Dokumentasi kegiatan terbaru
+                                                Yayasan Geliyat Mahdiesa Nahate
+                                                akan tampil di sini setelah
+                                                dipublikasikan.
+                                            </p>
+                                            <Link
+                                                href="/kegiatan"
+                                                prefetch={false}
+                                                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-[#14bace] bg-white py-2.5 font-poppins text-sm font-semibold text-[#186972] transition hover:bg-[#e8f8fa]"
+                                            >
+                                                <span>Lihat Arsip Kegiatan</span>
+                                                <ArrowRight className="size-4" />
+                                            </Link>
                                         </div>
-                                    </div>
-
-                                    <div className="mt-4 space-y-3">
-                                        <Link
-                                            href="/bidang/pendidikan"
-                                            prefetch={false}
-                                            className="flex items-center gap-3 rounded-xl border border-[#e4eaec]/60 bg-[#f7fcfd] p-3 transition hover:border-[#14bace]/50"
-                                        >
-                                            <BookOpen className="size-5 shrink-0 text-[#14bace]" />
-                                            <div>
-                                                <p className="text-xs font-semibold text-[#1d2b2d]">
-                                                    Bimbel Sinar
-                                                </p>
-                                                <p className="text-[11px] text-gray-500">
-                                                    Pendampingan belajar & modul
-                                                    latihan siswa
-                                                </p>
-                                            </div>
-                                        </Link>
-                                        <Link
-                                            href="/bidang/kemanusiaan"
-                                            prefetch={false}
-                                            className="flex items-center gap-3 rounded-xl border border-[#e4eaec]/60 bg-[#f7fcfd] p-3 transition hover:border-[#14bace]/50"
-                                        >
-                                            <Heart className="size-5 shrink-0 text-[#186972]" />
-                                            <div>
-                                                <p className="text-xs font-semibold text-[#1d2b2d]">
-                                                    Santunan & Kemanusiaan
-                                                </p>
-                                                <p className="text-[11px] text-gray-500">
-                                                    Santunan rutin bulanan &
-                                                    bantuan sembako anak yatim
-                                                </p>
-                                            </div>
-                                        </Link>
-                                        <Link
-                                            href="/bidang/keagamaan"
-                                            prefetch={false}
-                                            className="flex items-center gap-3 rounded-xl border border-[#e4eaec]/60 bg-[#f7fcfd] p-3 transition hover:border-[#14bace]/50"
-                                        >
-                                            <Users className="size-5 shrink-0 text-[#087f8c]" />
-                                            <div>
-                                                <p className="text-xs font-semibold text-[#1d2b2d]">
-                                                    Pembinaan & Keagamaan
-                                                </p>
-                                                <p className="text-[11px] text-gray-500">
-                                                    Bina orang tua yatim
-                                                    (Binatulya) & pengajian
-                                                    remaja
-                                                </p>
-                                            </div>
-                                        </Link>
-                                    </div>
-
-                                    <Link
-                                        href="/donasi"
-                                        prefetch={false}
-                                        className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-[#14bace] py-3 font-poppins text-sm font-semibold text-white transition hover:bg-[#087f8c]"
-                                    >
-                                        <span>Salurkan Donasi</span>
-                                        <ArrowRight className="size-4" />
-                                    </Link>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -191,11 +186,8 @@ export default function Welcome({
             <section className="border-b border-[#e4eaec] bg-[#d1f6fa]/30 py-16 sm:py-20">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="mx-auto max-w-2xl text-center">
-                        <span className="font-poppins text-xs font-bold tracking-wider text-[#14bace] uppercase">
-                            Program Utama
-                        </span>
-                        <h2 className="mt-2 font-poppins text-3xl font-bold text-[#1d2b2d]">
-                            Empat Program di Geliyat
+                        <h2 className="font-poppins text-3xl font-bold text-[#1d2b2d]">
+                            Empat Bidang di Geliyat
                         </h2>
                         <p className="mt-3 font-sans text-sm text-gray-600">
                             Empat bidang program untuk mendukung tumbuh kembang
@@ -240,10 +232,7 @@ export default function Welcome({
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="mb-12 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
                         <div>
-                            <span className="font-poppins text-xs font-bold tracking-wider text-[#14bace] uppercase">
-                                Berita & Dokumentasi
-                            </span>
-                            <h2 className="mt-2 font-poppins text-3xl font-bold text-[#1d2b2d]">
+                            <h2 className="font-poppins text-3xl font-bold text-[#1d2b2d]">
                                 Kegiatan Terbaru
                             </h2>
                         </div>

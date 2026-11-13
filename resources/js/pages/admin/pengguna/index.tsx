@@ -5,19 +5,19 @@ import { Button } from '@/components/ui/button';
 export default function PenggunaAdmin() {
     const mockUsers = [
         {
-            name: 'H. Ahmad Fauzi',
+            name: 'Nina Mahdiah, S.Ag., M.Sos.',
             email: 'ketua@geliyat.or.id',
             role: 'Super Admin',
-            bidang: 'Pimpinan Yayasan',
-            phone: '081234567890',
+            bidang: 'Founder & Pimpinan Yayasan',
+            phone: '082126854485',
             status: 'Aktif',
         },
         {
-            name: 'Ibu Siti Rahmah',
+            name: 'Juaningsih',
             email: 'admin@geliyat.or.id',
             role: 'Admin',
-            bidang: 'Kemanusiaan & Yatim',
-            phone: '081298765432',
+            bidang: 'Bidang Kemanusiaan',
+            phone: '085797243161',
             status: 'Aktif',
         },
     ];
