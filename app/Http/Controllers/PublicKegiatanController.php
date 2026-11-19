@@ -15,9 +15,9 @@ class PublicKegiatanController extends Controller
      * @var array<string, string>
      */
     private const DEFAULT_CATEGORY_IMAGES = [
-        'Pendidikan' => 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1200&auto=format&fit=crop',
-        'Kemanusiaan' => 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1200&auto=format&fit=crop',
-        'Keagamaan' => 'https://images.unsplash.com/photo-1609599006353-e629aaabfeae?q=80&w=1200&auto=format&fit=crop',
+        'Pendidikan' => '/images/bidang/pendidikan.jpg',
+        'Kemanusiaan' => '/images/bidang/kemanusiaan.jpg',
+        'Keagamaan' => '/images/bidang/keagamaan.jpg',
         'Ekonomi' => 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=1200&auto=format&fit=crop',
     ];
 

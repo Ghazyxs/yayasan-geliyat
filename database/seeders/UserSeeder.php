@@ -53,31 +53,71 @@ class UserSeeder extends Seeder
         }
 
         // 1. Super Admin (Ketua Yayasan) — bidang_id WAJIB NULL (wewenang lintas seluruh bidang)
-        User::updateOrCreate(
-            ['email' => $superAdminEmail],
-            [
+        // Tidak menimpa password/akun yang sudah tersedia di database
+        $superAdmin = User::where('email', $superAdminEmail)->first();
+
+        if (! $superAdmin) {
+            User::create([
                 'name' => env('SEED_SUPER_ADMIN_NAME', 'Nina Mahdiah, S.Ag., M.Sos.'),
+                'email' => $superAdminEmail,
                 'password' => $superAdminPassword,
                 'role' => 'super_admin',
                 'bidang_id' => null,
                 'phone' => '082126854485',
                 'is_active' => true,
                 'email_verified_at' => now(),
-            ]
-        );
+            ]);
+        } else {
+            $superAdminUpdates = [];
+
+            if ($superAdmin->role !== 'super_admin') {
+                $superAdminUpdates['role'] = 'super_admin';
+            }
+            if ($superAdmin->bidang_id !== null) {
+                $superAdminUpdates['bidang_id'] = null;
+            }
+            if ($superAdmin->name === 'H. Ahmad Fauzi') {
+                $superAdminUpdates['name'] = env('SEED_SUPER_ADMIN_NAME', 'Nina Mahdiah, S.Ag., M.Sos.');
+                $superAdminUpdates['phone'] = '082126854485';
+            }
+
+            if (! empty($superAdminUpdates)) {
+                $superAdmin->update($superAdminUpdates);
+            }
+        }
 
         // 2. Admin Operasional — bidang_id WAJIB mengarah ke Bidang Kemanusiaan
-        User::updateOrCreate(
-            ['email' => $adminEmail],
-            [
+        // Tidak menimpa password/akun yang sudah tersedia di database
+        $admin = User::where('email', $adminEmail)->first();
+
+        if (! $admin) {
+            User::create([
                 'name' => env('SEED_ADMIN_NAME', 'Juaningsih'),
+                'email' => $adminEmail,
                 'password' => $adminPassword,
                 'role' => 'admin',
                 'bidang_id' => $bidangKemanusiaan->id,
                 'phone' => '085797243161',
                 'is_active' => true,
                 'email_verified_at' => now(),
-            ]
-        );
+            ]);
+        } else {
+            $adminUpdates = [];
+
+            if ($admin->role !== 'admin') {
+                $adminUpdates['role'] = 'admin';
+            }
+            if ($admin->bidang_id !== $bidangKemanusiaan->id) {
+                $adminUpdates['bidang_id'] = $bidangKemanusiaan->id;
+            }
+            if ($admin->name === 'Ibu Siti Rahmah') {
+                $adminUpdates['name'] = env('SEED_ADMIN_NAME', 'Juaningsih');
+                $adminUpdates['phone'] = '085797243161';
+            }
+
+            if (! empty($adminUpdates)) {
+                $admin->update($adminUpdates);
+            }
+        }
     }
 }

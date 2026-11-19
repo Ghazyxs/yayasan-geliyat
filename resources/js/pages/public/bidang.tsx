@@ -59,6 +59,19 @@ export function getBidangIcon(kode: string): LucideIcon {
     }
 }
 
+export function getBidangImagePosition(kode: string): string {
+    switch (kode) {
+        case 'kemanusiaan':
+            return 'object-[center_72%]';
+        case 'keagamaan':
+            return 'object-[center_45%]';
+        case 'pendidikan':
+            return 'object-[center_45%]';
+        default:
+            return 'object-center';
+    }
+}
+
 export default function BidangPage({ bidangList = [] }: BidangPageProps) {
     return (
         <PublicLayout>
@@ -116,7 +129,7 @@ export default function BidangPage({ bidangList = [] }: BidangPageProps) {
                                         <img
                                             src={bidang.gambar}
                                             alt={bidang.nama}
-                                            className="h-72 w-full object-cover transition-transform duration-300 group-hover:scale-105 sm:h-80"
+                                            className={`aspect-[4/3] w-full object-cover transition-transform duration-300 group-hover:scale-105 sm:h-80 ${getBidangImagePosition(bidang.kode)}`}
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-[#1d2b2d]/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                                         <div className="absolute right-4 bottom-4 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3.5 py-1.5 font-poppins text-xs font-semibold text-[#1d2b2d] opacity-0 shadow-sm transition-all duration-300 group-hover:opacity-100">

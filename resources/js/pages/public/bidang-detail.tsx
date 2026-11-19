@@ -13,7 +13,11 @@ import {
     Users,
 } from 'lucide-react';
 import PublicLayout from '@/layouts/public-layout';
-import { type BidangItem, getBidangIcon } from './bidang';
+import {
+    type BidangItem,
+    getBidangIcon,
+    getBidangImagePosition,
+} from './bidang';
 
 interface KegiatanRingkas {
     id: number;
@@ -120,7 +124,7 @@ export default function BidangDetailPage({
                                 <img
                                     src={bidang.gambar}
                                     alt={bidang.nama}
-                                    className="h-64 w-full rounded-2xl object-cover sm:h-80"
+                                    className={`aspect-[4/3] w-full rounded-2xl object-cover sm:h-80 ${getBidangImagePosition(bidang.kode)}`}
                                 />
                             </div>
                         </div>

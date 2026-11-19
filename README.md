@@ -128,10 +128,10 @@ Visit **[http://localhost:8000](http://localhost:8000)** in your browser.
 
 After running `php artisan db:seed`, you can log in at [`http://localhost:8000/login`](http://localhost:8000/login) using the following accounts:
 
-| Role                               | Email                 | Password   | Access Scope                                               |
-| :--------------------------------- | :-------------------- | :--------- | :--------------------------------------------------------- |
-| **Super Admin (Chairman)**         | `ketua@geliyat.or.id` | `password` | All Modules + Finance & User Management                    |
-| **Admin (Humanitarian & Orphans)** | `admin@geliyat.or.id` | `password` | Operational Dashboard, Orphans, Donations, Events, Reports |
+| Role                               | Email                 | Password (`.env` Default) | Access Scope                                               |
+| :--------------------------------- | :-------------------- | :------------------------ | :--------------------------------------------------------- |
+| **Super Admin (Chairman)**         | `ketua@geliyat.or.id` | `GeliyatDev2026!`         | All Modules + Finance & User Management                    |
+| **Admin (Humanitarian & Orphans)** | `admin@geliyat.or.id` | `GeliyatDev2026!`         | Operational Dashboard, Orphans, Donations, Events, Reports |
 
 ---
 

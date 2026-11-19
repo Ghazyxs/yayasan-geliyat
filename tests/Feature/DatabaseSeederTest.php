@@ -100,6 +100,19 @@ test('seeder is idempotent when executed multiple times', function () {
     expect(User::whereIn('email', ['ketua@geliyat.or.id', 'admin@geliyat.or.id'])->count())->toBe(2);
 });
 
+test('user seeder does not overwrite existing user password when re-run', function () {
+    $this->seed(DatabaseSeeder::class);
+
+    $admin = User::where('email', 'admin@geliyat.or.id')->firstOrFail();
+    $admin->update(['password' => 'CustomAdminPassword2026!']);
+
+    // Jalankan ulang seeder
+    $this->seed(DatabaseSeeder::class);
+
+    $admin->refresh();
+    expect(Hash::check('CustomAdminPassword2026!', $admin->password))->toBeTrue();
+});
+
 test('seeder does not insert dummy operational data into anak_yatim, donasi, or transaksi_keuangan', function () {
     $this->seed(DatabaseSeeder::class);
 

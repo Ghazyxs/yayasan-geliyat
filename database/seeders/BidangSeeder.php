@@ -20,7 +20,7 @@ class BidangSeeder extends Seeder
             'subjudul' => 'BINAYA (Bina Anak Yatim)',
             'deskripsi' => 'BINAYA (Bina Anak Yatim) berfokus pada peningkatan kualitas pendidikan dan pengembangan potensi anak yatim melalui pembinaan, pendampingan belajar, pendidikan Al-Qur\'an, serta dukungan akses pendidikan guna membangun generasi yang cerdas, berkarakter, dan berdaya saing.',
             'deskripsi_lengkap' => 'BINAYA (Bina Anak Yatim) berfokus pada peningkatan kualitas pendidikan dan pengembangan potensi anak yatim melalui pembinaan, pendampingan belajar, pendidikan Al-Qur\'an, serta dukungan akses pendidikan guna membangun generasi yang cerdas, berkarakter, dan berdaya saing.',
-            'gambar' => 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1200&auto=format&fit=crop',
+            'gambar' => '/images/bidang/pendidikan.jpg',
             'tujuan' => [
                 'Meningkatkan kualitas pendidikan melalui pembinaan dan pendampingan belajar anak yatim.',
                 'Mengembangkan potensi, kecerdasan, dan daya saing anak binaan sejak usia dini hingga usia sekolah.',
@@ -66,7 +66,7 @@ class BidangSeeder extends Seeder
             'subjudul' => 'Pembinaan Spiritual Anak Yatim & Ibu Yatim',
             'deskripsi' => 'Berfokus pada pembinaan spiritual anak yatim dan ibu yatim melalui peningkatan pemahaman serta pengamalan nilai-nilai Islam, pembelajaran Al-Qur\'an, penguatan akidah, ibadah, dan pembentukan akhlak mulia.',
             'deskripsi_lengkap' => 'Bidang Keagamaan berfokus pada pembinaan spiritual anak yatim dan ibu yatim melalui peningkatan pemahaman serta pengamalan nilai-nilai Islam, pembelajaran Al-Qur\'an, penguatan akidah, ibadah, dan pembentukan akhlak mulia.',
-            'gambar' => 'https://images.unsplash.com/photo-1609599006353-e629aaabfeae?q=80&w=1200&auto=format&fit=crop',
+            'gambar' => '/images/bidang/keagamaan.jpg',
             'tujuan' => [
                 'Menyelenggarakan pembinaan keagamaan yang berkelanjutan bagi anak yatim dan ibu yatim.',
                 'Meningkatkan pemahaman serta pengamalan nilai-nilai Islam melalui pembelajaran Al-Qur\'an.',
@@ -93,7 +93,7 @@ class BidangSeeder extends Seeder
             'subjudul' => 'Kepedulian dan Perlindungan Sosial Anak Yatim & Ibu Yatim',
             'deskripsi' => 'Berfokus pada kepedulian dan perlindungan sosial bagi anak yatim dan ibu yatim melalui program santunan, bantuan sosial, pemenuhan kebutuhan dasar, pendampingan, serta kegiatan yang mendukung peningkatan kualitas hidup dan kesejahteraan keluarga yatim.',
             'deskripsi_lengkap' => 'Bidang Kemanusiaan berfokus pada kepedulian dan perlindungan sosial bagi anak yatim dan ibu yatim melalui program santunan, bantuan sosial, pemenuhan kebutuhan dasar, pendampingan, serta kegiatan yang mendukung peningkatan kualitas hidup dan kesejahteraan keluarga yatim.',
-            'gambar' => 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1200&auto=format&fit=crop',
+            'gambar' => '/images/bidang/kemanusiaan.jpg',
             'tujuan' => [
                 'Memberikan perlindungan dan pelayanan sosial bagi anak yatim dan ibu yatim.',
                 'Menyalurkan santunan dan bantuan pemenuhan kebutuhan dasar secara berkelanjutan.',

@@ -32,7 +32,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property Carbon|null $updated_at
  * @property-read Bidang|null $bidang
  */
-#[Fillable(['name', 'email', 'password', 'role', 'bidang_id', 'phone', 'is_active'])]
+#[Fillable(['name', 'email', 'email_verified_at', 'password', 'role', 'bidang_id', 'phone', 'is_active'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
 {
