@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Mail\DonasiInvoiceMail;
+use App\Mail\DonasiPendingMail;
+use Carbon\CarbonInterface;
 use DomainException;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -10,8 +13,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Throwable;
 
 /**
  * @property int $id
@@ -39,6 +46,8 @@ use Illuminate\Support\Str;
  * @property array<string, mixed>|null $midtrans_payload
  * @property \Illuminate\Support\Carbon|null $paid_at
  * @property \Illuminate\Support\Carbon|null $payment_expires_at
+ * @property \Illuminate\Support\Carbon|null $pending_email_sent_at
+ * @property \Illuminate\Support\Carbon|null $invoice_sent_at
  */
 #[Table('donasi')]
 #[Fillable([
@@ -71,6 +80,8 @@ use Illuminate\Support\Str;
     'midtrans_notified_at',
     'paid_at',
     'payment_expires_at',
+    'pending_email_sent_at',
+    'invoice_sent_at',
 ])]
 class Donasi extends Model
 {
@@ -214,12 +225,114 @@ class Donasi extends Model
             'midtrans_notified_at' => 'datetime',
             'paid_at' => 'datetime',
             'payment_expires_at' => 'datetime',
+            'pending_email_sent_at' => 'datetime',
+            'invoice_sent_at' => 'datetime',
         ];
     }
 
     public function isMidtrans(): bool
     {
         return $this->metode_pembayaran === self::METODE_MIDTRANS;
+    }
+
+    public function effectiveExpiresAt(): ?CarbonInterface
+    {
+        $rawExpiry = is_array($this->midtrans_payload) ? ($this->midtrans_payload['expiry_time'] ?? null) : null;
+
+        if (is_string($rawExpiry) && trim($rawExpiry) !== '') {
+            try {
+                return Carbon::parse($rawExpiry, 'Asia/Jakarta')->timezone(config('app.timezone'));
+            } catch (Throwable) {
+                // Fallback ke payment_expires_at jika parsing gagal
+            }
+        }
+
+        return $this->payment_expires_at;
+    }
+
+    public function isPaymentExpired(): bool
+    {
+        if ($this->status_verifikasi !== self::STATUS_MENUNGGU) {
+            return false;
+        }
+
+        return $this->effectiveExpiresAt()?->isPast() === true;
+    }
+
+    public function formatPaymentMethodLabel(): string
+    {
+        if (! $this->isMidtrans()) {
+            return $this->rekening_tujuan ?: self::REKENING_DEFAULT_PUBLIK;
+        }
+
+        return match (strtolower((string) $this->midtrans_payment_type)) {
+            'qris' => 'QRIS',
+            'bank_transfer', 'permata_va' => 'Transfer Bank (Virtual Account)',
+            'echannel' => 'Mandiri Bill / Virtual Account',
+            'gopay' => 'GoPay',
+            'shopeepay' => 'ShopeePay',
+            'cstore' => 'Minimarket',
+            'credit_card' => 'Kartu Kredit / Debit',
+            default => $this->midtrans_payment_type
+                ? strtoupper(str_replace('_', ' ', (string) $this->midtrans_payment_type))
+                : 'Pembayaran Digital (Midtrans)',
+        };
+    }
+
+    /**
+     * Kirim email informasi transaksi pending & link lanjutan pembayaran tepat satu kali.
+     */
+    public function kirimEmailPendingJikaPerlu(): void
+    {
+        if (! filled($this->email_donatur)) {
+            return;
+        }
+
+        $claimed = self::query()
+            ->whereKey($this->id)
+            ->whereNull('pending_email_sent_at')
+            ->update(['pending_email_sent_at' => now()]);
+
+        if ($claimed === 0) {
+            return;
+        }
+
+        try {
+            Mail::to($this->email_donatur)->send(new DonasiPendingMail($this->fresh()));
+        } catch (Throwable $e) {
+            self::query()->whereKey($this->id)->update(['pending_email_sent_at' => null]);
+            Log::warning('Gagal mengirim email pending donasi: '.$e->getMessage(), [
+                'kode_donasi' => $this->kode_donasi,
+            ]);
+        }
+    }
+
+    /**
+     * Kirim email bukti invoice resmi donasi tepat satu kali (idempoten).
+     */
+    public function kirimEmailInvoiceJikaPerlu(): void
+    {
+        if (! filled($this->email_donatur)) {
+            return;
+        }
+
+        $claimed = self::query()
+            ->whereKey($this->id)
+            ->whereNull('invoice_sent_at')
+            ->update(['invoice_sent_at' => now()]);
+
+        if ($claimed === 0) {
+            return;
+        }
+
+        try {
+            Mail::to($this->email_donatur)->send(new DonasiInvoiceMail($this->fresh()));
+        } catch (Throwable $e) {
+            self::query()->whereKey($this->id)->update(['invoice_sent_at' => null]);
+            Log::warning('Gagal mengirim email invoice donasi: '.$e->getMessage(), [
+                'kode_donasi' => $this->kode_donasi,
+            ]);
+        }
     }
 
     /** @return BelongsTo<RekeningYayasan, $this> */
@@ -427,7 +540,7 @@ class Donasi extends Model
         $paymentType = (string) ($payload['payment_type'] ?? '');
         $transactionId = (string) ($payload['transaction_id'] ?? '');
 
-        return DB::transaction(function () use ($orderId, $transactionStatus, $fraudStatus, $paymentType, $transactionId, $payload) {
+        $donasi = DB::transaction(function () use ($orderId, $transactionStatus, $fraudStatus, $paymentType, $transactionId, $payload) {
             /** @var self $donasi */
             $donasi = self::query()->where('kode_donasi', $orderId)->lockForUpdate()->firstOrFail();
 
@@ -527,6 +640,12 @@ class Donasi extends Model
 
             return $donasi->refresh();
         });
+
+        if ($donasi->status_verifikasi === self::STATUS_TERVERIFIKASI) {
+            $donasi->kirimEmailInvoiceJikaPerlu();
+        }
+
+        return $donasi->fresh();
     }
 
     /**

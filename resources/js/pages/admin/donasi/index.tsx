@@ -16,6 +16,7 @@ import {
     Wallet,
     Calendar,
     UserCheck,
+    Mail,
     Phone,
     CreditCard,
     Receipt,
@@ -71,7 +72,7 @@ interface DonasiItem {
     id: number;
     kode_donasi: string;
     nama_donatur: string;
-    no_whatsapp: string;
+    no_whatsapp: string | null;
     jenis_donasi: string;
     anak_yatim_id: number | null;
     rekening_tujuan: string;
@@ -836,10 +837,21 @@ export default function DonasiAdmin({
                                                         {item.nama_donatur}
                                                     </div>
                                                     <div className="mt-1 flex items-center gap-1 text-[11px] text-slate-500">
-                                                        <Phone className="size-3 text-slate-400" />
-                                                        <span>
-                                                            {item.no_whatsapp}
-                                                        </span>
+                                                        {item.email_donatur ? (
+                                                            <>
+                                                                <Mail className="size-3 text-slate-400" />
+                                                                <span className="truncate max-w-[180px]">
+                                                                    {item.email_donatur}
+                                                                </span>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <Phone className="size-3 text-slate-400" />
+                                                                <span>
+                                                                    {item.no_whatsapp || '-'}
+                                                                </span>
+                                                            </>
+                                                        )}
                                                     </div>
                                                 </td>
 
@@ -1146,11 +1158,20 @@ export default function DonasiAdmin({
                                     </div>
                                     <div>
                                         <span className="text-[11px] text-slate-400">
-                                            Kontak WhatsApp
+                                            Kontak Donatur
                                         </span>
-                                        <p className="mt-0.5 font-semibold text-slate-800">
-                                            {detailItem.no_whatsapp}
+                                        <p className="mt-0.5 font-semibold text-slate-800 break-all">
+                                            {detailItem.email_donatur ||
+                                                detailItem.no_whatsapp ||
+                                                '-'}
                                         </p>
+                                        {detailItem.email_donatur &&
+                                            detailItem.no_whatsapp && (
+                                                <p className="mt-0.5 text-[11px] text-slate-500">
+                                                    WhatsApp:{' '}
+                                                    {detailItem.no_whatsapp}
+                                                </p>
+                                            )}
                                     </div>
                                     <div>
                                         <span className="text-[11px] text-slate-400">

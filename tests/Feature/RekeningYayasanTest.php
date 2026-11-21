@@ -182,6 +182,7 @@ test('inactive bank account cannot be selected for new donations', function () {
     // Donasi publik dengan rekening_id nonaktif harus ditolak
     $response = $this->post(route('donasi.store'), [
         'nama_donatur' => 'Donatur Hamba Allah',
+        'email' => 'hamba.allah@example.com',
         'no_whatsapp' => '081234567899',
         'jenis_donasi' => Donasi::JENIS_DONASI_UMUM,
         'rekening_id' => $rekeningNonaktif->id,
@@ -211,6 +212,7 @@ test('donation creates permanent snapshot of bank account details', function () 
 
     $this->post(route('donasi.store'), [
         'nama_donatur' => 'Ahmad Fauzi',
+        'email' => 'ahmad.fauzi@example.com',
         'no_whatsapp' => '081234567888',
         'jenis_donasi' => Donasi::JENIS_DONASI_UMUM,
         'rekening_id' => $rekening->id,

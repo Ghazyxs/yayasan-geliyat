@@ -19,6 +19,8 @@ class StoreAdminDonasiRequest extends StorePublicDonasiRequest
     public function rules(): array
     {
         return array_merge(parent::rules(), [
+            'no_whatsapp' => ['required', 'string', 'max:30', 'regex:/^[0-9+\-\s()]{8,25}$/'],
+            'email' => ['nullable', 'email', 'max:255'],
             'jenis_donasi' => ['required', 'string', Rule::in(Donasi::JENIS_DONASI_LIST)],
             'rekening_tujuan' => ['required', 'string', 'max:100'],
             'nominal' => ['required', 'integer', 'min:10000', 'max:100000000000'],

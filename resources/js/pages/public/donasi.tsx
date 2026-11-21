@@ -35,6 +35,8 @@ interface DonasiSubmittedInfo {
     status_verifikasi: string;
     snap_token?: string | null;
     snap_redirect_url?: string | null;
+    invoice_url?: string | null;
+    payment_expires_at?: string | null;
 }
 
 interface DonasiPageProps {
@@ -57,8 +59,8 @@ const DEFAULT_NOMINAL_OPTIONS: number[] = [
 const ALUR_BERDONASI_ID = [
     {
         num: '1',
-        title: 'Isi Identitas Donatur',
-        desc: 'Masukkan nama lengkap atau pilih Hamba Allah beserta nomor WhatsApp aktif Anda.',
+        title: 'Isi Identitas & Email',
+        desc: 'Masukkan nama Anda (atau pilih Hamba Allah) serta alamat email aktif untuk pengiriman tautan pembayaran dan bukti invoice resmi.',
     },
     {
         num: '2',
@@ -72,16 +74,16 @@ const ALUR_BERDONASI_ID = [
     },
     {
         num: '4',
-        title: 'Konfirmasi Otomatis',
-        desc: 'Pembayaran terverifikasi otomatis oleh sistem dan langsung tercatat pada buku kas amanah yayasan.',
+        title: 'Invoice Terkirim ke Email',
+        desc: 'Setelah pembayaran terverifikasi otomatis, bukti invoice resmi donasi dikirim langsung ke email Anda.',
     },
 ];
 
 const ALUR_BERDONASI_EN = [
     {
         num: '1',
-        title: 'Enter Donor Identity',
-        desc: 'Enter your full name or select Anonymous (Hamba Allah) along with your active WhatsApp number.',
+        title: 'Enter Identity & Email',
+        desc: 'Enter your name (or select Anonymous / Hamba Allah) and an active email address for your payment continuation link and official invoice.',
     },
     {
         num: '2',
@@ -95,8 +97,8 @@ const ALUR_BERDONASI_EN = [
     },
     {
         num: '4',
-        title: 'Automatic Confirmation',
-        desc: 'Your payment is verified automatically by the system and directly recorded in the foundation ledger.',
+        title: 'Invoice Sent to Email',
+        desc: 'Once payment is verified automatically, an official donation invoice is sent directly to your email.',
     },
 ];
 
@@ -121,7 +123,7 @@ export default function DonasiPage({
     const [isHambaAllah, setIsHambaAllah] = useState(false);
     const [namaDonatur, setNamaDonatur] = useState('');
     const [savedNama, setSavedNama] = useState('');
-    const [noWhatsapp, setNoWhatsapp] = useState('');
+    const [email, setEmail] = useState('');
     const [nominal, setNominal] = useState<number | null>(null);
     const [customNominalInput, setCustomNominalInput] = useState('');
     const [pesanDoa, setPesanDoa] = useState('');
@@ -135,6 +137,7 @@ export default function DonasiPage({
         message: string;
         kode_donasi?: string;
         nominal?: number;
+        invoice_url?: string;
     } | null>(null);
 
     // Muat script snap.js secara otomatis
@@ -206,15 +209,15 @@ export default function DonasiPage({
             );
         }
 
-        if (!noWhatsapp.trim()) {
-            errors.no_whatsapp = t(
-                'Nomor WhatsApp wajib diisi.',
-                'WhatsApp number is required.',
+        if (!email.trim()) {
+            errors.email = t(
+                'Alamat email wajib diisi untuk pengiriman bukti invoice.',
+                'Email address is required to send your donation invoice.',
             );
-        } else if (!/^[0-9+\-\s()]{8,25}$/.test(noWhatsapp.trim())) {
-            errors.no_whatsapp = t(
-                'Format nomor WhatsApp tidak valid (minimal 8 angka).',
-                'Invalid WhatsApp number format (minimum 8 digits).',
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+            errors.email = t(
+                'Format alamat email tidak valid.',
+                'Invalid email address format.',
             );
         }
 
@@ -255,7 +258,7 @@ export default function DonasiPage({
                 },
                 body: JSON.stringify({
                     nama_donatur: isHambaAllah ? 'Hamba Allah' : namaDonatur.trim(),
-                    no_whatsapp: noWhatsapp.trim(),
+                    email: email.trim(),
                     nominal: nominal,
                     pesan_doa: pesanDoa.trim() || undefined,
                 }),
@@ -285,23 +288,30 @@ export default function DonasiPage({
                 return;
             }
 
+            const invoiceUrl = result.invoice_url || undefined;
+            const statusUrl = result.status_url || undefined;
+
             if (result.snap_token) {
                 if (typeof window.snap !== 'undefined' && window.snap.pay) {
                     window.snap.pay(result.snap_token, {
                         onSuccess: () => {
+                            if (statusUrl) {
+                                fetch(statusUrl).catch(() => {});
+                            }
                             setGlobalAlert({
                                 type: 'success',
                                 message: t(
-                                    'Alhamdulillah! Pembayaran donasi Anda berhasil dan terverifikasi otomatis.',
-                                    'Alhamdulillah! Your donation payment was successful and verified automatically.',
+                                    'Alhamdulillah! Pembayaran donasi Anda berhasil dan bukti invoice resmi telah dikirim ke email Anda.',
+                                    'Alhamdulillah! Your donation payment was successful and an official invoice has been sent to your email.',
                                 ),
                                 kode_donasi: result.kode_donasi,
                                 nominal: result.nominal,
+                                invoice_url: invoiceUrl,
                             });
                             setIsHambaAllah(false);
                             setNamaDonatur('');
                             setSavedNama('');
-                            setNoWhatsapp('');
+                            setEmail('');
                             setNominal(null);
                             setCustomNominalInput('');
                             setPesanDoa('');
@@ -311,11 +321,12 @@ export default function DonasiPage({
                             setGlobalAlert({
                                 type: 'pending',
                                 message: t(
-                                    'Pembayaran Anda sedang diproses. Silakan selesaikan pembayaran sesuai instruksi.',
-                                    'Your payment is being processed. Please complete the payment according to the instructions.',
+                                    'Pembayaran Anda sedang menunggu penyelesaian. Tautan untuk melanjutkan pembayaran telah dikirim ke email Anda.',
+                                    'Your payment is awaiting completion. A link to resume your payment has been sent to your email.',
                                 ),
                                 kode_donasi: result.kode_donasi,
                                 nominal: result.nominal,
+                                invoice_url: invoiceUrl,
                             });
                             setIsSubmitting(false);
                         },
@@ -327,6 +338,7 @@ export default function DonasiPage({
                                     'Donation payment failed or was declined. Please use another payment method.',
                                 ),
                                 kode_donasi: result.kode_donasi,
+                                invoice_url: invoiceUrl,
                             });
                             setIsSubmitting(false);
                         },
@@ -334,11 +346,12 @@ export default function DonasiPage({
                             setGlobalAlert({
                                 type: 'pending',
                                 message: t(
-                                    'Jendela pembayaran ditutup. Anda dapat melanjutkan pembayaran nanti dengan kode donasi ini.',
-                                    'Payment window was closed. You can complete your payment later using this donation code.',
+                                    'Jendela pembayaran ditutup. Anda dapat melanjutkan pembayaran sebelum batas waktu berakhir melalui tombol di bawah atau tautan yang telah dikirim ke email Anda.',
+                                    'Payment window was closed. You can resume your payment before expiry via the button below or the link sent to your email.',
                                 ),
                                 kode_donasi: result.kode_donasi,
                                 nominal: result.nominal,
+                                invoice_url: invoiceUrl,
                             });
                             setIsSubmitting(false);
                         },
@@ -349,10 +362,12 @@ export default function DonasiPage({
                     setGlobalAlert({
                         type: 'pending',
                         message: t(
-                            'Data donasi tercatat. Modul pembayaran sedang dimuat, silakan muat ulang halaman.',
-                            'Donation recorded. Payment module is loading, please refresh the page.',
+                            'Data donasi tercatat. Anda dapat membuka halaman status pembayaran melalui tombol di bawah.',
+                            'Donation recorded. You can open the payment status page via the button below.',
                         ),
                         kode_donasi: result.kode_donasi,
+                        nominal: result.nominal,
+                        invoice_url: invoiceUrl,
                     });
                     setIsSubmitting(false);
                 }
@@ -360,16 +375,17 @@ export default function DonasiPage({
                 setGlobalAlert({
                     type: 'success',
                     message: t(
-                        'Pengajuan donasi berhasil dicatat dan sedang dalam antrean verifikasi.',
-                        'Your donation submission has been recorded and is queued for verification.',
+                        'Pengajuan donasi berhasil dicatat dan tautan status donasi telah dikirim ke email Anda.',
+                        'Your donation submission has been recorded and a status link has been sent to your email.',
                     ),
                     kode_donasi: result.kode_donasi,
                     nominal: result.nominal,
+                    invoice_url: invoiceUrl,
                 });
                 setIsHambaAllah(false);
                 setNamaDonatur('');
                 setSavedNama('');
-                setNoWhatsapp('');
+                setEmail('');
                 setNominal(null);
                 setCustomNominalInput('');
                 setPesanDoa('');
@@ -494,11 +510,31 @@ export default function DonasiPage({
                                                     </span>
                                                 </div>
                                             )}
-                                            <div className="ml-auto">
+                                            <div className="ml-auto flex flex-wrap items-center gap-2">
                                                 <span className="inline-flex items-center gap-1 rounded-full bg-[#e8f8fa] px-2.5 py-0.5 text-[11px] font-bold text-[#087f8c]">
                                                     <ShieldCheck className="size-3" />
                                                     {t('Tercatat Resmi', 'Officially Recorded')}
                                                 </span>
+                                                {globalAlert.invoice_url && (
+                                                    <Link
+                                                        href={globalAlert.invoice_url}
+                                                        prefetch={false}
+                                                        className="inline-flex items-center gap-1.5 rounded-lg bg-[#14bace] px-3 py-1.5 font-poppins text-xs font-semibold text-white transition hover:bg-[#087f8c]"
+                                                    >
+                                                        <span>
+                                                            {globalAlert.type === 'success'
+                                                                ? t(
+                                                                      'Lihat & Cetak Invoice',
+                                                                      'View & Print Invoice',
+                                                                  )
+                                                                : t(
+                                                                      'Lanjutkan / Cek Status',
+                                                                      'Resume / Check Status',
+                                                                  )}
+                                                        </span>
+                                                        <ChevronRight className="size-3.5" />
+                                                    </Link>
+                                                )}
                                             </div>
                                         </div>
                                     )}
@@ -598,60 +634,18 @@ export default function DonasiPage({
                                         onSubmit={handleSubmit}
                                         className="mt-6 space-y-6"
                                     >
-                                        {/* Identitas Donatur: Nama & WhatsApp */}
-                                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                        {/* Identitas Donatur: Nama & Email */}
+                                        <div className="grid grid-cols-1 items-start gap-4 sm:grid-cols-2">
                                             <div>
-                                                <div className="mb-1.5 flex flex-wrap items-center justify-between gap-1">
-                                                    <label
-                                                        htmlFor="nama_donatur"
-                                                        className="font-poppins text-xs font-semibold text-slate-700"
-                                                    >
-                                                        {t('Nama Lengkap', 'Full Name')}{' '}
-                                                        <span className="text-rose-500">
-                                                            *
-                                                        </span>
-                                                    </label>
-                                                    <div className="flex items-center gap-2.5">
-                                                        <label className="inline-flex cursor-pointer items-center gap-1 font-poppins text-xs text-slate-600 hover:text-[#087f8c]">
-                                                            <input
-                                                                type="radio"
-                                                                name="donor_identity"
-                                                                checked={!isHambaAllah}
-                                                                onChange={() => {
-                                                                    setIsHambaAllah(false);
-                                                                    setNamaDonatur(savedNama);
-                                                                }}
-                                                                className="size-3.5 accent-[#14bace]"
-                                                            />
-                                                            <span>
-                                                                {t('Nama Sendiri', 'Own Name')}
-                                                            </span>
-                                                        </label>
-                                                        <label className="inline-flex cursor-pointer items-center gap-1 font-poppins text-xs text-slate-600 hover:text-[#087f8c]">
-                                                            <input
-                                                                type="radio"
-                                                                name="donor_identity"
-                                                                checked={isHambaAllah}
-                                                                onChange={() => {
-                                                                    if (!isHambaAllah && namaDonatur !== 'Hamba Allah') {
-                                                                        setSavedNama(namaDonatur);
-                                                                    }
-                                                                    setIsHambaAllah(true);
-                                                                    setNamaDonatur('Hamba Allah');
-                                                                    if (fieldErrors.nama_donatur) {
-                                                                        setFieldErrors((prev) => {
-                                                                            const next = { ...prev };
-                                                                            delete next.nama_donatur;
-                                                                            return next;
-                                                                        });
-                                                                    }
-                                                                }}
-                                                                className="size-3.5 accent-[#14bace]"
-                                                            />
-                                                            <span>Hamba Allah</span>
-                                                        </label>
-                                                    </div>
-                                                </div>
+                                                <label
+                                                    htmlFor="nama_donatur"
+                                                    className="mb-1.5 block font-poppins text-xs font-semibold text-slate-700"
+                                                >
+                                                    {t('Nama Lengkap', 'Full Name')}{' '}
+                                                    <span className="text-rose-500">
+                                                        *
+                                                    </span>
+                                                </label>
                                                 <input
                                                     id="nama_donatur"
                                                     type="text"
@@ -682,6 +676,46 @@ export default function DonasiPage({
                                                             : 'bg-white text-slate-800 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20'
                                                     }`}
                                                 />
+                                                <div className="mt-1.5 flex items-center gap-3">
+                                                    <label className="inline-flex cursor-pointer items-center gap-1 font-poppins text-[11px] text-slate-600 hover:text-[#087f8c]">
+                                                        <input
+                                                            type="radio"
+                                                            name="donor_identity"
+                                                            checked={!isHambaAllah}
+                                                            onChange={() => {
+                                                                setIsHambaAllah(false);
+                                                                setNamaDonatur(savedNama);
+                                                            }}
+                                                            className="size-3.5 accent-[#14bace]"
+                                                        />
+                                                        <span>
+                                                            {t('Nama Sendiri', 'Own Name')}
+                                                        </span>
+                                                    </label>
+                                                    <label className="inline-flex cursor-pointer items-center gap-1 font-poppins text-[11px] text-slate-600 hover:text-[#087f8c]">
+                                                        <input
+                                                            type="radio"
+                                                            name="donor_identity"
+                                                            checked={isHambaAllah}
+                                                            onChange={() => {
+                                                                if (!isHambaAllah && namaDonatur !== 'Hamba Allah') {
+                                                                    setSavedNama(namaDonatur);
+                                                                }
+                                                                setIsHambaAllah(true);
+                                                                setNamaDonatur('Hamba Allah');
+                                                                if (fieldErrors.nama_donatur) {
+                                                                    setFieldErrors((prev) => {
+                                                                        const next = { ...prev };
+                                                                        delete next.nama_donatur;
+                                                                        return next;
+                                                                    });
+                                                                }
+                                                            }}
+                                                            className="size-3.5 accent-[#14bace]"
+                                                        />
+                                                        <span>Hamba Allah</span>
+                                                    </label>
+                                                </div>
                                                 {fieldErrors.nama_donatur && !isHambaAllah && (
                                                     <p className="mt-1 text-xs text-rose-600">
                                                         {fieldErrors.nama_donatur}
@@ -691,38 +725,44 @@ export default function DonasiPage({
 
                                             <div>
                                                 <label
-                                                    htmlFor="no_whatsapp"
+                                                    htmlFor="email"
                                                     className="mb-1.5 block font-poppins text-xs font-semibold text-slate-700"
                                                 >
-                                                    {t('Nomor WhatsApp', 'WhatsApp Number')}{' '}
+                                                    {t('Alamat Email', 'Email Address')}{' '}
                                                     <span className="text-rose-500">
                                                         *
                                                     </span>
                                                 </label>
                                                 <input
-                                                    id="no_whatsapp"
-                                                    type="tel"
+                                                    id="email"
+                                                    type="email"
                                                     required
                                                     placeholder={t(
-                                                        'Contoh: 081234567890',
-                                                        'e.g. 081234567890',
+                                                        'Contoh: donatur@email.com',
+                                                        'e.g. donor@email.com',
                                                     )}
-                                                    value={noWhatsapp}
+                                                    value={email}
                                                     onChange={(e) => {
-                                                        setNoWhatsapp(e.target.value);
-                                                        if (fieldErrors.no_whatsapp) {
+                                                        setEmail(e.target.value);
+                                                        if (fieldErrors.email) {
                                                             setFieldErrors((prev) => {
                                                                 const next = { ...prev };
-                                                                delete next.no_whatsapp;
+                                                                delete next.email;
                                                                 return next;
                                                             });
                                                         }
                                                     }}
                                                     className="w-full rounded-xl border border-[#e4eaec] bg-white px-3.5 py-2.5 font-sans text-sm text-slate-800 outline-hidden transition focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20"
                                                 />
-                                                {fieldErrors.no_whatsapp && (
+                                                <p className="mt-1.5 font-sans text-[11px] text-slate-500">
+                                                    {t(
+                                                        'Untuk pengiriman tautan bayar & bukti invoice.',
+                                                        'For payment link & official invoice delivery.',
+                                                    )}
+                                                </p>
+                                                {fieldErrors.email && (
                                                     <p className="mt-1 text-xs text-rose-600">
-                                                        {fieldErrors.no_whatsapp}
+                                                        {fieldErrors.email}
                                                     </p>
                                                 )}
                                             </div>
