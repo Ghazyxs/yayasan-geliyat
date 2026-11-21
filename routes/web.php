@@ -17,6 +17,7 @@ use App\Http\Controllers\PublicLaporanTahunanController;
 use App\Http\Controllers\PublicRekapKegiatanController;
 use App\Models\Kegiatan;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 
@@ -45,7 +46,12 @@ Route::inertia('/profil', 'public/profil')->name('profil');
 Route::inertia('/profil-pimpinan', 'public/profil-pimpinan')->name('profil-pimpinan');
 Route::get('/donasi', [PublicDonasiController::class, 'index'])->name('donasi');
 Route::post('/donasi', [PublicDonasiController::class, 'store'])->name('donasi.store');
-Route::get('/donasi/status/{kode}', [PublicDonasiController::class, 'checkStatus'])->name('donasi.status');
+Route::get('/donasi/status/{kode}', [PublicDonasiController::class, 'checkStatus'])
+    ->middleware(['signed', 'throttle:60,1'])
+    ->name('donasi.status');
+Route::get('/donasi/invoice/{kode}', [PublicDonasiController::class, 'invoice'])
+    ->middleware(['signed', 'throttle:60,1'])
+    ->name('donasi.invoice');
 
 // Midtrans Webhook (CSRF-exempt)
 Route::post('/midtrans/webhook', [MidtransWebhookController::class, 'handle'])->name('midtrans.webhook');
@@ -121,7 +127,7 @@ if (app()->isLocal()) {
             abort(404, 'Akun seeder belum ada. Jalankan: php artisan db:seed');
         }
 
-        auth()->login($user);
+        Auth::login($user);
 
         return redirect()->route('dashboard');
     })->name('switch-role');

@@ -10,6 +10,7 @@ interface OrgNodeProps {
     fill: string;
     stroke: string;
     roleColor: string;
+    nameColor?: string;
 }
 
 function OrgNode({
@@ -22,6 +23,7 @@ function OrgNode({
     fill,
     stroke,
     roleColor,
+    nameColor = '#1d2b2d',
 }: OrgNodeProps) {
     const cx = x + w / 2;
     const isTwoLineRole = roleLines.length > 1;
@@ -59,7 +61,7 @@ function OrgNode({
                 x={cx}
                 y={nameY}
                 textAnchor="middle"
-                fill="#1d2b2d"
+                fill={nameColor}
                 fontSize={11.5}
                 fontWeight={500}
                 fontFamily="Inter, system-ui, sans-serif"
@@ -74,11 +76,62 @@ export default function BaganOrganisasi() {
     const { t } = useLanguage();
 
     const lineProps = {
-        stroke: '#334155',
-        strokeWidth: 1.75,
+        stroke: '#718083',
+        strokeWidth: 1.6,
         fill: 'none',
         strokeLinecap: 'round' as const,
         strokeLinejoin: 'round' as const,
+    };
+
+    const palette = {
+        ketuaPembina: {
+            fill: '#1d2b2d',
+            stroke: '#1d2b2d',
+            roleColor: '#9decf4',
+            nameColor: '#ffffff',
+        },
+        anggotaPembina: {
+            fill: '#f1f7f8',
+            stroke: '#718083',
+            roleColor: '#1d2b2d',
+            nameColor: '#1d2b2d',
+        },
+        ketuaPengawas: {
+            fill: '#f7fcfd',
+            stroke: '#718083',
+            roleColor: '#186972',
+            nameColor: '#1d2b2d',
+        },
+        anggotaPengawas: {
+            fill: '#ffffff',
+            stroke: '#cbd5e1',
+            roleColor: '#475569',
+            nameColor: '#1d2b2d',
+        },
+        ketuaYayasan: {
+            fill: '#087f8c',
+            stroke: '#087f8c',
+            roleColor: '#d1f6fa',
+            nameColor: '#ffffff',
+        },
+        pengurusIntiSub: {
+            fill: '#e8f8fa',
+            stroke: '#14bace',
+            roleColor: '#087f8c',
+            nameColor: '#1d2b2d',
+        },
+        ketuaBidang: {
+            fill: '#e8f8fa',
+            stroke: '#14bace',
+            roleColor: '#087f8c',
+            nameColor: '#1d2b2d',
+        },
+        pengurusBidang: {
+            fill: '#ffffff',
+            stroke: '#cde3e6',
+            roleColor: '#186972',
+            nameColor: '#1d2b2d',
+        },
     };
 
     const bidangGroups = [
@@ -86,13 +139,10 @@ export default function BaganOrganisasi() {
             cx: 182,
             leftCx: 96,
             rightCx: 268,
-            ketuaX: 87,
-            ketuaW: 190,
+            ketuaX: 77,
+            ketuaW: 210,
             leftX: 18,
             rightX: 190,
-            fill: '#f3e8ff',
-            stroke: '#c084fc',
-            roleColor: '#581c87',
             ketuaRole: [t('Ketua Bidang Pendidikan', 'Head of Education')],
             ketuaName: 'Hindun Purnama',
             bendaharaRole: [
@@ -110,13 +160,10 @@ export default function BaganOrganisasi() {
             cx: 534,
             leftCx: 448,
             rightCx: 620,
-            ketuaX: 439,
-            ketuaW: 190,
+            ketuaX: 429,
+            ketuaW: 210,
             leftX: 370,
             rightX: 542,
-            fill: '#ffedd5',
-            stroke: '#fb923c',
-            roleColor: '#7c2d12',
             ketuaRole: [t('Ketua Bidang Keagamaan', 'Head of Religious Affairs')],
             ketuaName: 'Siti Solihah',
             bendaharaRole: [
@@ -134,13 +181,10 @@ export default function BaganOrganisasi() {
             cx: 886,
             leftCx: 800,
             rightCx: 972,
-            ketuaX: 791,
-            ketuaW: 190,
+            ketuaX: 781,
+            ketuaW: 210,
             leftX: 722,
             rightX: 894,
-            fill: '#ffe4e6',
-            stroke: '#fb7185',
-            roleColor: '#881337',
             ketuaRole: [t('Ketua Bidang Kemanusiaan', 'Head of Humanity')],
             ketuaName: 'Vivi Ratnawati',
             bendaharaRole: [
@@ -158,13 +202,10 @@ export default function BaganOrganisasi() {
             cx: 1238,
             leftCx: 1152,
             rightCx: 1324,
-            ketuaX: 1133,
-            ketuaW: 210,
+            ketuaX: 1128,
+            ketuaW: 220,
             leftX: 1074,
             rightX: 1246,
-            fill: '#cffafe',
-            stroke: '#22d3ee',
-            roleColor: '#164e63',
             ketuaRole: [
                 t('Ketua Bidang Pengembangan', 'Head of Economic'),
                 t('Ekonomi', 'Development'),
@@ -187,7 +228,7 @@ export default function BaganOrganisasi() {
         <div className="w-full overflow-x-auto pb-2">
             <div className="min-w-[1000px]">
                 <svg
-                    viewBox="0 0 1420 556"
+                    viewBox="0 0 1420 612"
                     className="h-auto w-full select-text"
                     role="img"
                     aria-label={t(
@@ -195,187 +236,142 @@ export default function BaganOrganisasi() {
                         'Organizational Structure Chart of Yayasan Geliyat Mahdiesa Nahate',
                     )}
                 >
-                    {/* --- CONNECTOR LINES --- */}
-                    {/* Pembina to Ketua Yayasan */}
-                    <path
-                        d="M 635 84 L 635 126 L 710 126 L 710 168"
-                        {...lineProps}
-                    />
+                    {/* --- CONNECTOR LINES (ALL STRICTLY ORTHOGONAL) --- */}
+                    {/* Anggota Pembina <-> Ketua Pembina */}
+                    <line x1={555} y1={57} x2={595} y2={57} {...lineProps} />
 
-                    {/* Anggota Pembina to Ketua Pengawas (Dashed - Hubungan Pengawasan) */}
+                    {/* Ketua Pembina - - - Ketua Pengawas (Dashed - Hubungan Pengawasan) */}
                     <line
-                        x1={983}
-                        y1={52}
-                        x2={1045}
-                        y2={52}
-                        stroke="#334155"
-                        strokeWidth={1.75}
+                        x1={825}
+                        y1={57}
+                        x2={1111}
+                        y2={57}
+                        stroke="#186972"
+                        strokeWidth={1.6}
                         strokeDasharray="6 5"
                         strokeLinecap="round"
                     />
 
-                    {/* Ketua Pengawas to Anggota Pengawas 1 (down) */}
-                    <line x1={1135} y1={84} x2={1135} y2={112} {...lineProps} />
+                    {/* Ketua Pengawas -> Symmetric T-fork to 2 Anggota Pengawas */}
+                    <line x1={1206} y1={90} x2={1206} y2={110} {...lineProps} />
+                    <line x1={1106} y1={110} x2={1306} y2={110} {...lineProps} />
+                    <line x1={1106} y1={110} x2={1106} y2={128} {...lineProps} />
+                    <line x1={1306} y1={110} x2={1306} y2={128} {...lineProps} />
 
-                    {/* Ketua Pengawas to Anggota Pengawas 2 (right then down) */}
-                    <path
-                        d="M 1225 52 L 1319.5 52 L 1319.5 112"
-                        {...lineProps}
-                    />
+                    {/* Ketua Pembina -> Ketua Yayasan (Straight central vertical axis x=710) */}
+                    <line x1={710} y1={90} x2={710} y2={136} {...lineProps} />
 
-                    {/* Sekretaris Yayasan <-> Ketua Yayasan <-> Bendahara Yayasan */}
-                    <line x1={570} y1={200} x2={602} y2={200} {...lineProps} />
-                    <line x1={818} y1={200} x2={850} y2={200} {...lineProps} />
+                    {/* Ketua Yayasan down central spine to 4 Bidang crossbar */}
+                    <line x1={710} y1={202} x2={710} y2={356} {...lineProps} />
 
-                    {/* Ketua Yayasan down to horizontal spine for 4 Bidang */}
-                    <line x1={710} y1={232} x2={710} y2={286} {...lineProps} />
-                    <line x1={182} y1={286} x2={1238} y2={286} {...lineProps} />
+                    {/* Symmetric T-fork below Ketua Yayasan to Sekretaris Yayasan & Bendahara Yayasan */}
+                    <line x1={550} y1={226} x2={870} y2={226} {...lineProps} />
+                    <line x1={550} y1={226} x2={550} y2={250} {...lineProps} />
+                    <line x1={870} y1={226} x2={870} y2={250} {...lineProps} />
+
+                    {/* Horizontal spine for 4 Bidang */}
+                    <line x1={182} y1={356} x2={1238} y2={356} {...lineProps} />
 
                     {/* Drops to each Ketua Bidang & splits to Bendahara/Sekretaris */}
                     {bidangGroups.map((group) => (
                         <g key={group.cx}>
                             <line
                                 x1={group.cx}
-                                y1={286}
+                                y1={356}
                                 x2={group.cx}
-                                y2={334}
+                                y2={396}
                                 {...lineProps}
                             />
                             <line
                                 x1={group.cx}
-                                y1={402}
+                                y1={464}
                                 x2={group.cx}
-                                y2={434}
+                                y2={490}
                                 {...lineProps}
                             />
                             <line
                                 x1={group.leftCx}
-                                y1={434}
+                                y1={490}
                                 x2={group.rightCx}
-                                y2={434}
+                                y2={490}
                                 {...lineProps}
                             />
                             <line
                                 x1={group.leftCx}
-                                y1={434}
+                                y1={490}
                                 x2={group.leftCx}
-                                y2={464}
+                                y2={516}
                                 {...lineProps}
                             />
                             <line
                                 x1={group.rightCx}
-                                y1={434}
+                                y1={490}
                                 x2={group.rightCx}
-                                y2={464}
+                                y2={516}
                                 {...lineProps}
                             />
                         </g>
                     ))}
 
-                    {/* --- ROW 1: PEMBINA & PENGAWAS --- */}
+                    {/* --- ROW 1: PEMBINA & KETUA PENGAWAS --- */}
                     <OrgNode
-                        x={530}
-                        y={20}
-                        w={210}
-                        h={64}
-                        roleLines={[t('Ketua Pembina', 'Chair of Trustees')]}
-                        name="Bahrul Hayat, S.Ag., M.Sos."
-                        fill="#dbeafe"
-                        stroke="#60a5fa"
-                        roleColor="#1e3a8a"
-                    />
-                    <OrgNode
-                        x={758}
-                        y={20}
-                        w={225}
-                        h={64}
+                        x={309}
+                        y={24}
+                        w={246}
+                        h={66}
                         roleLines={[t('Anggota Pembina', 'Board of Trustees Member')]}
                         name="Fahmi Ayatullah Assidqie, M.Sos."
-                        fill="#dbeafe"
-                        stroke="#60a5fa"
-                        roleColor="#1e3a8a"
+                        {...palette.anggotaPembina}
                     />
                     <OrgNode
-                        x={1045}
-                        y={20}
-                        w={180}
-                        h={64}
+                        x={595}
+                        y={24}
+                        w={230}
+                        h={66}
+                        roleLines={[t('Ketua Pembina', 'Chair of Trustees')]}
+                        name="Bahrul Hayat, S.Ag., M.Sos."
+                        {...palette.ketuaPembina}
+                    />
+                    <OrgNode
+                        x={1111}
+                        y={24}
+                        w={190}
+                        h={66}
                         roleLines={[t('Ketua Pengawas', 'Chief Supervisor')]}
                         name="Ali Nurdin"
-                        fill="#fef3c7"
-                        stroke="#f59e0b"
-                        roleColor="#78350f"
+                        {...palette.ketuaPengawas}
                     />
 
                     {/* --- ROW 1B: ANGGOTA PENGAWAS --- */}
                     <OrgNode
-                        x={1045}
-                        y={112}
-                        w={180}
-                        h={60}
+                        x={1018}
+                        y={128}
+                        w={176}
+                        h={62}
                         roleLines={[t('Anggota Pengawas', 'Supervisor Member')]}
                         name="Cucum Sumiati, S.P."
-                        fill="#fef3c7"
-                        stroke="#f59e0b"
-                        roleColor="#78350f"
+                        {...palette.anggotaPengawas}
                     />
                     <OrgNode
-                        x={1237}
-                        y={112}
-                        w={165}
-                        h={60}
+                        x={1218}
+                        y={128}
+                        w={176}
+                        h={62}
                         roleLines={[t('Anggota Pengawas', 'Supervisor Member')]}
                         name="Moh Latip"
-                        fill="#fef3c7"
-                        stroke="#f59e0b"
-                        roleColor="#78350f"
-                    />
-
-                    {/* --- ROW 2: PENGURUS INTI --- */}
-                    <OrgNode
-                        x={394}
-                        y={168}
-                        w={176}
-                        h={64}
-                        roleLines={[t('Sekretaris Yayasan', 'Foundation Secretary')]}
-                        name="Juaningsih"
-                        fill="#dcfce7"
-                        stroke="#4ade80"
-                        roleColor="#14532d"
-                    />
-                    <OrgNode
-                        x={602}
-                        y={168}
-                        w={216}
-                        h={64}
-                        roleLines={[t('Ketua Yayasan', 'Foundation Chair')]}
-                        name="Nina Mahdiah, S.Ag., M.Sos."
-                        fill="#dcfce7"
-                        stroke="#4ade80"
-                        roleColor="#14532d"
-                    />
-                    <OrgNode
-                        x={850}
-                        y={168}
-                        w={176}
-                        h={64}
-                        roleLines={[t('Bendahara Yayasan', 'Foundation Treasurer')]}
-                        name="Dewi Yulia"
-                        fill="#dcfce7"
-                        stroke="#4ade80"
-                        roleColor="#14532d"
+                        {...palette.anggotaPengawas}
                     />
 
                     {/* Legend: Garis putus-putus */}
-                    <g transform="translate(1045, 212)">
+                    <g transform="translate(1018, 222)">
                         <line
                             x1={0}
                             y1={-4}
                             x2={28}
                             y2={-4}
-                            stroke="#475569"
-                            strokeWidth={1.75}
-                            strokeDasharray="5 4"
+                            stroke="#186972"
+                            strokeWidth={1.6}
+                            strokeDasharray="6 5"
                             strokeLinecap="round"
                         />
                         <text
@@ -393,41 +389,66 @@ export default function BaganOrganisasi() {
                         </text>
                     </g>
 
-                    {/* --- ROW 3 & 4: 4 BIDANG --- */}
+                    {/* --- ROW 2: KETUA YAYASAN --- */}
+                    <OrgNode
+                        x={595}
+                        y={136}
+                        w={230}
+                        h={66}
+                        roleLines={[t('Ketua Yayasan', 'Foundation Chair')]}
+                        name="Nina Mahdiah, S.Ag., M.Sos."
+                        {...palette.ketuaYayasan}
+                    />
+
+                    {/* --- ROW 3: SEKRETARIS & BENDAHARA YAYASAN (BELOW KETUA YAYASAN) --- */}
+                    <OrgNode
+                        x={452}
+                        y={250}
+                        w={196}
+                        h={64}
+                        roleLines={[t('Sekretaris Yayasan', 'Foundation Secretary')]}
+                        name="Juaningsih"
+                        {...palette.pengurusIntiSub}
+                    />
+                    <OrgNode
+                        x={772}
+                        y={250}
+                        w={196}
+                        h={64}
+                        roleLines={[t('Bendahara Yayasan', 'Foundation Treasurer')]}
+                        name="Dewi Yulia"
+                        {...palette.pengurusIntiSub}
+                    />
+
+                    {/* --- ROW 4 & 5: 4 BIDANG --- */}
                     {bidangGroups.map((group) => (
                         <g key={group.ketuaName}>
                             <OrgNode
                                 x={group.ketuaX}
-                                y={334}
+                                y={396}
                                 w={group.ketuaW}
                                 h={68}
                                 roleLines={group.ketuaRole}
                                 name={group.ketuaName}
-                                fill={group.fill}
-                                stroke={group.stroke}
-                                roleColor={group.roleColor}
+                                {...palette.ketuaBidang}
                             />
                             <OrgNode
                                 x={group.leftX}
-                                y={464}
+                                y={516}
                                 w={156}
                                 h={72}
                                 roleLines={group.bendaharaRole}
                                 name={group.bendaharaName}
-                                fill={group.fill}
-                                stroke={group.stroke}
-                                roleColor={group.roleColor}
+                                {...palette.pengurusBidang}
                             />
                             <OrgNode
                                 x={group.rightX}
-                                y={464}
+                                y={516}
                                 w={156}
                                 h={72}
                                 roleLines={group.sekretarisRole}
                                 name={group.sekretarisName}
-                                fill={group.fill}
-                                stroke={group.stroke}
-                                roleColor={group.roleColor}
+                                {...palette.pengurusBidang}
                             />
                         </g>
                     ))}

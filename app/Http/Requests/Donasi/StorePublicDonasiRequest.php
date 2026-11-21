@@ -23,6 +23,14 @@ class StorePublicDonasiRequest extends FormRequest
             $this->merge(['anak_yatim_id' => null]);
         }
 
+        if ($this->has('no_whatsapp') && is_string($this->input('no_whatsapp')) && trim($this->input('no_whatsapp')) === '') {
+            $this->merge(['no_whatsapp' => null]);
+        }
+
+        if ($this->has('email') && is_string($this->input('email'))) {
+            $this->merge(['email' => trim($this->input('email'))]);
+        }
+
         if ($this->has('nominal') && is_string($this->input('nominal'))) {
             $cleanedNominal = preg_replace('/[^0-9]/', '', $this->input('nominal'));
             if ($cleanedNominal !== '') {
@@ -38,8 +46,8 @@ class StorePublicDonasiRequest extends FormRequest
     {
         return [
             'nama_donatur' => ['required', 'string', 'max:255'],
-            'no_whatsapp' => ['required', 'string', 'max:30', 'regex:/^[0-9+\-\s()]{8,25}$/'],
-            'email' => ['nullable', 'email', 'max:255'],
+            'no_whatsapp' => ['nullable', 'string', 'max:30', 'regex:/^[0-9+\-\s()]{8,25}$/'],
+            'email' => ['required', 'email', 'max:255'],
             'nominal' => ['required', 'integer', 'min:1000', 'max:500000000'],
             'pesan_doa' => ['nullable', 'string', 'max:1000'],
             'jenis_donasi' => ['nullable', 'string', Rule::in(Donasi::JENIS_DONASI_LIST)],
@@ -106,6 +114,8 @@ class StorePublicDonasiRequest extends FormRequest
     {
         return [
             'nama_donatur.required' => 'Nama donatur wajib diisi.',
+            'email.required' => 'Alamat email wajib diisi untuk pengiriman bukti invoice.',
+            'email.email' => 'Format alamat email tidak valid.',
             'no_whatsapp.required' => 'Nomor WhatsApp wajib diisi.',
             'no_whatsapp.regex' => 'Format nomor WhatsApp tidak valid.',
             'nominal.required' => 'Silakan pilih atau masukkan nominal donasi terlebih dahulu.',

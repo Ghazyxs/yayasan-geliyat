@@ -64,6 +64,7 @@ class DonasiController extends Controller
             $query->where(function (Builder $q) use ($like) {
                 $q->where('kode_donasi', 'like', $like)
                     ->orWhere('nama_donatur', 'like', $like)
+                    ->orWhere('email_donatur', 'like', $like)
                     ->orWhere('no_whatsapp', 'like', $like)
                     ->orWhere('rekening_tujuan', 'like', $like)
                     ->orWhere('pesan_doa', 'like', $like)

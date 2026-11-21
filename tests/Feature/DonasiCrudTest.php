@@ -123,7 +123,7 @@ test('public donor can view simplified donation page and submit preset nominal d
     // 2. Donatur mengajukan donasi menggunakan pilihan nominal (termasuk Rp5.000) tanpa jenis_donasi, rekening_tujuan, dan bukti_transfer
     $response = $this->post(route('donasi.store'), [
         'nama_donatur' => 'H. Abdullah Syakir',
-        'no_whatsapp' => '081234567890',
+        'email' => 'abdullah.syakir@example.com',
         'nominal' => 5000,
         'pesan_doa' => 'Semoga ananda sehat dan semangat belajar.',
     ]);
@@ -139,6 +139,8 @@ test('public donor can view simplified donation page and submit preset nominal d
     $donasi = Donasi::where('nama_donatur', 'H. Abdullah Syakir')->firstOrFail();
     expect($donasi->status_verifikasi)->toBe(Donasi::STATUS_MENUNGGU);
     expect($donasi->nominal)->toBe(5000);
+    expect($donasi->email_donatur)->toBe('abdullah.syakir@example.com');
+    expect($donasi->no_whatsapp)->toBeNull();
     expect($donasi->jenis_donasi)->toBe(Donasi::JENIS_DONASI_UMUM);
     expect($donasi->rekening_tujuan)->toBe(Donasi::REKENING_DEFAULT_PUBLIK);
     expect($donasi->anak_yatim_id)->toBeNull();
@@ -149,7 +151,7 @@ test('public donor can view simplified donation page and submit preset nominal d
     // 4. Nominal kustom (bebas) kini diterima selama memenuhi batas minimal (>= Rp1.000)
     $this->from(route('donasi'))->post(route('donasi.store'), [
         'nama_donatur' => 'Donatur Nominal Bebas',
-        'no_whatsapp' => '081234567890',
+        'email' => 'bebas@example.com',
         'nominal' => 12000,
     ])->assertRedirect(route('donasi'))
         ->assertSessionHasNoErrors();
@@ -157,7 +159,7 @@ test('public donor can view simplified donation page and submit preset nominal d
     // 4b. Nominal di bawah batas minimal (kurang dari Rp1.000) ditolak oleh validasi
     $this->from(route('donasi'))->post(route('donasi.store'), [
         'nama_donatur' => 'Donatur Di Bawah Batas',
-        'no_whatsapp' => '081234567890',
+        'email' => 'dibawah@example.com',
         'nominal' => 500,
     ])->assertRedirect(route('donasi'))
         ->assertSessionHasErrors('nominal');
@@ -174,7 +176,7 @@ test('file upload validation rejects invalid mime types, oversized files, and ma
 
     $this->from(route('donasi'))->post(route('donasi.store'), [
         'nama_donatur' => 'Penyerang',
-        'no_whatsapp' => '081234567890',
+        'email' => 'penyerang1@example.com',
         'jenis_donasi' => Donasi::JENIS_DONASI_UMUM,
         'rekening_tujuan' => 'BSI - 7256194821',
         'nominal' => 50000,
@@ -187,7 +189,7 @@ test('file upload validation rejects invalid mime types, oversized files, and ma
 
     $this->from(route('donasi'))->post(route('donasi.store'), [
         'nama_donatur' => 'Penyerang 2',
-        'no_whatsapp' => '081234567890',
+        'email' => 'penyerang2@example.com',
         'jenis_donasi' => Donasi::JENIS_DONASI_UMUM,
         'rekening_tujuan' => 'BSI - 7256194821',
         'nominal' => 50000,
@@ -200,7 +202,7 @@ test('file upload validation rejects invalid mime types, oversized files, and ma
 
     $this->from(route('donasi'))->post(route('donasi.store'), [
         'nama_donatur' => 'Donatur File Besar',
-        'no_whatsapp' => '081234567890',
+        'email' => 'filebesar@example.com',
         'jenis_donasi' => Donasi::JENIS_DONASI_UMUM,
         'rekening_tujuan' => 'BSI - 7256194821',
         'nominal' => 50000,
