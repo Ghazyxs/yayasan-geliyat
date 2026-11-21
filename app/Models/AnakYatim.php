@@ -13,71 +13,108 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * Data anak binaan. Mengandung data pribadi (UU PDP):
- * - `nik` dienkripsi di database (cast `encrypted`).
- * - `nik` dan `alamat_detail` disembunyikan dari serialisasi (Inertia/JSON).
- *   Tampilkan hanya lewat `makeVisible()` setelah lolos policy `viewSensitiveData`.
+ * Data anak binaan (bersifat privasi / UU PDP, tidak ditampilkan ke halaman publik).
+ * - `nik`, `no_kk` dienkripsi di database (cast `encrypted`).
+ * - `nik`, `no_kk`, `alamat_detail`, serta path file dokumen disembunyikan dari serialisasi JSON/Inertia.
+ *   Tampilkan hanya lewat endpoint terotorisasi.
  *
  * @property int $id
  * @property string|null $nik
+ * @property string|null $no_kk
  * @property string $nama_lengkap
- * @property string $alias
+ * @property int|null $anak_ke
+ * @property string $jenis_kelamin
+ * @property string $status_santunan
+ * @property string|null $tempat_lahir
+ * @property \Carbon\CarbonInterface $tanggal_lahir
  * @property string $jenjang
  * @property string $kelurahan
+ * @property string|null $alamat_detail
+ * @property string|null $nama_ibu_kandung
+ * @property string|null $no_telepon
+ * @property string $nama_wali
+ * @property string|null $no_telepon_wali
+ * @property string|null $foto
+ * @property string|null $foto_kk
+ * @property string|null $foto_akta_kelahiran
+ * @property string|null $foto_akta_kematian_ayah
  * @property string $status_binaan
- * @property string $status_asuh
  * @property int $created_by
  */
 #[Table('anak_yatim')]
 #[Fillable([
     'nik',
+    'no_kk',
     'nama_lengkap',
-    'alias',
+    'anak_ke',
     'jenis_kelamin',
+    'status_santunan',
     'tempat_lahir',
     'tanggal_lahir',
     'jenjang',
-    'kelas',
-    'nama_sekolah',
     'kelurahan',
     'alamat_detail',
+    'nama_ibu_kandung',
+    'no_telepon',
     'nama_wali',
     'no_telepon_wali',
-    'hobi',
-    'cita_cita',
-    'potensi',
-    'prestasi',
     'foto',
-    'izin_publikasi_foto',
+    'foto_kk',
+    'foto_akta_kelahiran',
+    'foto_akta_kematian_ayah',
     'status_binaan',
-    'status_asuh',
     'created_by',
 ])]
-#[Hidden(['nik', 'alamat_detail'])]
+#[Hidden([
+    'nik',
+    'no_kk',
+    'alamat_detail',
+    'foto',
+    'foto_kk',
+    'foto_akta_kelahiran',
+    'foto_akta_kematian_ayah',
+])]
 class AnakYatim extends Model
 {
-    public const STATUS_ASUH_BELUM = 'belum_diasuh';
+    public const STATUS_SANTUNAN_MENERIMA = 'menerima';
 
-    public const STATUS_ASUH_AKTIF = 'aktif_diasuh';
+    public const STATUS_SANTUNAN_MENUNGGU = 'menunggu';
+
+    public const STATUS_SANTUNAN_LIST = [
+        self::STATUS_SANTUNAN_MENERIMA,
+        self::STATUS_SANTUNAN_MENUNGGU,
+    ];
+
+    public const JENJANG_LIST = [
+        'SD',
+        'SMP',
+        'SMA/SMK',
+        'Perguruan Tinggi',
+        'Lainnya',
+    ];
 
     /**
      * Atribut yang disembunyikan dari serialisasi JSON/Array (UU PDP).
-     * Didefinisikan ganda (atribut class & properti protected) untuk kompatibilitas penuh.
      *
      * @var array<int, string>
      */
     protected $hidden = [
         'nik',
+        'no_kk',
         'alamat_detail',
+        'foto',
+        'foto_kk',
+        'foto_akta_kelahiran',
+        'foto_akta_kematian_ayah',
     ];
 
     protected function casts(): array
     {
         return [
             'nik' => 'encrypted',
+            'no_kk' => 'encrypted',
             'tanggal_lahir' => 'date',
-            'prestasi' => 'array',
-            'izin_publikasi_foto' => 'boolean',
+            'anak_ke' => 'integer',
         ];
     }
 

@@ -76,16 +76,17 @@ beforeEach(function () {
     $this->anakKemanusiaan = AnakYatim::create([
         'nik' => '3273111122220001',
         'nama_lengkap' => 'Nadia Safitri',
-        'alias' => 'Nadia (N.S.)',
+        'anak_ke' => 1,
         'jenis_kelamin' => 'P',
+        'status_santunan' => AnakYatim::STATUS_SANTUNAN_MENUNGGU,
+        'tempat_lahir' => 'Bandung',
         'tanggal_lahir' => '2015-03-10',
         'jenjang' => 'SD',
-        'kelas' => 'Kelas 4 SD',
         'kelurahan' => 'Cigending',
         'alamat_detail' => 'Jl. Cigending No. 5',
+        'nama_ibu_kandung' => 'Ibu Siti',
         'nama_wali' => 'Ibu Siti',
         'status_binaan' => 'aktif',
-        'status_asuh' => AnakYatim::STATUS_ASUH_BELUM,
         'created_by' => $this->adminKemanusiaan->id,
     ]);
     $this->anakKemanusiaan->bidang()->attach($this->bidangKemanusiaan->id);
@@ -93,16 +94,17 @@ beforeEach(function () {
     $this->anakPendidikan = AnakYatim::create([
         'nik' => '3273111122220002',
         'nama_lengkap' => 'Farhan Maulana',
-        'alias' => 'Farhan (F.M.)',
+        'anak_ke' => 2,
         'jenis_kelamin' => 'L',
+        'status_santunan' => AnakYatim::STATUS_SANTUNAN_MENUNGGU,
+        'tempat_lahir' => 'Bandung',
         'tanggal_lahir' => '2012-07-22',
         'jenjang' => 'SMP',
-        'kelas' => 'Kelas 8 SMP',
         'kelurahan' => 'Pasanggrahan',
         'alamat_detail' => 'Jl. Pasanggrahan No. 9',
+        'nama_ibu_kandung' => 'Ibu Sari',
         'nama_wali' => 'Bapak Hendra',
         'status_binaan' => 'aktif',
-        'status_asuh' => AnakYatim::STATUS_ASUH_BELUM,
         'created_by' => $this->adminPendidikan->id,
     ]);
     $this->anakPendidikan->bidang()->attach($this->bidangPendidikan->id);
@@ -250,9 +252,6 @@ test('authorized admin can verify donation creating exactly one income transacti
     expect($transaksi->nominal)->toBe(500000);
     expect($transaksi->status_transaksi)->toBe(TransaksiKeuangan::STATUS_VALID);
 
-    // Status asuh anak yatim berubah menjadi aktif_diasuh
-    expect($this->anakKemanusiaan->fresh()->status_asuh)->toBe(AnakYatim::STATUS_ASUH_AKTIF);
-
     // Percobaan verifikasi ulang oleh Super Admin atau Admin ditolak (anti duplikasi transaksi)
     $this->actingAs($this->superAdmin)
         ->postJson(route('admin.donasi.verify', $donasi->id))
@@ -306,7 +305,6 @@ test('cancelling a verified donation is restricted to super admin and voids the 
     Donasi::verifikasi($donasi->id, $this->adminKemanusiaan);
     expect(TransaksiKeuangan::saldo())->toBe(400000);
     expect(Donasi::totalTerverifikasi())->toBe(400000);
-    expect($this->anakKemanusiaan->fresh()->status_asuh)->toBe(AnakYatim::STATUS_ASUH_AKTIF);
 
     // 1. Admin biasa DITOLAK (403 Forbidden) ketika mencoba membatalkan donasi terverifikasi
     $this->actingAs($this->adminKemanusiaan)
@@ -338,9 +336,6 @@ test('cancelling a verified donation is restricted to super admin and voids the 
     // Saldo kas dan total donasi terverifikasi kembali menjadi 0
     expect(TransaksiKeuangan::saldo())->toBe(0);
     expect(Donasi::totalTerverifikasi())->toBe(0);
-
-    // Status asuh anak yatim disinkronkan kembali menjadi belum_diasuh
-    expect($this->anakKemanusiaan->fresh()->status_asuh)->toBe(AnakYatim::STATUS_ASUH_BELUM);
 });
 
 test('bidang authorization prevents admin from accessing or verifying donations of another bidang while super admin accesses all', function () {
@@ -533,7 +528,7 @@ test('total donation and financial income do not experience double counting acro
     expect($totalPemasukanValid)->toBe(700000);
     expect(TransaksiKeuangan::saldo())->toBe(700000);
 
-    // Verifikasi stats yang dikirim ke halaman Inertia admin/donasi/index
+    // Verifikasi stats yang dikirim ke halaman Inertia admin/donasi/index (tanpa kategori ditolak)
     $this->actingAs($this->superAdmin)
         ->get(route('admin.donasi'))
         ->assertOk()
@@ -541,46 +536,59 @@ test('total donation and financial income do not experience double counting acro
             ->where('stats.total', 4)
             ->where('stats.menunggu', 1)
             ->where('stats.terverifikasi', 1)
-            ->where('stats.ditolak', 1)
             ->where('stats.dibatalkan', 1)
+            ->missing('stats.ditolak')
             ->where('stats.total_nominal_terverifikasi', 500000)
             ->where('stats.nominal_menunggu', 150000)
         );
 });
 
-test('admin can manually record donation for authorized child, cannot tamper with other bidang child, and can filter donations', function () {
+test('admin can manually record donation without optional fields, block cross-bidang tampering, and filter by payment method', function () {
     // 1. Admin Pendidikan ditolak (403) jika mencoba mencatat donasi untuk anak bidang Kemanusiaan
     $this->actingAs($this->adminPendidikan)
         ->post(route('admin.donasi.store'), [
             'nama_donatur' => 'Donatur Tampering',
-            'no_whatsapp' => '081234567890',
-            'jenis_donasi' => Donasi::JENIS_ORANG_TUA_ASUH,
             'anak_yatim_id' => $this->anakKemanusiaan->id,
-            'rekening_tujuan' => 'BSI - 7256194821',
             'nominal' => 200000,
-            'bukti_transfer' => buatFileJpgTest('bukti-admin.jpg'),
         ])
         ->assertForbidden();
 
-    // 2. Admin Pendidikan berhasil mencatat donasi untuk anak binaan di bidangnya sendiri
+    // 2. Admin Pendidikan berhasil mencatat donasi manual TANPA no_whatsapp, rekening_tujuan, jenis_donasi, maupun bukti_transfer
     $this->actingAs($this->adminPendidikan)
         ->post(route('admin.donasi.store'), [
             'nama_donatur' => 'Ibu Kartika Sari',
-            'no_whatsapp' => '081234567899',
-            'jenis_donasi' => Donasi::JENIS_BIMBEL_SINAR,
+            'no_whatsapp' => '',
             'anak_yatim_id' => $this->anakPendidikan->id,
-            'rekening_tujuan' => 'BSI - 7256194821',
             'nominal' => 275000,
-            'bukti_transfer' => buatFileJpgTest('bukti-bimbel.jpg'),
+            'pesan_doa' => 'Semoga bermanfaat untuk pendidikan adik-adik.',
         ])
         ->assertRedirect(route('admin.donasi'))
         ->assertSessionHas('success');
 
-    // 3. Filter pencarian berdasarkan nama donatur dan jenis donasi
+    $recorded = Donasi::where('nama_donatur', 'Ibu Kartika Sari')->firstOrFail();
+    expect($recorded->no_whatsapp)->toBeNull();
+    expect($recorded->rekening_tujuan)->toBe('Donasi Manual');
+    expect($recorded->metode_pembayaran)->toBe(Donasi::METODE_MANUAL);
+    expect($recorded->bukti_transfer)->toBeNull();
+
+    // Buat 1 transaksi Midtrans pembanding
+    Donasi::create([
+        'kode_donasi' => 'DON-MID-FILTER-01',
+        'nama_donatur' => 'Donatur Midtrans',
+        'email_donatur' => 'midtrans@example.com',
+        'jenis_donasi' => Donasi::JENIS_DONASI_UMUM,
+        'rekening_tujuan' => Donasi::REKENING_DEFAULT_PUBLIK,
+        'nominal' => 150000,
+        'metode_pembayaran' => Donasi::METODE_MIDTRANS,
+        'midtrans_payment_type' => 'qris',
+        'status_verifikasi' => Donasi::STATUS_MENUNGGU,
+    ]);
+
+    // 3. Filter pencarian & filter metode_pembayaran berjalan akurat
     $this->actingAs($this->superAdmin)
         ->get(route('admin.donasi', [
             'search' => 'Kartika',
-            'jenis_donasi' => Donasi::JENIS_BIMBEL_SINAR,
+            'metode_pembayaran' => Donasi::METODE_MANUAL,
             'status_verifikasi' => Donasi::STATUS_MENUNGGU,
         ]))
         ->assertOk()
@@ -588,5 +596,15 @@ test('admin can manually record donation for authorized child, cannot tamper wit
             ->has('donasi.data', 1)
             ->where('donasi.data.0.nama_donatur', 'Ibu Kartika Sari')
             ->where('donasi.data.0.nominal', 275000)
+        );
+
+    $this->actingAs($this->superAdmin)
+        ->get(route('admin.donasi', [
+            'metode_pembayaran' => Donasi::METODE_MIDTRANS,
+        ]))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('donasi.data', 1)
+            ->where('donasi.data.0.kode_donasi', 'DON-MID-FILTER-01')
         );
 });

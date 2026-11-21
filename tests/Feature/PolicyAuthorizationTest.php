@@ -12,15 +12,16 @@ function buatAnakTest(array $attributes = []): AnakYatim
 {
     return AnakYatim::create(array_merge([
         'nama_lengkap' => 'Anak Test',
-        'alias' => 'Test',
+        'anak_ke' => 1,
         'jenis_kelamin' => 'L',
+        'status_santunan' => AnakYatim::STATUS_SANTUNAN_MENUNGGU,
+        'tempat_lahir' => 'Bandung',
         'tanggal_lahir' => '2015-05-10',
         'jenjang' => 'SD',
-        'kelas' => '4 SD',
         'kelurahan' => 'Kutoanyar',
+        'nama_ibu_kandung' => 'Ibu Fulanah',
         'nama_wali' => 'Ibu Fulanah',
         'status_binaan' => 'aktif',
-        'status_asuh' => AnakYatim::STATUS_ASUH_BELUM,
     ], $attributes));
 }
 
@@ -201,10 +202,8 @@ test('admin can only view and manage anak yatim connected to their specific bida
 
     $anakPendidikan = buatAnakTest([
         'nama_lengkap' => 'Doni Prasetyo',
-        'alias' => 'Doni',
         'jenis_kelamin' => 'L',
-        'jenjang' => 'SMA',
-        'kelas' => '10 SMA',
+        'jenjang' => 'SMA/SMK',
         'kelurahan' => 'Kutoanyar',
         'created_by' => $this->adminPendidikan->id,
     ]);
@@ -318,10 +317,8 @@ test('sensitive data (nik and alamat_detail) is protected and authorized via vie
     $anak = buatAnakTest([
         'nik' => $rawNik,
         'nama_lengkap' => 'Gita Gutawa',
-        'alias' => 'Gita',
         'jenis_kelamin' => 'P',
-        'jenjang' => 'SMA',
-        'kelas' => '11 SMA',
+        'jenjang' => 'SMA/SMK',
         'kelurahan' => 'Bungur',
         'alamat_detail' => 'Jl. Mawar No. 45 RT 02 RW 03',
         'created_by' => $this->adminKemanusiaan->id,

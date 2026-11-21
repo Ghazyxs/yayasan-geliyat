@@ -86,6 +86,9 @@ use Throwable;
 class Donasi extends Model
 {
     public const METODE_MIDTRANS = 'midtrans';
+
+    public const METODE_MANUAL = 'manual';
+
     public const STATUS_MENUNGGU = 'menunggu';
 
     public const STATUS_TERVERIFIKASI = 'terverifikasi';
@@ -451,8 +454,6 @@ class Donasi extends Model
                 'created_by' => $verifikator->id,
             ]);
 
-            $donasi->sinkronkanStatusAsuh();
-
             return $donasi->refresh();
         });
     }
@@ -517,8 +518,6 @@ class Donasi extends Model
                     'keterangan' => $transaksi->keterangan." [VOID: {$alasan}]",
                 ]);
             }
-
-            $donasi->sinkronkanStatusAsuh();
 
             return $donasi->refresh();
         });
@@ -587,8 +586,6 @@ class Donasi extends Model
                     ]);
                 }
 
-                $donasi->sinkronkanStatusAsuh();
-
                 return $donasi->refresh();
             }
 
@@ -618,7 +615,6 @@ class Donasi extends Model
                         : 'Pembayaran Midtrans dibatalkan.';
                 }
                 $donasi->update($commonUpdates);
-                $donasi->sinkronkanStatusAsuh();
 
                 return $donasi->refresh();
             }
@@ -630,7 +626,6 @@ class Donasi extends Model
                     $commonUpdates['catatan_verifikasi'] = 'Pembayaran ditolak oleh Midtrans.';
                 }
                 $donasi->update($commonUpdates);
-                $donasi->sinkronkanStatusAsuh();
 
                 return $donasi->refresh();
             }
@@ -646,30 +641,5 @@ class Donasi extends Model
         }
 
         return $donasi->fresh();
-    }
-
-    /**
-     * Status asuh anak mengikuti ada/tidaknya donasi Orang Tua Asuh
-     * yang terverifikasi untuk anak tersebut.
-     */
-    protected function sinkronkanStatusAsuh(): void
-    {
-        if ($this->jenis_donasi !== self::JENIS_ORANG_TUA_ASUH || $this->anak_yatim_id === null) {
-            return;
-        }
-
-        $masihDiasuh = self::query()
-            ->where('anak_yatim_id', $this->anak_yatim_id)
-            ->where('jenis_donasi', self::JENIS_ORANG_TUA_ASUH)
-            ->where('status_verifikasi', self::STATUS_TERVERIFIKASI)
-            ->exists();
-
-        AnakYatim::query()
-            ->whereKey($this->anak_yatim_id)
-            ->update([
-                'status_asuh' => $masihDiasuh
-                    ? AnakYatim::STATUS_ASUH_AKTIF
-                    : AnakYatim::STATUS_ASUH_BELUM,
-            ]);
     }
 }

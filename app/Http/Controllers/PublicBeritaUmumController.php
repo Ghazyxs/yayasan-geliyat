@@ -67,7 +67,7 @@ class PublicBeritaUmumController extends Controller
     {
         $gambarUrl = null;
         if ($berita->gambar) {
-            $gambarUrl = str_starts_with($berita->gambar, 'http')
+            $gambarUrl = (str_starts_with($berita->gambar, 'http') || str_starts_with($berita->gambar, '/storage/'))
                 ? $berita->gambar
                 : asset('storage/' . ltrim($berita->gambar, '/'));
         }

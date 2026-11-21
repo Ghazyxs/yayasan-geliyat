@@ -1,30 +1,6 @@
 import { Head, router, useForm, usePage } from '@inertiajs/react';
-import {
-    HeartHandshake,
-    CheckCircle2,
-    Clock,
-    XCircle,
-    Ban,
-    Search,
-    RotateCcw,
-    Eye,
-    Plus,
-    FileText,
-    ExternalLink,
-    ShieldCheck,
-    AlertTriangle,
-    Wallet,
-    Calendar,
-    UserCheck,
-    Mail,
-    Phone,
-    CreditCard,
-    Receipt,
-    Upload,
-    FileCheck2,
-    X,
-} from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { BrandSelect } from '@/components/admin/brand-select';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -44,11 +20,8 @@ interface BidangOption {
 interface AnakYatimOption {
     id: number;
     nama_lengkap: string;
-    alias: string;
     jenjang: string;
-    kelas: string;
     kelurahan: string;
-    status_asuh: 'belum_diasuh' | 'aktif_diasuh';
     bidang?: BidangOption[];
 }
 
@@ -79,6 +52,8 @@ interface DonasiItem {
     nominal: number;
     pesan_doa: string | null;
     metode_pembayaran?: string | null;
+    metode_label?: string | null;
+    midtrans_transaction_id?: string | null;
     midtrans_payment_type?: string | null;
     midtrans_transaction_status?: string | null;
     email_donatur?: string | null;
@@ -98,7 +73,6 @@ interface DonasiItem {
     verifikator: VerifikatorInfo | null;
     transaksi: TransaksiInfo | null;
     can_verify: boolean;
-    can_reject: boolean;
     can_cancel: boolean;
 }
 
@@ -119,22 +93,12 @@ interface PaginatedDonasi {
     links: PaginationLink[];
 }
 
-interface RekeningItem {
-    id?: number;
-    kode: string;
-    bank: string;
-    nomor: string;
-    atas_nama: string;
-    icon: string;
-}
-
 interface DonasiAdminProps {
     donasi?: PaginatedDonasi;
     stats?: {
         total: number;
         menunggu: number;
         terverifikasi: number;
-        ditolak: number;
         dibatalkan: number;
         total_nominal_terverifikasi: number;
         nominal_menunggu: number;
@@ -142,13 +106,11 @@ interface DonasiAdminProps {
     filters?: {
         search: string;
         status_verifikasi: string;
-        jenis_donasi: string;
+        metode_pembayaran: string;
         tanggal_dari: string;
         tanggal_sampai: string;
         tanggal: string;
     };
-    jenisDonasiList?: string[];
-    rekeningList?: RekeningItem[];
     anakYatimList?: AnakYatimOption[];
     permissions?: {
         is_super_admin: boolean;
@@ -172,7 +134,6 @@ const DEFAULT_STATS = {
     total: 0,
     menunggu: 0,
     terverifikasi: 0,
-    ditolak: 0,
     dibatalkan: 0,
     total_nominal_terverifikasi: 0,
     nominal_menunggu: 0,
@@ -181,67 +142,32 @@ const DEFAULT_STATS = {
 const DEFAULT_FILTERS = {
     search: '',
     status_verifikasi: '',
-    jenis_donasi: '',
+    metode_pembayaran: '',
     tanggal_dari: '',
     tanggal_sampai: '',
     tanggal: '',
 };
 
-const DEFAULT_JENIS_DONASI = [
-    'Donasi Umum',
-    'Santunan Rutin',
-    'Orang Tua Asuh',
-    'Bimbel Sinar',
-    'Zakat',
-];
-
-const DEFAULT_REKENING: RekeningItem[] = [
-    {
-        kode: 'BSI - 7256194821',
-        bank: 'Bank Syariah Indonesia (BSI)',
-        nomor: '7256194821',
-        atas_nama: 'Yayasan Geliyat Mahdiesa Nahate',
-        icon: 'BSI',
-    },
-    {
-        kode: 'BRI - 0123-01-098765-53-1',
-        bank: 'Bank Rakyat Indonesia (BRI)',
-        nomor: '0123-01-098765-53-1',
-        atas_nama: 'Yayasan Geliyat Mahdiesa Nahate',
-        icon: 'BRI',
-    },
-];
-
-const JENIS_DENGAN_ANAK = ['Orang Tua Asuh', 'Santunan Rutin', 'Bimbel Sinar'];
-
 const STATUS_BADGE: Record<
-    DonasiItem['status_verifikasi'],
+    string,
     { label: string; className: string }
 > = {
     menunggu: {
-        label: 'Menunggu Verifikasi',
+        label: 'Menunggu Pembayaran / Verifikasi',
         className: 'border-amber-200 bg-amber-50/90 text-amber-700',
     },
     terverifikasi: {
-        label: 'Terverifikasi',
+        label: 'Terverifikasi (Lunas)',
         className: 'border-emerald-200 bg-emerald-50/90 text-emerald-700',
     },
-    ditolak: {
-        label: 'Ditolak',
-        className: 'border-rose-200 bg-rose-50/90 text-rose-700',
-    },
     dibatalkan: {
-        label: 'Dibatalkan (Void)',
+        label: 'Dibatalkan / Kedaluwarsa',
         className: 'border-slate-200 bg-slate-100 text-slate-600',
     },
-};
-
-const JENIS_BADGE: Record<string, string> = {
-    'Donasi Umum': 'border-sky-200 bg-sky-50/90 text-sky-700',
-    'Orang Tua Asuh': 'border-[#b6e9f0] bg-[#e8f8fa] text-[#087f8c]',
-    'Santunan Rutin': 'border-indigo-200 bg-indigo-50/90 text-indigo-700',
-    'Bimbel Sinar': 'border-teal-200 bg-teal-50/90 text-teal-700',
-    Zakat: 'border-emerald-200 bg-emerald-50/90 text-emerald-700',
+    ditolak: {
+        label: 'Gagal',
+        className: 'border-slate-200 bg-slate-100 text-slate-600',
+    },
 };
 
 function formatRupiah(nominal: number): string {
@@ -260,8 +186,6 @@ export default function DonasiAdmin({
     donasi = DEFAULT_PAGINATION,
     stats = DEFAULT_STATS,
     filters = DEFAULT_FILTERS,
-    jenisDonasiList = DEFAULT_JENIS_DONASI,
-    rekeningList = DEFAULT_REKENING,
     anakYatimList = [],
     permissions = {
         is_super_admin: false,
@@ -278,7 +202,9 @@ export default function DonasiAdmin({
     const [statusFilter, setStatusFilter] = useState(
         filters.status_verifikasi ?? '',
     );
-    const [jenisFilter, setJenisFilter] = useState(filters.jenis_donasi ?? '');
+    const [metodeFilter, setMetodeFilter] = useState(
+        filters.metode_pembayaran ?? '',
+    );
     const [tanggalDari, setTanggalDari] = useState(filters.tanggal_dari ?? '');
     const [tanggalSampai, setTanggalSampai] = useState(
         filters.tanggal_sampai ?? '',
@@ -287,42 +213,26 @@ export default function DonasiAdmin({
     // Modals state
     const [detailItem, setDetailItem] = useState<DonasiItem | null>(null);
     const [verifyTarget, setVerifyTarget] = useState<DonasiItem | null>(null);
-    const [rejectTarget, setRejectTarget] = useState<DonasiItem | null>(null);
     const [cancelTarget, setCancelTarget] = useState<DonasiItem | null>(null);
     const [isCreateOpen, setIsCreateOpen] = useState(false);
-
-    const createFileRef = useRef<HTMLInputElement | null>(null);
 
     // Form Create Donasi Manual (Admin)
     const createForm = useForm<{
         nama_donatur: string;
         no_whatsapp: string;
-        jenis_donasi: string;
         anak_yatim_id: string;
-        rekening_id: number | null;
-        rekening_tujuan: string;
         nominal: string;
         pesan_doa: string;
-        bukti_transfer: File | null;
     }>({
         nama_donatur: '',
         no_whatsapp: '',
-        jenis_donasi: jenisDonasiList[0] ?? 'Donasi Umum',
         anak_yatim_id: '',
-        rekening_id: rekeningList[0]?.id ?? null,
-        rekening_tujuan: rekeningList[0]?.kode ?? 'BSI - 7256194821',
         nominal: '',
         pesan_doa: '',
-        bukti_transfer: null,
     });
 
     // Form Verifikasi
     const verifyForm = useForm<{ catatan_verifikasi: string }>({
-        catatan_verifikasi: '',
-    });
-
-    // Form Tolak
-    const rejectForm = useForm<{ catatan_verifikasi: string }>({
         catatan_verifikasi: '',
     });
 
@@ -334,7 +244,7 @@ export default function DonasiAdmin({
     useEffect(() => {
         setSearchInput(filters.search ?? '');
         setStatusFilter(filters.status_verifikasi ?? '');
-        setJenisFilter(filters.jenis_donasi ?? '');
+        setMetodeFilter(filters.metode_pembayaran ?? '');
         setTanggalDari(filters.tanggal_dari ?? '');
         setTanggalSampai(filters.tanggal_sampai ?? '');
     }, [filters]);
@@ -343,7 +253,7 @@ export default function DonasiAdmin({
         overrides: Partial<{
             search: string;
             status_verifikasi: string;
-            jenis_donasi: string;
+            metode_pembayaran: string;
             tanggal_dari: string;
             tanggal_sampai: string;
         }> = {},
@@ -351,7 +261,7 @@ export default function DonasiAdmin({
         const next = {
             search: overrides.search ?? searchInput,
             status_verifikasi: overrides.status_verifikasi ?? statusFilter,
-            jenis_donasi: overrides.jenis_donasi ?? jenisFilter,
+            metode_pembayaran: overrides.metode_pembayaran ?? metodeFilter,
             tanggal_dari: overrides.tanggal_dari ?? tanggalDari,
             tanggal_sampai: overrides.tanggal_sampai ?? tanggalSampai,
         };
@@ -378,7 +288,7 @@ export default function DonasiAdmin({
     const handleResetFilters = () => {
         setSearchInput('');
         setStatusFilter('');
-        setJenisFilter('');
+        setMetodeFilter('');
         setTanggalDari('');
         setTanggalSampai('');
         router.get(
@@ -395,36 +305,27 @@ export default function DonasiAdmin({
     const hasActiveFilters =
         searchInput !== '' ||
         statusFilter !== '' ||
-        jenisFilter !== '' ||
+        metodeFilter !== '' ||
         tanggalDari !== '' ||
         tanggalSampai !== '';
 
-    // Handlers for Create Modal
     const openCreateModal = () => {
         createForm.reset();
         createForm.clearErrors();
-        if (createFileRef.current) {
-            createFileRef.current.value = '';
-        }
         setIsCreateOpen(true);
     };
 
     const handleCreateSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         createForm.post('/admin/donasi', {
-            forceFormData: true,
             preserveScroll: true,
             onSuccess: () => {
                 setIsCreateOpen(false);
                 createForm.reset();
-                if (createFileRef.current) {
-                    createFileRef.current.value = '';
-                }
             },
         });
     };
 
-    // Handlers for Verify Modal
     const openVerifyModal = (item: DonasiItem) => {
         verifyForm.reset();
         verifyForm.clearErrors();
@@ -445,28 +346,6 @@ export default function DonasiAdmin({
         });
     };
 
-    // Handlers for Reject Modal
-    const openRejectModal = (item: DonasiItem) => {
-        rejectForm.reset();
-        rejectForm.clearErrors();
-        setRejectTarget(item);
-    };
-
-    const handleRejectSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!rejectTarget) return;
-
-        rejectForm.post(`/admin/donasi/${rejectTarget.id}/reject`, {
-            preserveScroll: true,
-            onSuccess: () => {
-                setRejectTarget(null);
-                setDetailItem(null);
-                rejectForm.reset();
-            },
-        });
-    };
-
-    // Handlers for Cancel Modal (Super Admin)
     const openCancelModal = (item: DonasiItem) => {
         cancelForm.reset();
         cancelForm.clearErrors();
@@ -494,43 +373,33 @@ export default function DonasiAdmin({
             <div className="flex min-h-screen flex-col gap-6 bg-[#f8fafb] p-4 font-poppins text-slate-800 sm:p-6 lg:p-8">
                 {/* Flash Notification Banner */}
                 {pageProps.flash?.success && (
-                    <div className="flex items-center justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50/90 px-4 py-3 text-sm text-emerald-800 shadow-2xs">
-                        <div className="flex items-center gap-2.5">
-                            <CheckCircle2 className="size-4 shrink-0 text-emerald-600" />
-                            <span>{pageProps.flash.success}</span>
-                        </div>
+                    <div className="rounded-xl border border-emerald-200 bg-emerald-50/90 px-4 py-3 text-sm text-emerald-800 shadow-2xs">
+                        {pageProps.flash.success}
                     </div>
                 )}
 
                 {pageProps.flash?.error && (
-                    <div className="flex items-center justify-between gap-3 rounded-xl border border-rose-200 bg-rose-50/90 px-4 py-3 text-sm text-rose-800 shadow-2xs">
-                        <div className="flex items-center gap-2.5">
-                            <AlertTriangle className="size-4 shrink-0 text-rose-600" />
-                            <span>{pageProps.flash.error}</span>
-                        </div>
+                    <div className="rounded-xl border border-rose-200 bg-rose-50/90 px-4 py-3 text-sm text-rose-800 shadow-2xs">
+                        {pageProps.flash.error}
                     </div>
                 )}
 
                 {/* Header Section */}
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <div className="mb-2 flex w-fit items-center gap-2 rounded-md bg-[#e8f8fa] px-2.5 py-1 text-xs font-semibold text-[#087f8c]">
-                            <HeartHandshake className="size-3.5" />
-                            <span>
-                                {permissions.is_super_admin
-                                    ? 'Akses Lintas Bidang (Super Admin)'
-                                    : permissions.user_bidang
-                                      ? `Cakupan: ${permissions.user_bidang.nama}`
-                                      : 'Amanah Donatur'}
-                            </span>
-                        </div>
+                        <span className="mb-2 inline-block rounded-md bg-[#e8f8fa] px-2.5 py-1 text-xs font-semibold text-[#087f8c]">
+                            {permissions.is_super_admin
+                                ? 'Akses Lintas Bidang (Super Admin)'
+                                : permissions.user_bidang
+                                  ? `Cakupan: ${permissions.user_bidang.nama}`
+                                  : 'Amanah Donatur'}
+                        </span>
                         <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
                             Pengelolaan & Verifikasi Donasi
                         </h1>
                         <p className="mt-1 text-sm text-slate-500">
-                            Verifikasi bukti transfer donatur, kelola program
-                            Orang Tua Asuh, dan integrasi otomatis ke buku kas
-                            yayasan.
+                            Pantau transaksi donasi Midtrans, pencatatan donasi
+                            manual, dan integrasi otomatis ke buku kas yayasan.
                         </p>
                     </div>
 
@@ -545,12 +414,9 @@ export default function DonasiAdmin({
                                         status_verifikasi: 'menunggu',
                                     });
                                 }}
-                                className="flex items-center gap-2 border-amber-200 bg-amber-50/80 text-xs font-semibold text-amber-800 shadow-none hover:bg-amber-100/80"
+                                className="border-amber-200 bg-amber-50/80 text-xs font-semibold text-amber-800 shadow-none hover:bg-amber-100/80"
                             >
-                                <Clock className="size-4 text-amber-600" />
-                                <span>
-                                    {stats.menunggu} Menunggu Verifikasi
-                                </span>
+                                {stats.menunggu} Menunggu Verifikasi
                             </Button>
                         )}
 
@@ -558,47 +424,36 @@ export default function DonasiAdmin({
                             <Button
                                 type="button"
                                 onClick={openCreateModal}
-                                className="flex items-center gap-2 bg-[#14bace] text-xs font-semibold text-white shadow-xs transition hover:bg-[#0fa0ae]"
+                                className="bg-[#14bace] text-xs font-semibold text-white shadow-xs transition hover:bg-[#0fa0ae]"
                             >
-                                <Plus className="size-4" />
-                                <span>Catat Donasi Manual</span>
+                                + Catat Donasi Manual
                             </Button>
                         )}
                     </div>
                 </div>
 
-                {/* Stat Cards */}
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div className="rounded-xl border border-[#e4eaec] bg-white p-4 shadow-2xs">
-                        <div className="flex items-center justify-between">
-                            <span className="text-xs font-medium text-slate-500">
-                                Total Donasi Terverifikasi
-                            </span>
-                            <div className="flex size-8 items-center justify-center rounded-lg bg-[#e8f8fa] text-[#087f8c]">
-                                <Wallet className="size-4" />
-                            </div>
-                        </div>
+                {/* Stat Cards (Tanpa Donasi Ditolak) */}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                    <div className="rounded-xl border border-[#e4eaec] border-t-4 border-t-[#14bace] bg-white p-4 shadow-2xs">
+                        <span className="text-xs font-medium text-slate-500">
+                            Total Donasi Terverifikasi
+                        </span>
                         <p className="mt-2 text-xl font-bold text-slate-800">
                             {formatRupiah(stats.total_nominal_terverifikasi)}
                         </p>
                         <p className="mt-1 text-[11px] text-emerald-700">
-                            {stats.terverifikasi} donasi sah tercatat di kas
+                            {stats.terverifikasi} transaksi sah tercatat di kas
                         </p>
                     </div>
 
-                    <div className="rounded-xl border border-[#e4eaec] bg-white p-4 shadow-2xs">
-                        <div className="flex items-center justify-between">
-                            <span className="text-xs font-medium text-slate-500">
-                                Menunggu Verifikasi
-                            </span>
-                            <div className="flex size-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
-                                <Clock className="size-4" />
-                            </div>
-                        </div>
+                    <div className="rounded-xl border border-[#e4eaec] border-t-4 border-t-amber-400 bg-white p-4 shadow-2xs">
+                        <span className="text-xs font-medium text-slate-500">
+                            Menunggu Pembayaran / Verifikasi
+                        </span>
                         <p className="mt-2 text-xl font-bold text-slate-800">
                             {stats.menunggu}{' '}
                             <span className="text-sm font-medium text-slate-500">
-                                Pengajuan
+                                Transaksi
                             </span>
                         </p>
                         <p className="mt-1 text-[11px] text-amber-700">
@@ -607,35 +462,10 @@ export default function DonasiAdmin({
                         </p>
                     </div>
 
-                    <div className="rounded-xl border border-[#e4eaec] bg-white p-4 shadow-2xs">
-                        <div className="flex items-center justify-between">
-                            <span className="text-xs font-medium text-slate-500">
-                                Donasi Ditolak
-                            </span>
-                            <div className="flex size-8 items-center justify-center rounded-lg bg-rose-50 text-rose-600">
-                                <XCircle className="size-4" />
-                            </div>
-                        </div>
-                        <p className="mt-2 text-xl font-bold text-slate-800">
-                            {stats.ditolak}{' '}
-                            <span className="text-sm font-medium text-slate-500">
-                                Pengajuan
-                            </span>
-                        </p>
-                        <p className="mt-1 text-[11px] text-slate-400">
-                            Tidak menghasilkan transaksi kas
-                        </p>
-                    </div>
-
-                    <div className="rounded-xl border border-[#e4eaec] bg-white p-4 shadow-2xs">
-                        <div className="flex items-center justify-between">
-                            <span className="text-xs font-medium text-slate-500">
-                                Dibatalkan (Void)
-                            </span>
-                            <div className="flex size-8 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
-                                <Ban className="size-4" />
-                            </div>
-                        </div>
+                    <div className="rounded-xl border border-[#e4eaec] border-t-4 border-t-slate-400 bg-white p-4 shadow-2xs">
+                        <span className="text-xs font-medium text-slate-500">
+                            Dibatalkan / Void
+                        </span>
                         <p className="mt-2 text-xl font-bold text-slate-800">
                             {stats.dibatalkan}{' '}
                             <span className="text-sm font-medium text-slate-500">
@@ -643,7 +473,7 @@ export default function DonasiAdmin({
                             </span>
                         </p>
                         <p className="mt-1 text-[11px] text-slate-400">
-                            Transaksi kas terkait berstatus VOID
+                            Transaksi kas terkait berstatus VOID atau kedaluwarsa
                         </p>
                     </div>
                 </div>
@@ -654,62 +484,67 @@ export default function DonasiAdmin({
                         onSubmit={handleSearchSubmit}
                         className="grid grid-cols-1 gap-3 md:grid-cols-12"
                     >
-                        {/* Search Input */}
-                        <div className="relative md:col-span-4">
-                            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-slate-400" />
+                        <div className="flex gap-2 md:col-span-4">
                             <input
                                 type="text"
                                 value={searchInput}
                                 onChange={(e) => setSearchInput(e.target.value)}
-                                placeholder="Cari kode donasi, nama donatur, WA, anak..."
-                                className="h-9 w-full rounded-lg border border-[#e4eaec] bg-white pr-3 pl-9 text-xs text-slate-800 placeholder:text-slate-400 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-hidden"
+                                placeholder="Cari kode donasi, nama donatur, email, WA, anak..."
+                                className="h-9 w-full rounded-lg border border-[#cbebf0] bg-white px-3 text-xs text-slate-800 placeholder:text-slate-400 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-hidden"
                             />
+                            <Button
+                                type="submit"
+                                className="h-9 shrink-0 bg-[#087f8c] px-3.5 text-xs font-semibold text-white shadow-none hover:bg-[#066570]"
+                            >
+                                Cari
+                            </Button>
                         </div>
 
-                        {/* Status Verifikasi Filter */}
                         <div className="md:col-span-2">
-                            <select
+                            <BrandSelect
+                                ariaLabel="Filter Status Verifikasi"
                                 value={statusFilter}
-                                onChange={(e) => {
-                                    const val = e.target.value;
+                                onValueChange={(val) => {
                                     setStatusFilter(val);
                                     applyFilters({ status_verifikasi: val });
                                 }}
-                                aria-label="Filter Status Verifikasi"
-                                className="h-9 w-full rounded-lg border border-[#e4eaec] bg-white px-2.5 text-xs text-slate-700 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-hidden"
-                            >
-                                <option value="">Semua Status</option>
-                                <option value="menunggu">Menunggu</option>
-                                <option value="terverifikasi">
-                                    Terverifikasi
-                                </option>
-                                <option value="ditolak">Ditolak</option>
-                                <option value="dibatalkan">Dibatalkan</option>
-                            </select>
+                                options={[
+                                    { value: '', label: 'Semua Status' },
+                                    { value: 'menunggu', label: 'Menunggu' },
+                                    {
+                                        value: 'terverifikasi',
+                                        label: 'Terverifikasi',
+                                    },
+                                    {
+                                        value: 'dibatalkan',
+                                        label: 'Dibatalkan',
+                                    },
+                                ]}
+                            />
                         </div>
 
-                        {/* Jenis Donasi Filter */}
                         <div className="md:col-span-2">
-                            <select
-                                value={jenisFilter}
-                                onChange={(e) => {
-                                    const val = e.target.value;
-                                    setJenisFilter(val);
-                                    applyFilters({ jenis_donasi: val });
+                            <BrandSelect
+                                ariaLabel="Filter Metode Pembayaran"
+                                value={metodeFilter}
+                                onValueChange={(val) => {
+                                    setMetodeFilter(val);
+                                    applyFilters({ metode_pembayaran: val });
                                 }}
-                                aria-label="Filter Jenis Donasi"
-                                className="h-9 w-full rounded-lg border border-[#e4eaec] bg-white px-2.5 text-xs text-slate-700 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-hidden"
-                            >
-                                <option value="">Semua Jenis Program</option>
-                                {jenisDonasiList.map((jenis) => (
-                                    <option key={jenis} value={jenis}>
-                                        {jenis}
-                                    </option>
-                                ))}
-                            </select>
+                                options={[
+                                    { value: '', label: 'Semua Metode' },
+                                    {
+                                        value: 'midtrans',
+                                        label: 'Midtrans (Online)',
+                                    },
+                                    {
+                                        value: 'manual',
+                                        label: 'Donasi Manual',
+                                    },
+                                ]}
+                            />
                         </div>
 
-                        {/* Tanggal Dari */}
                         <div className="md:col-span-2">
                             <input
                                 type="date"
@@ -721,11 +556,10 @@ export default function DonasiAdmin({
                                 }}
                                 title="Dari Tanggal"
                                 aria-label="Filter Dari Tanggal"
-                                className="h-9 w-full rounded-lg border border-[#e4eaec] bg-white px-2.5 text-xs text-slate-700 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-hidden"
+                                className="h-9 w-full rounded-lg border border-[#cbebf0] bg-[#f7fcfd] px-2.5 text-xs text-[#087f8c] focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-hidden"
                             />
                         </div>
 
-                        {/* Tanggal Sampai & Actions */}
                         <div className="flex items-center gap-2 md:col-span-2">
                             <input
                                 type="date"
@@ -737,7 +571,7 @@ export default function DonasiAdmin({
                                 }}
                                 title="Sampai Tanggal"
                                 aria-label="Filter Sampai Tanggal"
-                                className="h-9 w-full rounded-lg border border-[#e4eaec] bg-white px-2.5 text-xs text-slate-700 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-hidden"
+                                className="h-9 w-full rounded-lg border border-[#cbebf0] bg-[#f7fcfd] px-2.5 text-xs text-[#087f8c] focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-hidden"
                             />
 
                             {hasActiveFilters && (
@@ -745,10 +579,9 @@ export default function DonasiAdmin({
                                     type="button"
                                     variant="outline"
                                     onClick={handleResetFilters}
-                                    title="Reset Filter"
-                                    className="h-9 shrink-0 border-[#e4eaec] bg-white px-2.5 text-xs text-slate-600 shadow-none hover:bg-slate-50 hover:text-slate-800"
+                                    className="h-9 shrink-0 border-[#cbebf0] bg-[#f7fcfd] px-2.5 text-xs font-medium text-[#087f8c] shadow-none hover:bg-[#e8f8fa]"
                                 >
-                                    <RotateCcw className="size-3.5" />
+                                    Reset
                                 </Button>
                             )}
                         </div>
@@ -766,10 +599,10 @@ export default function DonasiAdmin({
                                     </th>
                                     <th className="px-4 py-3.5">Donatur</th>
                                     <th className="px-4 py-3.5">
-                                        Program & Alokasi
+                                        Alokasi & Catatan
                                     </th>
                                     <th className="px-4 py-3.5">
-                                        Nominal & Rekening
+                                        Nominal & Pembayaran
                                     </th>
                                     <th className="px-4 py-3.5">
                                         Status & Buku Kas
@@ -786,18 +619,14 @@ export default function DonasiAdmin({
                                             colSpan={6}
                                             className="px-4 py-12 text-center text-sm text-slate-500"
                                         >
-                                            <div className="mx-auto flex max-w-sm flex-col items-center gap-2">
-                                                <div className="flex size-10 items-center justify-center rounded-full bg-[#e8f8fa] text-[#087f8c]">
-                                                    <HeartHandshake className="size-5" />
-                                                </div>
+                                            <div className="mx-auto flex max-w-sm flex-col items-center gap-1.5">
                                                 <p className="font-semibold text-slate-700">
                                                     Belum ada data donasi
                                                 </p>
                                                 <p className="text-xs text-slate-400">
-                                                    Data pengajuan donasi yang
-                                                    sesuai dengan filter atau
-                                                    cakupan bidang Anda akan
-                                                    muncul di sini.
+                                                    Transaksi donasi Midtrans
+                                                    dan catatan manual sesuai
+                                                    filter akan muncul di sini.
                                                 </p>
                                             </div>
                                         </td>
@@ -808,9 +637,6 @@ export default function DonasiAdmin({
                                             STATUS_BADGE[
                                                 item.status_verifikasi
                                             ] ?? STATUS_BADGE.menunggu;
-                                        const jenisBadge =
-                                            JENIS_BADGE[item.jenis_donasi] ??
-                                            'border-slate-200 bg-slate-50 text-slate-700';
 
                                         return (
                                             <tr
@@ -822,12 +648,9 @@ export default function DonasiAdmin({
                                                     <div className="font-mono text-xs font-bold text-slate-800">
                                                         {item.kode_donasi}
                                                     </div>
-                                                    <div className="mt-1 flex items-center gap-1 text-[11px] text-slate-400">
-                                                        <Calendar className="size-3" />
-                                                        <span>
-                                                            {item.created_at_formatted ??
-                                                                '-'}
-                                                        </span>
+                                                    <div className="mt-1 text-[11px] text-slate-400">
+                                                        {item.created_at_formatted ??
+                                                            '-'}
                                                     </div>
                                                 </td>
 
@@ -836,79 +659,76 @@ export default function DonasiAdmin({
                                                     <div className="font-semibold text-slate-800">
                                                         {item.nama_donatur}
                                                     </div>
-                                                    <div className="mt-1 flex items-center gap-1 text-[11px] text-slate-500">
-                                                        {item.email_donatur ? (
-                                                            <>
-                                                                <Mail className="size-3 text-slate-400" />
-                                                                <span className="truncate max-w-[180px]">
-                                                                    {item.email_donatur}
-                                                                </span>
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                <Phone className="size-3 text-slate-400" />
-                                                                <span>
-                                                                    {item.no_whatsapp || '-'}
-                                                                </span>
-                                                            </>
-                                                        )}
-                                                    </div>
-                                                </td>
-
-                                                {/* Program & Alokasi */}
-                                                <td className="px-4 py-3.5 align-top">
-                                                    <span
-                                                        className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${jenisBadge}`}
-                                                    >
-                                                        {item.jenis_donasi}
-                                                    </span>
-                                                    {item.anak_yatim ? (
-                                                        <div className="mt-1.5 flex items-center gap-1 text-[11px] text-slate-600">
-                                                            <UserCheck className="size-3.5 shrink-0 text-[#14bace]" />
-                                                            <span className="font-medium text-slate-700">
-                                                                {
-                                                                    item
-                                                                        .anak_yatim
-                                                                        .nama_lengkap
-                                                                }{' '}
-                                                                (
-                                                                {
-                                                                    item
-                                                                        .anak_yatim
-                                                                        .alias
-                                                                }
-                                                                )
-                                                            </span>
+                                                    {item.email_donatur && (
+                                                        <div className="mt-1 max-w-[200px] truncate text-[11px] text-slate-500">
+                                                            {item.email_donatur}
                                                         </div>
-                                                    ) : (
-                                                        <div className="mt-1 text-[11px] text-slate-400">
-                                                            Alokasi Umum Yayasan
+                                                    )}
+                                                    {item.no_whatsapp && (
+                                                        <div className="mt-0.5 text-[11px] text-slate-500">
+                                                            WA:{' '}
+                                                            {item.no_whatsapp}
                                                         </div>
                                                     )}
                                                 </td>
 
-                                                {/* Nominal & Rekening */}
+                                                {/* Alokasi */}
+                                                <td className="px-4 py-3.5 align-top">
+                                                    {item.anak_yatim ? (
+                                                        <div className="font-medium text-[#087f8c]">
+                                                            {
+                                                                item.anak_yatim
+                                                                    .nama_lengkap
+                                                            }
+                                                            <span className="block text-[11px] font-normal text-slate-400">
+                                                                {
+                                                                    item
+                                                                        .anak_yatim
+                                                                        .jenjang
+                                                                }{' '}
+                                                                • Kel.{' '}
+                                                                {
+                                                                    item
+                                                                        .anak_yatim
+                                                                        .kelurahan
+                                                                }
+                                                            </span>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="text-[11px] text-slate-500">
+                                                            Alokasi Umum Yayasan
+                                                        </div>
+                                                    )}
+                                                    {item.pesan_doa && (
+                                                        <p className="mt-1 line-clamp-2 max-w-[220px] text-[11px] text-slate-400">
+                                                            "{item.pesan_doa}"
+                                                        </p>
+                                                    )}
+                                                </td>
+
+                                                {/* Nominal & Metode Pembayaran */}
                                                 <td className="px-4 py-3.5 align-top">
                                                     <div className="font-bold text-slate-800">
                                                         {formatRupiah(
                                                             item.nominal,
                                                         )}
                                                     </div>
-                                                    <div className="mt-1 flex items-center gap-1 text-[11px] text-slate-500">
-                                                        <CreditCard className="size-3 text-slate-400" />
-                                                        <span>
-                                                            {
-                                                                item.rekening_tujuan
-                                                            }
-                                                        </span>
-                                                    </div>
-                                                    {item.metode_pembayaran === 'midtrans' && (
-                                                        <div className="mt-1">
-                                                            <span className="inline-flex items-center gap-1 rounded bg-[#e8f8fa] px-1.5 py-0.5 text-[10px] font-semibold text-[#087f8c]">
-                                                                Midtrans{item.midtrans_payment_type ? ` • ${item.midtrans_payment_type.toUpperCase().replace(/_/g, ' ')}` : ''}
+                                                    <div className="mt-1">
+                                                        {item.metode_pembayaran ===
+                                                        'midtrans' ? (
+                                                            <span className="inline-flex items-center rounded bg-[#e8f8fa] px-2 py-0.5 text-[10px] font-semibold text-[#087f8c]">
+                                                                Midtrans
+                                                                {item.midtrans_payment_type
+                                                                    ? ` • ${item.midtrans_payment_type.toUpperCase().replace(/_/g, ' ')}`
+                                                                    : ''}
                                                             </span>
-                                                        </div>
-                                                    )}
+                                                        ) : (
+                                                            <span className="inline-flex items-center rounded bg-slate-100 px-2 py-0.5 text-[10px] font-medium text-slate-600">
+                                                                {item.rekening_tujuan ||
+                                                                    'Donasi Manual'}
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 </td>
 
                                                 {/* Status & Buku Kas */}
@@ -921,7 +741,6 @@ export default function DonasiAdmin({
 
                                                     {item.transaksi && (
                                                         <div className="mt-1.5 flex items-center gap-1.5 text-[11px]">
-                                                            <Receipt className="size-3 text-slate-400" />
                                                             <span className="font-mono text-slate-600">
                                                                 {
                                                                     item
@@ -930,7 +749,7 @@ export default function DonasiAdmin({
                                                                 }
                                                             </span>
                                                             <span
-                                                                className={`py-0.2 rounded px-1.5 text-[10px] font-semibold uppercase ${
+                                                                className={`rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase ${
                                                                     item
                                                                         .transaksi
                                                                         .status_transaksi ===
@@ -971,9 +790,8 @@ export default function DonasiAdmin({
                                                                     item,
                                                                 )
                                                             }
-                                                            className="h-7 border-[#e4eaec] bg-white px-2.5 text-[11px] font-medium text-slate-600 shadow-none hover:bg-slate-50 hover:text-slate-800"
+                                                            className="h-7 border-[#cbebf0] bg-[#f7fcfd] px-2.5 text-[11px] font-medium text-[#087f8c] shadow-none hover:bg-[#e8f8fa]"
                                                         >
-                                                            <Eye className="mr-1 size-3.5 text-[#14bace]" />
                                                             Detail
                                                         </Button>
 
@@ -990,27 +808,7 @@ export default function DonasiAdmin({
                                                                     }
                                                                     className="h-7 bg-[#14bace] px-2.5 text-[11px] font-semibold text-white shadow-none hover:bg-[#0fa0ae]"
                                                                 >
-                                                                    <CheckCircle2 className="mr-1 size-3.5" />
                                                                     Verifikasi
-                                                                </Button>
-                                                            )}
-
-                                                        {item.can_reject &&
-                                                            item.status_verifikasi ===
-                                                                'menunggu' && (
-                                                                <Button
-                                                                    type="button"
-                                                                    variant="outline"
-                                                                    size="sm"
-                                                                    onClick={() =>
-                                                                        openRejectModal(
-                                                                            item,
-                                                                        )
-                                                                    }
-                                                                    className="h-7 border-rose-200 bg-white px-2.5 text-[11px] font-medium text-rose-600 shadow-none hover:bg-rose-50 hover:text-rose-700"
-                                                                >
-                                                                    <XCircle className="mr-1 size-3.5" />
-                                                                    Tolak
                                                                 </Button>
                                                             )}
 
@@ -1028,7 +826,6 @@ export default function DonasiAdmin({
                                                                     }
                                                                     className="h-7 border-amber-200 bg-white px-2.5 text-[11px] font-medium text-amber-700 shadow-none hover:bg-amber-50"
                                                                 >
-                                                                    <Ban className="mr-1 size-3.5" />
                                                                     Batalkan
                                                                 </Button>
                                                             )}
@@ -1095,7 +892,7 @@ export default function DonasiAdmin({
                                                 className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition ${
                                                     link.active
                                                         ? 'border-[#14bace] bg-[#14bace] text-white'
-                                                        : 'border-[#e4eaec] bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-800'
+                                                        : 'border-[#cbebf0] bg-[#f7fcfd] text-[#087f8c] hover:bg-[#e8f8fa]'
                                                 }`}
                                             >
                                                 {label}
@@ -1109,7 +906,7 @@ export default function DonasiAdmin({
                 </div>
             </div>
 
-            {/* MODAL 1: DETAIL DONASI & BUKTI TRANSFER */}
+            {/* MODAL 1: DETAIL TRANSAKSI DONASI */}
             <Dialog
                 open={detailItem !== null}
                 onOpenChange={(open) => !open && setDetailItem(null)}
@@ -1126,21 +923,20 @@ export default function DonasiAdmin({
                                         className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-medium ${
                                             STATUS_BADGE[
                                                 detailItem.status_verifikasi
-                                            ]?.className
+                                            ]?.className ??
+                                            STATUS_BADGE.menunggu.className
                                         }`}
                                     >
-                                        {
-                                            STATUS_BADGE[
-                                                detailItem.status_verifikasi
-                                            ]?.label
-                                        }
+                                        {STATUS_BADGE[
+                                            detailItem.status_verifikasi
+                                        ]?.label ?? detailItem.status_verifikasi}
                                     </span>
                                 </div>
                                 <DialogTitle className="mt-1 text-lg font-bold text-slate-800">
-                                    Rincian Pengajuan Donasi
+                                    Rincian Transaksi Donasi
                                 </DialogTitle>
                                 <DialogDescription className="text-xs text-slate-500">
-                                    Diajukan pada{' '}
+                                    Dicatat pada{' '}
                                     {detailItem.created_at_formatted ?? '-'}
                                 </DialogDescription>
                             </DialogHeader>
@@ -1160,7 +956,7 @@ export default function DonasiAdmin({
                                         <span className="text-[11px] text-slate-400">
                                             Kontak Donatur
                                         </span>
-                                        <p className="mt-0.5 font-semibold text-slate-800 break-all">
+                                        <p className="mt-0.5 font-semibold break-all text-slate-800">
                                             {detailItem.email_donatur ||
                                                 detailItem.no_whatsapp ||
                                                 '-'}
@@ -1175,70 +971,70 @@ export default function DonasiAdmin({
                                     </div>
                                     <div>
                                         <span className="text-[11px] text-slate-400">
-                                            Jenis Program Donasi
-                                        </span>
-                                        <p className="mt-0.5 font-semibold text-[#087f8c]">
-                                            {detailItem.jenis_donasi}
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <span className="text-[11px] text-slate-400">
-                                            Nominal Transfer
+                                            Nominal Donasi
                                         </span>
                                         <p className="mt-0.5 text-sm font-bold text-slate-800">
                                             {formatRupiah(detailItem.nominal)}
                                         </p>
                                     </div>
-                                    <div className="sm:col-span-2">
+                                    <div>
                                         <span className="text-[11px] text-slate-400">
-                                            Rekening / Jalur Donasi
+                                            Jalur Pembayaran
                                         </span>
-                                        <p className="mt-0.5 font-medium text-slate-700">
-                                            {detailItem.rekening_tujuan}
-                                            {detailItem.metode_pembayaran === 'midtrans' && (
-                                                <span className="ml-2 inline-flex items-center rounded-full bg-[#e8f8fa] px-2 py-0.5 text-[10px] font-bold text-[#087f8c]">
-                                                    Midtrans Snap ({detailItem.midtrans_payment_type?.toUpperCase().replace(/_/g, ' ') || 'Online'})
-                                                </span>
-                                            )}
+                                        <p className="mt-0.5 font-semibold text-[#087f8c]">
+                                            {detailItem.metode_pembayaran ===
+                                            'midtrans'
+                                                ? `Midtrans (${detailItem.midtrans_payment_type?.toUpperCase().replace(/_/g, ' ') || 'Snap Online'})`
+                                                : detailItem.rekening_tujuan ||
+                                                  'Donasi Manual'}
                                         </p>
-                                        {detailItem.email_donatur && (
-                                            <p className="mt-1 text-xs text-slate-500">
-                                                Email Donatur: {detailItem.email_donatur}
-                                            </p>
-                                        )}
-                                        {detailItem.paid_at && (
-                                            <p className="mt-0.5 text-xs text-emerald-600 font-medium">
-                                                Waktu Pembayaran: {detailItem.paid_at}
+                                        {detailItem.midtrans_transaction_id && (
+                                            <p className="mt-0.5 font-mono text-[10px] text-slate-500">
+                                                ID Midtrans:{' '}
+                                                {
+                                                    detailItem.midtrans_transaction_id
+                                                }
                                             </p>
                                         )}
                                     </div>
+                                    {detailItem.paid_at && (
+                                        <div className="sm:col-span-2">
+                                            <span className="text-[11px] text-slate-400">
+                                                Waktu Pelunasan
+                                            </span>
+                                            <p className="mt-0.5 font-medium text-emerald-700">
+                                                {detailItem.paid_at}
+                                            </p>
+                                        </div>
+                                    )}
+                                    {detailItem.pesan_doa && (
+                                        <div className="sm:col-span-2">
+                                            <span className="text-[11px] text-slate-400">
+                                                Pesan / Doa Donatur
+                                            </span>
+                                            <p className="mt-0.5 text-slate-700">
+                                                {detailItem.pesan_doa}
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Alokasi Anak Yatim (Jika Ada) */}
                                 {detailItem.anak_yatim && (
                                     <div className="rounded-xl border border-[#cbebf0] bg-[#f7fcfd] p-4">
-                                        <div className="flex items-center gap-2 text-xs font-semibold text-[#087f8c]">
-                                            <UserCheck className="size-4 text-[#14bace]" />
-                                            <span>
-                                                Alokasi Anak Binaan Tujuan
-                                            </span>
+                                        <div className="text-xs font-semibold text-[#087f8c]">
+                                            Alokasi Anak Binaan Tujuan
                                         </div>
                                         <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
                                             <div>
                                                 <span className="text-[11px] text-slate-400">
-                                                    Nama Lengkap & Inisial
+                                                    Nama Lengkap
                                                 </span>
                                                 <p className="font-semibold text-slate-800">
                                                     {
                                                         detailItem.anak_yatim
                                                             .nama_lengkap
-                                                    }{' '}
-                                                    (
-                                                    {
-                                                        detailItem.anak_yatim
-                                                            .alias
                                                     }
-                                                    )
                                                 </p>
                                             </div>
                                             <div>
@@ -1250,12 +1046,7 @@ export default function DonasiAdmin({
                                                         detailItem.anak_yatim
                                                             .jenjang
                                                     }{' '}
-                                                    (
-                                                    {
-                                                        detailItem.anak_yatim
-                                                            .kelas
-                                                    }
-                                                    ) • Kel.{' '}
+                                                    • Kel.{' '}
                                                     {
                                                         detailItem.anak_yatim
                                                             .kelurahan
@@ -1266,124 +1057,49 @@ export default function DonasiAdmin({
                                     </div>
                                 )}
 
-                                {/* Pesan & Doa */}
-                                {detailItem.pesan_doa && (
-                                    <div className="rounded-xl border border-[#e4eaec] bg-white p-3.5">
-                                        <span className="text-[11px] font-medium text-slate-400">
-                                            Pesan & Doa Donatur
-                                        </span>
-                                        <p className="mt-1 leading-relaxed text-slate-700 italic">
-                                            "{detailItem.pesan_doa}"
-                                        </p>
-                                    </div>
-                                )}
-
-                                {/* Bukti Transfer (Akses File Terotorisasi) */}
-                                <div className="rounded-xl border border-[#e4eaec] bg-white p-4">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-2 font-semibold text-slate-800">
-                                            <FileText className="size-4 text-[#14bace]" />
-                                            <span>Lampiran Bukti Transfer</span>
-                                        </div>
-                                        {detailItem.has_bukti_transfer &&
-                                            detailItem.bukti_transfer_url && (
+                                {/* Bukti Transfer (untuk riwayat lama yang memiliki berkas) */}
+                                {detailItem.has_bukti_transfer &&
+                                    detailItem.bukti_transfer_url && (
+                                        <div className="rounded-xl border border-[#e4eaec] bg-white p-4">
+                                            <div className="mb-2 flex items-center justify-between">
+                                                <span className="font-semibold text-slate-700">
+                                                    Lampiran Bukti Transfer
+                                                </span>
                                                 <a
                                                     href={
                                                         detailItem.bukti_transfer_url
                                                     }
                                                     target="_blank"
                                                     rel="noreferrer"
-                                                    className="inline-flex items-center gap-1 rounded-lg border border-[#cbebf0] bg-[#e8f8fa] px-2.5 py-1 text-[11px] font-semibold text-[#087f8c] transition hover:bg-[#14bace] hover:text-white"
+                                                    className="font-semibold text-[#087f8c] underline hover:text-[#14bace]"
                                                 >
-                                                    <ExternalLink className="size-3.5" />
-                                                    <span>
-                                                        Buka Bukti di Tab Baru
-                                                    </span>
+                                                    Buka di Tab Baru
                                                 </a>
+                                            </div>
+                                            {!detailItem.bukti_transfer_is_pdf && (
+                                                <img
+                                                    src={
+                                                        detailItem.bukti_transfer_url
+                                                    }
+                                                    alt="Bukti Transfer"
+                                                    className="max-h-64 w-full rounded-lg border border-[#e4eaec] object-contain"
+                                                />
                                             )}
-                                    </div>
-
-                                    {!detailItem.has_bukti_transfer ||
-                                    !detailItem.bukti_transfer_url ? (
-                                        <p className="mt-2 text-xs text-slate-400">
-                                            Tidak ada file bukti transfer yang
-                                            terlampir.
-                                        </p>
-                                    ) : detailItem.bukti_transfer_is_pdf ? (
-                                        <div className="mt-3 flex items-center justify-between rounded-lg border border-[#e4eaec] bg-[#f8fafb] p-3">
-                                            <span className="text-xs text-slate-600">
-                                                Dokumen PDF Bukti Transfer
-                                                Terenkripsi
-                                            </span>
-                                            <a
-                                                href={
-                                                    detailItem.bukti_transfer_url
-                                                }
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="text-xs font-semibold text-[#087f8c] underline"
-                                            >
-                                                Lihat Dokumen PDF
-                                            </a>
-                                        </div>
-                                    ) : (
-                                        <div className="mt-3 overflow-hidden rounded-lg border border-[#e4eaec] bg-[#f8fafb] p-2">
-                                            <img
-                                                src={
-                                                    detailItem.bukti_transfer_url
-                                                }
-                                                alt={`Bukti Transfer ${detailItem.kode_donasi}`}
-                                                className="mx-auto max-h-72 rounded object-contain"
-                                            />
                                         </div>
                                     )}
-                                </div>
 
-                                {/* Informasi Audit Verifikasi & Transaksi Kas */}
-                                {(detailItem.verifikator ||
-                                    detailItem.catatan_verifikasi ||
-                                    detailItem.transaksi) && (
-                                    <div className="rounded-xl border border-[#e4eaec] bg-[#f8fafb] p-4">
-                                        <div className="flex items-center gap-2 font-semibold text-slate-800">
-                                            <ShieldCheck className="size-4 text-[#087f8c]" />
-                                            <span>
-                                                Jejak Audit & Integrasi Buku Kas
-                                            </span>
-                                        </div>
-
-                                        <div className="mt-2.5 grid grid-cols-1 gap-2 sm:grid-cols-2">
-                                            {detailItem.verifikator && (
-                                                <div>
-                                                    <span className="text-[11px] text-slate-400">
-                                                        Diverifikasi / Diproses
-                                                        Oleh
-                                                    </span>
-                                                    <p className="font-medium text-slate-700">
-                                                        {
-                                                            detailItem
-                                                                .verifikator
-                                                                .name
-                                                        }
-                                                    </p>
-                                                </div>
-                                            )}
-                                            {detailItem.verified_at_formatted && (
-                                                <div>
-                                                    <span className="text-[11px] text-slate-400">
-                                                        Waktu Pemrosesan
-                                                    </span>
-                                                    <p className="font-medium text-slate-700">
-                                                        {
-                                                            detailItem.verified_at_formatted
-                                                        }
-                                                    </p>
-                                                </div>
-                                            )}
+                                {/* Transaksi Buku Kas & Audit */}
+                                {(detailItem.transaksi ||
+                                    detailItem.catatan_verifikasi) && (
+                                    <div className="rounded-xl border border-[#e4eaec] bg-white p-4">
+                                        <span className="font-semibold text-slate-700">
+                                            Integrasi Buku Kas & Catatan Audit
+                                        </span>
+                                        <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
                                             {detailItem.transaksi && (
-                                                <div className="sm:col-span-2">
+                                                <div>
                                                     <span className="text-[11px] text-slate-400">
-                                                        Kode Transaksi Keuangan
-                                                        Terkait
+                                                        Kode Transaksi Kas
                                                     </span>
                                                     <div className="mt-0.5 flex items-center gap-2">
                                                         <span className="font-mono font-bold text-slate-800">
@@ -1394,7 +1110,7 @@ export default function DonasiAdmin({
                                                             }
                                                         </span>
                                                         <span
-                                                            className={`rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase ${
+                                                            className={`rounded px-1.5 py-0.5 text-[10px] font-semibold uppercase ${
                                                                 detailItem
                                                                     .transaksi
                                                                     .status_transaksi ===
@@ -1441,22 +1157,6 @@ export default function DonasiAdmin({
                                 </Button>
 
                                 <div className="flex flex-wrap items-center gap-2">
-                                    {detailItem.can_reject &&
-                                        detailItem.status_verifikasi ===
-                                            'menunggu' && (
-                                            <Button
-                                                type="button"
-                                                variant="outline"
-                                                onClick={() =>
-                                                    openRejectModal(detailItem)
-                                                }
-                                                className="border-rose-200 bg-white text-xs font-medium text-rose-600 shadow-none hover:bg-rose-50"
-                                            >
-                                                <XCircle className="mr-1.5 size-3.5" />
-                                                Tolak Donasi
-                                            </Button>
-                                        )}
-
                                     {detailItem.can_verify &&
                                         detailItem.status_verifikasi ===
                                             'menunggu' && (
@@ -1467,7 +1167,6 @@ export default function DonasiAdmin({
                                                 }
                                                 className="bg-[#14bace] text-xs font-semibold text-white shadow-none hover:bg-[#0fa0ae]"
                                             >
-                                                <CheckCircle2 className="mr-1.5 size-3.5" />
                                                 Verifikasi & Catat Kas
                                             </Button>
                                         )}
@@ -1483,7 +1182,6 @@ export default function DonasiAdmin({
                                                 }
                                                 className="border-amber-200 bg-amber-50/70 text-xs font-medium text-amber-800 shadow-none hover:bg-amber-100"
                                             >
-                                                <Ban className="mr-1.5 size-3.5" />
                                                 Batalkan Donasi (Void)
                                             </Button>
                                         )}
@@ -1507,8 +1205,8 @@ export default function DonasiAdmin({
                                     Verifikasi Penerimaan Donasi
                                 </DialogTitle>
                                 <DialogDescription className="text-xs text-slate-500">
-                                    Pastikan dana telah masuk ke rekening resmi
-                                    yayasan sebelum melakukan verifikasi.
+                                    Pastikan dana telah diterima yayasan sebelum
+                                    melakukan verifikasi ke buku kas.
                                 </DialogDescription>
                             </DialogHeader>
 
@@ -1528,14 +1226,6 @@ export default function DonasiAdmin({
                                         </span>
                                         <span className="font-semibold text-slate-800">
                                             {verifyTarget.nama_donatur}
-                                        </span>
-                                    </div>
-                                    <div className="mt-1.5 flex justify-between">
-                                        <span className="text-slate-500">
-                                            Program:
-                                        </span>
-                                        <span className="font-medium text-[#087f8c]">
-                                            {verifyTarget.jenis_donasi}
                                         </span>
                                     </div>
                                     <div className="mt-1.5 flex justify-between border-t border-[#cbebf0] pt-1.5">
@@ -1563,7 +1253,7 @@ export default function DonasiAdmin({
                                                 e.target.value,
                                             )
                                         }
-                                        placeholder="Contoh: Mutasi BSI sesuai pada tanggal transfer..."
+                                        placeholder="Contoh: Dana diterima sesuai catatan bendahara..."
                                         className="w-full rounded-lg border border-[#e4eaec] bg-white px-3 py-2 text-xs text-slate-800 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-hidden"
                                     />
                                 </div>
@@ -1593,89 +1283,7 @@ export default function DonasiAdmin({
                 </DialogContent>
             </Dialog>
 
-            {/* MODAL 3: TOLAK DONASI */}
-            <Dialog
-                open={rejectTarget !== null}
-                onOpenChange={(open) => !open && setRejectTarget(null)}
-            >
-                <DialogContent className="border-[#e4eaec] bg-white font-poppins text-slate-800 sm:max-w-md">
-                    {rejectTarget && (
-                        <form onSubmit={handleRejectSubmit}>
-                            <DialogHeader>
-                                <DialogTitle className="text-base font-bold text-slate-800">
-                                    Tolak Pengajuan Donasi
-                                </DialogTitle>
-                                <DialogDescription className="text-xs text-slate-500">
-                                    Donasi yang ditolak tidak akan menghasilkan
-                                    transaksi pemasukan pada buku kas yayasan.
-                                </DialogDescription>
-                            </DialogHeader>
-
-                            <div className="my-4 space-y-3 text-xs">
-                                <div className="rounded-xl border border-rose-200 bg-rose-50/60 p-3">
-                                    <p className="font-medium text-slate-700">
-                                        {rejectTarget.kode_donasi} —{' '}
-                                        {rejectTarget.nama_donatur} (
-                                        {formatRupiah(rejectTarget.nominal)})
-                                    </p>
-                                </div>
-
-                                <div>
-                                    <label className="mb-1 block text-xs font-medium text-slate-700">
-                                        Alasan Penolakan{' '}
-                                        <span className="text-rose-500">*</span>
-                                    </label>
-                                    <textarea
-                                        rows={3}
-                                        required
-                                        value={
-                                            rejectForm.data.catatan_verifikasi
-                                        }
-                                        onChange={(e) =>
-                                            rejectForm.setData(
-                                                'catatan_verifikasi',
-                                                e.target.value,
-                                            )
-                                        }
-                                        placeholder="Tuliskan alasan penolakan (mis. bukti transfer tidak terbaca / dana belum masuk di mutasi rekening)..."
-                                        className="w-full rounded-lg border border-[#e4eaec] bg-white px-3 py-2 text-xs text-slate-800 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-hidden"
-                                    />
-                                    {rejectForm.errors.catatan_verifikasi && (
-                                        <p className="mt-1 text-xs text-rose-600">
-                                            {
-                                                rejectForm.errors
-                                                    .catatan_verifikasi
-                                            }
-                                        </p>
-                                    )}
-                                </div>
-                            </div>
-
-                            <DialogFooter className="gap-2">
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={() => setRejectTarget(null)}
-                                    className="border-[#e4eaec] bg-white text-xs font-medium text-slate-600 shadow-none hover:bg-slate-50"
-                                >
-                                    Batal
-                                </Button>
-                                <Button
-                                    type="submit"
-                                    disabled={rejectForm.processing}
-                                    className="bg-rose-600 text-xs font-medium text-white shadow-none hover:bg-rose-700"
-                                >
-                                    {rejectForm.processing
-                                        ? 'Memproses...'
-                                        : 'Konfirmasi Tolak'}
-                                </Button>
-                            </DialogFooter>
-                        </form>
-                    )}
-                </DialogContent>
-            </Dialog>
-
-            {/* MODAL 4: BATALKAN DONASI TERVERIFIKASI (SUPER ADMIN) */}
+            {/* MODAL 3: BATALKAN DONASI TERVERIFIKASI (SUPER ADMIN) */}
             <Dialog
                 open={cancelTarget !== null}
                 onOpenChange={(open) => !open && setCancelTarget(null)}
@@ -1691,8 +1299,8 @@ export default function DonasiAdmin({
                                     Tindakan khusus Super Admin. Transaksi
                                     keuangan terkait tidak dihapus, melainkan
                                     diubah menjadi berstatus{' '}
-                                    <strong>VOID</strong> agar saldo kas kembali
-                                    akurat dan jejak audit tetap terjaga.
+                                    <strong>VOID</strong> agar saldo kas akurat
+                                    dan jejak audit tetap terjaga.
                                 </DialogDescription>
                             </DialogHeader>
 
@@ -1703,8 +1311,7 @@ export default function DonasiAdmin({
                                         {formatRupiah(cancelTarget.nominal)}
                                     </p>
                                     <p className="mt-0.5 text-[11px] text-amber-800">
-                                        Donatur: {cancelTarget.nama_donatur} (
-                                        {cancelTarget.jenis_donasi})
+                                        Donatur: {cancelTarget.nama_donatur}
                                     </p>
                                 </div>
 
@@ -1763,19 +1370,18 @@ export default function DonasiAdmin({
                 </DialogContent>
             </Dialog>
 
-            {/* MODAL 5: CATAT DONASI MANUAL (ADMIN) */}
+            {/* MODAL 4: CATAT DONASI MANUAL (ADMIN) */}
             <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
                 <DialogContent className="max-h-[90vh] overflow-y-auto border-[#e4eaec] bg-white font-poppins text-slate-800 sm:max-w-lg">
                     <form onSubmit={handleCreateSubmit}>
                         <DialogHeader>
                             <DialogTitle className="text-base font-bold text-slate-800">
-                                Catat Pengajuan Donasi Baru
+                                Catat Donasi Manual
                             </DialogTitle>
                             <DialogDescription className="text-xs text-slate-500">
-                                Gunakan formulir ini untuk mencatat konfirmasi
-                                donasi yang diterima melalui WhatsApp atau
-                                secara langsung. Donasi baru akan berstatus
-                                Menunggu Verifikasi.
+                                Catat penerimaan donasi secara langsung atau
+                                melalui konfirmasi pribadi. Donasi baru akan
+                                berstatus Menunggu Verifikasi.
                             </DialogDescription>
                         </DialogHeader>
 
@@ -1808,12 +1414,10 @@ export default function DonasiAdmin({
 
                                 <div>
                                     <label className="mb-1 block font-medium text-slate-700">
-                                        Nomor WhatsApp{' '}
-                                        <span className="text-rose-500">*</span>
+                                        Nomor WhatsApp (Opsional)
                                     </label>
                                     <input
                                         type="tel"
-                                        required
                                         value={createForm.data.no_whatsapp}
                                         onChange={(e) =>
                                             createForm.setData(
@@ -1832,203 +1436,60 @@ export default function DonasiAdmin({
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                                <div>
-                                    <label className="mb-1 block font-medium text-slate-700">
-                                        Jenis Program Donasi{' '}
-                                        <span className="text-rose-500">*</span>
-                                    </label>
-                                    <select
-                                        value={createForm.data.jenis_donasi}
-                                        onChange={(e) => {
-                                            const val = e.target.value;
-                                            createForm.setData((prev) => ({
-                                                ...prev,
-                                                jenis_donasi: val,
-                                                anak_yatim_id:
-                                                    JENIS_DENGAN_ANAK.includes(
-                                                        val,
-                                                    )
-                                                        ? prev.anak_yatim_id
-                                                        : '',
-                                            }));
-                                        }}
-                                        className="w-full rounded-lg border border-[#e4eaec] bg-white px-3 py-2 text-xs text-slate-800 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-hidden"
-                                    >
-                                        {jenisDonasiList.map((j) => (
-                                            <option key={j} value={j}>
-                                                {j}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {createForm.errors.jenis_donasi && (
-                                        <p className="mt-1 text-rose-600">
-                                            {createForm.errors.jenis_donasi}
-                                        </p>
-                                    )}
-                                </div>
-
-                                <div>
-                                    <label className="mb-1 block font-medium text-slate-700">
-                                        Nominal Donasi (Rp){' '}
-                                        <span className="text-rose-500">*</span>
-                                    </label>
-                                    <input
-                                        type="number"
-                                        required
-                                        min="10000"
-                                        step="1000"
-                                        value={createForm.data.nominal}
-                                        onChange={(e) =>
-                                            createForm.setData(
-                                                'nominal',
-                                                e.target.value,
-                                            )
-                                        }
-                                        placeholder="100000"
-                                        className="w-full rounded-lg border border-[#e4eaec] bg-white px-3 py-2 text-xs text-slate-800 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-hidden"
-                                    />
-                                    {createForm.errors.nominal && (
-                                        <p className="mt-1 text-rose-600">
-                                            {createForm.errors.nominal}
-                                        </p>
-                                    )}
-                                </div>
-                            </div>
-
-                            {JENIS_DENGAN_ANAK.includes(
-                                createForm.data.jenis_donasi,
-                            ) && (
-                                <div>
-                                    <label className="mb-1 block font-medium text-slate-700">
-                                        Anak Binaan Tujuan (Opsional)
-                                    </label>
-                                    <select
-                                        value={createForm.data.anak_yatim_id}
-                                        onChange={(e) =>
-                                            createForm.setData(
-                                                'anak_yatim_id',
-                                                e.target.value,
-                                            )
-                                        }
-                                        className="w-full rounded-lg border border-[#e4eaec] bg-white px-3 py-2 text-xs text-slate-800 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-hidden"
-                                    >
-                                        <option value="">
-                                            -- Alokasi Umum Program --
-                                        </option>
-                                        {anakYatimList.map((anak) => (
-                                            <option
-                                                key={anak.id}
-                                                value={String(anak.id)}
-                                            >
-                                                {anak.nama_lengkap} (
-                                                {anak.alias}) — {anak.jenjang} •
-                                                Kel. {anak.kelurahan}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    {createForm.errors.anak_yatim_id && (
-                                        <p className="mt-1 text-rose-600">
-                                            {createForm.errors.anak_yatim_id}
-                                        </p>
-                                    )}
-                                </div>
-                            )}
-
                             <div>
                                 <label className="mb-1 block font-medium text-slate-700">
-                                    Rekening Tujuan Transfer{' '}
+                                    Nominal Donasi (Rp){' '}
                                     <span className="text-rose-500">*</span>
                                 </label>
-                                <select
-                                    value={createForm.data.rekening_tujuan}
-                                    onChange={(e) => {
-                                        const val = e.target.value;
-                                        const selected = rekeningList.find(
-                                            (r) => r.kode === val,
-                                        );
-                                        createForm.setData((prev) => ({
-                                            ...prev,
-                                            rekening_tujuan: val,
-                                            rekening_id: selected?.id ?? null,
-                                        }));
-                                    }}
+                                <input
+                                    type="number"
+                                    required
+                                    min="1000"
+                                    step="500"
+                                    value={createForm.data.nominal}
+                                    onChange={(e) =>
+                                        createForm.setData(
+                                            'nominal',
+                                            e.target.value,
+                                        )
+                                    }
+                                    placeholder="100000"
                                     className="w-full rounded-lg border border-[#e4eaec] bg-white px-3 py-2 text-xs text-slate-800 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-hidden"
-                                >
-                                    {rekeningList.map((rek) => (
-                                        <option key={rek.kode} value={rek.kode}>
-                                            {rek.bank} - {rek.nomor}
-                                        </option>
-                                    ))}
-                                </select>
-                                {createForm.errors.rekening_tujuan && (
+                                />
+                                {createForm.errors.nominal && (
                                     <p className="mt-1 text-rose-600">
-                                        {createForm.errors.rekening_tujuan}
+                                        {createForm.errors.nominal}
                                     </p>
                                 )}
                             </div>
 
                             <div>
                                 <label className="mb-1 block font-medium text-slate-700">
-                                    Unggah Bukti Transfer{' '}
-                                    <span className="text-rose-500">*</span>
+                                    Anak Binaan Tujuan (Opsional)
                                 </label>
-                                {!createForm.data.bukti_transfer ? (
-                                    <label
-                                        htmlFor="admin_bukti_transfer"
-                                        className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-[#cbd5e1] bg-[#f8fafb] p-4 text-center transition hover:border-[#14bace]"
-                                    >
-                                        <Upload className="size-4 text-[#087f8c]" />
-                                        <span className="text-xs text-slate-600">
-                                            Pilih file bukti transfer (JPG, PNG,
-                                            WEBP, PDF maks 5 MB)
-                                        </span>
-                                    </label>
-                                ) : (
-                                    <div className="flex items-center justify-between rounded-lg border border-[#cbebf0] bg-[#f7fcfd] px-3 py-2">
-                                        <div className="flex items-center gap-2 truncate">
-                                            <FileCheck2 className="size-4 shrink-0 text-[#087f8c]" />
-                                            <span className="truncate font-medium text-slate-700">
-                                                {
-                                                    createForm.data
-                                                        .bukti_transfer.name
-                                                }
-                                            </span>
-                                        </div>
-                                        <button
-                                            type="button"
-                                            onClick={() => {
-                                                createForm.setData(
-                                                    'bukti_transfer',
-                                                    null,
-                                                );
-                                                if (createFileRef.current) {
-                                                    createFileRef.current.value =
-                                                        '';
-                                                }
-                                            }}
-                                            className="text-slate-400 hover:text-rose-600"
-                                        >
-                                            <X className="size-4" />
-                                        </button>
-                                    </div>
-                                )}
-                                <input
-                                    ref={createFileRef}
-                                    id="admin_bukti_transfer"
-                                    type="file"
-                                    accept=".jpg,.jpeg,.png,.webp,.pdf,image/jpeg,image/png,image/webp,application/pdf"
-                                    onChange={(e) =>
+                                <BrandSelect
+                                    ariaLabel="Anak Binaan Tujuan"
+                                    value={createForm.data.anak_yatim_id}
+                                    onValueChange={(val) =>
                                         createForm.setData(
-                                            'bukti_transfer',
-                                            e.target.files?.[0] ?? null,
+                                            'anak_yatim_id',
+                                            val,
                                         )
                                     }
-                                    className="sr-only"
+                                    options={[
+                                        {
+                                            value: '',
+                                            label: '-- Alokasi Umum Yayasan --',
+                                        },
+                                        ...anakYatimList.map((anak) => ({
+                                            value: String(anak.id),
+                                            label: `${anak.nama_lengkap} — ${anak.jenjang} • Kel. ${anak.kelurahan}`,
+                                        })),
+                                    ]}
                                 />
-                                {createForm.errors.bukti_transfer && (
+                                {createForm.errors.anak_yatim_id && (
                                     <p className="mt-1 text-rose-600">
-                                        {createForm.errors.bukti_transfer}
+                                        {createForm.errors.anak_yatim_id}
                                     </p>
                                 )}
                             </div>
@@ -2068,7 +1529,7 @@ export default function DonasiAdmin({
                             >
                                 {createForm.processing
                                     ? 'Menyimpan...'
-                                    : 'Simpan Pengajuan Donasi'}
+                                    : 'Simpan Donasi'}
                             </Button>
                         </DialogFooter>
                     </form>

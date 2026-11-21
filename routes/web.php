@@ -2,23 +2,20 @@
 
 use App\Http\Controllers\Admin\AnakYatimController;
 use App\Http\Controllers\Admin\DonasiController;
+use App\Http\Controllers\Admin\KegiatanController;
 use App\Http\Controllers\Admin\LaporanTahunanAdminController;
 use App\Http\Controllers\Admin\RekeningYayasanController;
 use App\Http\Controllers\Admin\TransaksiKeuanganController;
 use App\Http\Controllers\Api\MidtransWebhookController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\PublicAnakYatimController;
 use App\Http\Controllers\PublicBeritaUmumController;
 use App\Http\Controllers\PublicBidangController;
 use App\Http\Controllers\PublicDonasiController;
 use App\Http\Controllers\PublicHomeController;
 use App\Http\Controllers\PublicKegiatanController;
 use App\Http\Controllers\PublicLaporanTahunanController;
-use App\Http\Controllers\PublicRekapKegiatanController;
-use App\Models\Kegiatan;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,8 +37,6 @@ Route::get('/laporan-tahunan/{tahun}/preview', [PublicLaporanTahunanController::
 Route::get('/laporan-tahunan/{tahun}/download', [PublicLaporanTahunanController::class, 'download'])->name('laporan-tahunan.download');
 Route::get('/rekap-kegiatan', fn () => redirect()->route('laporan-tahunan'));
 Route::get('/rekap-kegiatan-tahunan', fn () => redirect()->route('laporan-tahunan'));
-Route::get('/anak-yatim', [PublicAnakYatimController::class, 'index'])->name('anak-yatim');
-Route::get('/anak-yatim/{anak_yatim}', [PublicAnakYatimController::class, 'show'])->name('anak-yatim.show');
 Route::inertia('/profil', 'public/profil')->name('profil');
 Route::inertia('/profil-pimpinan', 'public/profil-pimpinan')->name('profil-pimpinan');
 Route::get('/donasi', [PublicDonasiController::class, 'index'])->name('donasi');
@@ -67,6 +62,7 @@ Route::middleware(['auth', 'role:admin,super_admin'])->group(function () {
         Route::post('anak-yatim', [AnakYatimController::class, 'store'])->name('anak-yatim.store');
         Route::get('anak-yatim/{anak_yatim}', [AnakYatimController::class, 'show'])->name('anak-yatim.show');
         Route::get('anak-yatim/{anak_yatim}/sensitive', [AnakYatimController::class, 'sensitive'])->name('anak-yatim.sensitive');
+        Route::get('anak-yatim/{anak_yatim}/dokumen/{jenis}', [AnakYatimController::class, 'dokumen'])->name('anak-yatim.dokumen');
         Route::match(['put', 'patch'], 'anak-yatim/{anak_yatim}', [AnakYatimController::class, 'update'])->name('anak-yatim.update');
         Route::delete('anak-yatim/{anak_yatim}', [AnakYatimController::class, 'destroy'])->name('anak-yatim.destroy');
 
@@ -78,15 +74,13 @@ Route::middleware(['auth', 'role:admin,super_admin'])->group(function () {
         Route::match(['post', 'patch'], 'donasi/{donasi}/reject', [DonasiController::class, 'reject'])->name('donasi.reject');
         Route::match(['post', 'patch'], 'donasi/{donasi}/cancel', [DonasiController::class, 'cancel'])->name('donasi.cancel');
 
-        Route::inertia('kegiatan', 'admin/kegiatan/index')->name('kegiatan');
-        Route::get('kegiatan/{kegiatan}', function (Kegiatan $kegiatan) {
-            Gate::authorize('view', $kegiatan);
-
-            return response()->json([
-                'status' => 'success',
-                'data' => $kegiatan,
-            ]);
-        })->name('kegiatan.show');
+        Route::get('kegiatan', [KegiatanController::class, 'index'])->name('kegiatan');
+        Route::post('kegiatan', [KegiatanController::class, 'store'])->name('kegiatan.store');
+        Route::get('kegiatan/{kegiatan}', [KegiatanController::class, 'show'])->name('kegiatan.show');
+        Route::match(['put', 'patch'], 'kegiatan/{kegiatan}', [KegiatanController::class, 'update'])->name('kegiatan.update');
+        Route::delete('kegiatan/{kegiatan}', [KegiatanController::class, 'destroy'])->name('kegiatan.destroy');
+        Route::match(['put', 'patch'], 'berita-umum/{berita_umum}', [KegiatanController::class, 'updateBeritaUmum'])->name('berita-umum.update');
+        Route::delete('berita-umum/{berita_umum}', [KegiatanController::class, 'destroyBeritaUmum'])->name('berita-umum.destroy');
 
         Route::get('laporan', [LaporanTahunanAdminController::class, 'index'])->name('laporan');
         Route::put('laporan/{tahun}', [LaporanTahunanAdminController::class, 'update'])->name('laporan.update');

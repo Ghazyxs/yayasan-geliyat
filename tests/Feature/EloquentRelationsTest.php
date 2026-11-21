@@ -61,17 +61,17 @@ test('anak yatim has many to many relation with bidang via anak_yatim_bidang piv
     $anak = AnakYatim::create([
         'nik' => '3273123456780001',
         'nama_lengkap' => 'Muhammad Fikri Ramadhan',
-        'alias' => 'F.R.',
+        'anak_ke' => 1,
         'jenis_kelamin' => 'L',
+        'status_santunan' => AnakYatim::STATUS_SANTUNAN_MENUNGGU,
+        'tempat_lahir' => 'Bandung',
         'tanggal_lahir' => '2014-05-12',
         'jenjang' => 'SD',
-        'kelas' => 'Kelas 4 SD',
-        'nama_sekolah' => 'SDN Ujungberung 1',
         'kelurahan' => 'Cigending',
         'alamat_detail' => 'Jl. Nagrog No. 12',
+        'nama_ibu_kandung' => 'Ibu Maryam',
         'nama_wali' => 'Ibu Maryam',
         'status_binaan' => 'aktif',
-        'status_asuh' => 'belum_diasuh',
         'created_by' => $user->id,
     ]);
 
@@ -93,7 +93,7 @@ test('anak yatim has many to many relation with bidang via anak_yatim_bidang piv
     })->toThrow(Exception::class);
 });
 
-test('nik is encrypted in database and hidden from serialization', function () {
+test('nik and no_kk are encrypted in database and hidden from serialization', function () {
     $user = User::create([
         'name' => 'Staff',
         'email' => 'staff2@geliyat.or.id',
@@ -104,41 +104,49 @@ test('nik is encrypted in database and hidden from serialization', function () {
 
     $anak = AnakYatim::create([
         'nik' => '3273999988880002',
+        'no_kk' => '3273111100009999',
         'nama_lengkap' => 'Aisyah Putri',
-        'alias' => 'A.P.',
+        'anak_ke' => 1,
         'jenis_kelamin' => 'P',
+        'status_santunan' => AnakYatim::STATUS_SANTUNAN_MENERIMA,
+        'tempat_lahir' => 'Bandung',
         'tanggal_lahir' => '2015-08-10',
         'jenjang' => 'SD',
-        'kelas' => 'Kelas 3 SD',
         'kelurahan' => 'Pasanggrahan',
         'alamat_detail' => 'Kp. Babakan RT 01',
+        'nama_ibu_kandung' => 'Ibu Aminah',
         'nama_wali' => 'Bapak Ahmad',
         'created_by' => $user->id,
     ]);
 
     // In model: decrypted
     expect($anak->nik)->toBe('3273999988880002');
+    expect($anak->no_kk)->toBe('3273111100009999');
 
     // In raw database row: NOT plain text (must be encrypted ciphertext)
     $rawRow = DB::table('anak_yatim')->where('id', $anak->id)->first();
     expect($rawRow->nik)->not->toBe('3273999988880002');
+    expect($rawRow->no_kk)->not->toBe('3273111100009999');
     expect(strlen($rawRow->nik))->toBeGreaterThan(50);
     expect(Crypt::decryptString($rawRow->nik))->toBe('3273999988880002');
+    expect(Crypt::decryptString($rawRow->no_kk))->toBe('3273111100009999');
 
     // Fresh query from Eloquent decrypts automatically
     $freshAnak = AnakYatim::find($anak->id);
     expect($freshAnak->nik)->toBe('3273999988880002');
+    expect($freshAnak->no_kk)->toBe('3273111100009999');
 
-    // In serialization (JSON / toArray): NIK and alamat_detail are hidden
+    // In serialization (JSON / toArray): NIK, No KK, and alamat_detail are hidden
     $array = $freshAnak->toArray();
     expect(array_key_exists('nik', $array))->toBeFalse();
+    expect(array_key_exists('no_kk', $array))->toBeFalse();
     expect(array_key_exists('alamat_detail', $array))->toBeFalse();
-    expect(array_key_exists('alias', $array))->toBeTrue();
     expect(array_key_exists('nama_lengkap', $array))->toBeTrue();
 
-    // In json_encode: ciphertext or plaintext NIK never appears
+    // In json_encode: ciphertext or plaintext NIK/No KK/address never appears
     $json = json_encode($freshAnak);
     expect(str_contains($json, '3273999988880002'))->toBeFalse();
+    expect(str_contains($json, '3273111100009999'))->toBeFalse();
     expect(str_contains($json, 'Kp. Babakan RT 01'))->toBeFalse();
 });
 
