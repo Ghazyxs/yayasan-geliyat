@@ -2,48 +2,18 @@ import { Head, Link } from '@inertiajs/react';
 import {
     Target,
     Compass,
-    Users2,
     ChevronRight,
-    ShieldCheck,
-    HeartHandshake,
+    Quote,
 } from 'lucide-react';
 import PublicLayout from '@/layouts/public-layout';
 
 export default function ProfilPage() {
-    const dewanPembina = [
-        {
-            jabatan: 'Ketua Dewan Pembina',
-            status: 'Pengarah Strategis',
-            deskripsi:
-                'Mengarahkan kebijakan strategis dan memastikan keselarasan visi yayasan dengan program-program pemberdayaan yatim.',
-        },
-        {
-            jabatan: 'Anggota Dewan Pembina',
-            status: 'Pengawas Program',
-            deskripsi:
-                'Membantu memantau keberlanjutan program dan memberikan masukan strategis untuk pengembangan kapasitas yayasan.',
-        },
-    ];
-
-    const pengurusHarian = [
-        {
-            jabatan: 'Ketua Umum Yayasan',
-            status: 'Pimpinan Eksekutif',
-            deskripsi:
-                'Memimpin operasional sehari-hari, mengelola koordinasi 5 kelurahan binaan, dan memastikan implementasi visi yayasan.',
-        },
-        {
-            jabatan: 'Sekretariat & Operasional',
-            status: 'Manajemen Data & Dokumen',
-            deskripsi:
-                'Mengkoordinasikan pendataan berkas anak yatim bersama koordinator RW dan mengelola administrasi yayasan.',
-        },
-        {
-            jabatan: 'Bendahara Yayasan',
-            status: 'Manajemen Keuangan & Donasi',
-            deskripsi:
-                'Mengelola pencatatan kas donasi, rekonsiliasi transfer donatur, serta transparansi pelaporan keuangan bulanan.',
-        },
+    const daftarMisi = [
+        'Menyelenggarakan pembinaan keagamaan yang berkelanjutan.',
+        'Memberikan perlindungan dan pelayanan sosial bagi anak yatim.',
+        'Mengembangkan kemandirian ekonomi keluarga penerima manfaat.',
+        'Meningkatkan kualitas pendidikan melalui beasiswa, pembinaan, dan pengembangan potensi.',
+        'Membangun kolaborasi dengan masyarakat, pemerintah, dan dunia usaha untuk memperluas manfaat program yayasan.',
     ];
 
     return (
@@ -71,78 +41,80 @@ export default function ProfilPage() {
                 </div>
             </div>
 
-            {/* Tentang Yayasan Section */}
+            {/* Latar Belakang Yayasan */}
             <section className="bg-white py-16 sm:py-20">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
-                        {/* Image Placeholder with Styling */}
+                        {/* Identitas & Nilai Filosofis */}
                         <div className="lg:col-span-5">
-                            <div className="relative overflow-hidden rounded-3xl border border-[#e4eaec] bg-gradient-to-tr from-[#14bace]/20 to-[#186972]/10 p-2 shadow-xl">
-                                <img
-                                    src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=1000&auto=format&fit=crop"
-                                    alt="Yayasan Geliyat Bersama Anak Yatim"
-                                    className="h-80 w-full rounded-2xl object-cover sm:h-96"
-                                />
-                                <div className="absolute right-6 bottom-6 left-6 rounded-xl border border-white/50 bg-white/95 p-4 shadow-md backdrop-blur-md">
-                                    <p className="font-poppins text-sm font-bold text-[#1d2b2d]">
-                                        Berdiri Sejak 2023
-                                    </p>
-                                    <p className="mt-0.5 text-xs text-gray-600">
-                                        Membina 420+ anak yatim di Kec.
-                                        Ujungberung, Kota Bandung
-                                    </p>
+                            <div className="rounded-3xl border border-[#e4eaec] bg-[#fbfdfd] p-8 shadow-sm">
+                                <div className="flex flex-col items-center text-center">
+                                    <div className="mb-5 flex size-28 items-center justify-center rounded-2xl border border-[#e4eaec] bg-white p-3">
+                                        <img
+                                            src="/images/logo.png"
+                                            alt="Logo Yayasan Geliyat Mahdiesa Nahate"
+                                            className="size-full object-contain"
+                                        />
+                                    </div>
+                                    <h2 className="font-poppins text-base font-bold text-[#1d2b2d]">
+                                        Yayasan Geliyat Mahdiesa Nahate
+                                    </h2>
+                                    <div className="mt-6 w-full border-t border-[#e4eaec] pt-6">
+                                        <Quote className="mx-auto mb-2 size-5 text-[#14bace]" />
+                                        <p className="font-poppins text-sm leading-relaxed font-semibold text-[#1d2b2d] italic">
+                                            "Sebaik-baiknya manusia adalah yang
+                                            paling bermanfaat bagi orang lain."
+                                        </p>
+                                        <p className="mt-2 font-sans text-xs text-gray-500">
+                                            Nilai Filosofis Gerakan Geliyat
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        {/* Content */}
+                        {/* Narasi Latar Belakang */}
                         <div className="flex flex-col items-start lg:col-span-7">
-                            <span className="font-poppins text-xs font-bold tracking-wider text-[#14bace] uppercase">
-                                Tentang Kami
-                            </span>
-                            <h2 className="mt-2 font-poppins text-2xl leading-snug font-bold text-[#1d2b2d] sm:text-4xl">
-                                Bergerak Bersama Mengangkat Kesejahteraan Yatim
+                            <h2 className="font-poppins text-2xl leading-snug font-bold text-[#1d2b2d] sm:text-3xl">
+                                Latar Belakang Yayasan
                             </h2>
-                            <div className="mt-6 space-y-4 font-sans text-sm leading-relaxed text-gray-600 sm:text-base">
+                            <div className="mt-2 h-1 w-16 rounded-full bg-[#14bace]"></div>
+
+                            <div className="mt-6 space-y-5 font-sans text-sm leading-relaxed text-gray-600 sm:text-base">
                                 <p>
                                     <strong>
                                         Yayasan Geliyat Mahdiesa Nahate
                                     </strong>{' '}
-                                    berawal dari gerakan kepedulian Badan Kontak
-                                    Majelis Taklim (BKMM) di Ujungberung, Kota
-                                    Bandung. Seiring bertambahnya penerima
-                                    manfaat dan kepercayaan para dermawan,
-                                    yayasan resmi didirikan pada tahun 2023
-                                    untuk menaungi pelayanan sosial yang lebih
-                                    baku dan terstruktur.
+                                    diinisiasi oleh{' '}
+                                    <strong>
+                                        Nina Mahdiah, S.Ag., M.Sos.
+                                    </strong>{' '}
+                                    sebagai founder, lahir sebagai wujud gerakan
+                                    yang bukan sekadar aktivitas sosial biasa.
+                                    Berlandaskan nilai filosofis{' '}
+                                    <em>
+                                        "Sebaik-baiknya manusia adalah yang
+                                        paling bermanfaat bagi orang lain"
+                                    </em>
+                                    , nilai tersebut menjadi napas utama dalam
+                                    setiap langkah pengabdian Gerakan Geliyat.
                                 </p>
                                 <p>
-                                    Saat ini, Geliyat menaungi sekitar 420 anak
-                                    yatim yang tersebar di lima kelurahan
-                                    binaan:{' '}
-                                    <em>
-                                        Cigending, Pasanggrahan, Pasir Endah,
-                                        Pasirjati, dan Pasirwangi
-                                    </em>
-                                    . Melalui kolaborasi pengurus (yang
-                                    mayoritas adalah ibu-ibu relawan
-                                    berdedikasi), donatur, dan masyarakat,
-                                    Geliyat berkomitmen mendampingi anak hingga
-                                    jenjang mandiri.
+                                    Geliyat bukanlah sekadar program penyaluran
+                                    bantuan, melainkan pergerakan yang dimulai
+                                    dari hati, tumbuh dari rasa peduli, dan
+                                    digerakkan oleh cinta sejati untuk
+                                    menghadirkan kebermanfaatan yang nyata.
                                 </p>
-                            </div>
-
-                            <div className="mt-8 flex flex-wrap gap-4">
-                                <div className="flex items-center gap-2.5 rounded-xl border border-[#14bace]/20 bg-[#e8f8fa] px-4 py-2.5 text-xs font-semibold text-[#087f8c]">
-                                    <ShieldCheck className="size-4" />
-                                    <span>
-                                        Paten Terdaftar & Rekomendasi Kemensos
-                                    </span>
-                                </div>
-                                <div className="flex items-center gap-2.5 rounded-xl border border-[#14bace]/20 bg-[#e8f8fa] px-4 py-2.5 text-xs font-semibold text-[#087f8c]">
-                                    <HeartHandshake className="size-4" />
-                                    <span>Kemitraan Internasional (Texas)</span>
-                                </div>
+                                <p>
+                                    Anak yatim bukan hanya menjadi penerima
+                                    santunan, tetapi juga generasi yang perlu
+                                    dibina dan dipersiapkan masa depannya.
+                                    Sementara itu, ibu yatim bukan sekadar
+                                    pendamping anak, melainkan sosok yang juga
+                                    perlu diperhatikan, dikuatkan, dan
+                                    diberdayakan.
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -150,7 +122,7 @@ export default function ProfilPage() {
             </section>
 
             {/* Visi & Misi Section */}
-            <section className="border-y border-[#e4eaec] bg-[#d1f6fa]/30 py-16 sm:py-20">
+            <section className="border-t border-[#e4eaec] bg-[#f7fcfd] py-16 sm:py-20">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
                         {/* Visi */}
@@ -161,19 +133,19 @@ export default function ProfilPage() {
                                         <Compass className="size-6" />
                                     </div>
                                     <h3 className="font-poppins text-2xl font-bold text-[#1d2b2d]">
-                                        VISI YAYASAN
+                                        Visi Yayasan
                                     </h3>
                                 </div>
-                                <p className="mt-6 font-sans text-base leading-relaxed font-medium text-[#1b373b] sm:text-lg">
-                                    "Mewujudkan masa depan yang lebih baik bagi
-                                    anak yatim melalui pendidikan bermartabat,
-                                    pembinaan keagamaan, aksi kemanusiaan, dan
-                                    pemberdayaan ekonomi keluarga."
-                                </p>
+                                <blockquote className="mt-6 rounded-2xl border-l-4 border-[#14bace] bg-[#f7fcfd] p-5 font-sans text-base leading-relaxed font-medium text-[#1b373b] sm:text-lg">
+                                    "Menjadi Yayasan yang Amanah, profesional,
+                                    dan berkelanjutan dalam membina serta
+                                    memberdayakan anak yatim agar tumbuh menjadi
+                                    generasi yang beriman, berilmu, mandiri, dan
+                                    bermanfaat bagi masyarakat."
+                                </blockquote>
                             </div>
-                            <div className="mt-8 flex items-center gap-2 border-t border-gray-100 pt-6 text-xs text-gray-500">
-                                <span className="size-2 rounded-full bg-[#14bace]"></span>
-                                <span>Pedoman komitmen Yayasan Geliyat</span>
+                            <div className="mt-8 border-t border-gray-100 pt-6 text-xs text-gray-500">
+                                Yayasan Geliyat Mahdiesa Nahate
                             </div>
                         </div>
 
@@ -184,130 +156,22 @@ export default function ProfilPage() {
                                     <Target className="size-6" />
                                 </div>
                                 <h3 className="font-poppins text-2xl font-bold text-[#1d2b2d]">
-                                    MISI YAYASAN
+                                    Misi Yayasan
                                 </h3>
                             </div>
                             <ol className="mt-6 space-y-3.5 font-sans text-sm text-gray-600 sm:text-base">
-                                <li className="flex items-start gap-3">
-                                    <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-[#14bace] text-xs font-bold text-white">
-                                        1
-                                    </span>
-                                    <span>
-                                        Mendukung pendidikan dan pengembangan
-                                        potensi minat bakat anak yatim secara
-                                        terpadu.
-                                    </span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-[#14bace] text-xs font-bold text-white">
-                                        2
-                                    </span>
-                                    <span>
-                                        Membina nilai keagamaan, akhlak mulia,
-                                        dan penguatan karakter qur'ani sejak
-                                        dini.
-                                    </span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-[#14bace] text-xs font-bold text-white">
-                                        3
-                                    </span>
-                                    <span>
-                                        Memberikan santunan rutin, bantuan
-                                        logistik berkala, serta advokasi
-                                        perlindungan yatim.
-                                    </span>
-                                </li>
-                                <li className="flex items-start gap-3">
-                                    <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-[#14bace] text-xs font-bold text-white">
-                                        4
-                                    </span>
-                                    <span>
-                                        Mendorong kemandirian ekonomi keluarga
-                                        yatim (Ummu Geliyat) melalui
-                                        pemberdayaan koperasi.
-                                    </span>
-                                </li>
+                                {daftarMisi.map((misi, idx) => (
+                                    <li
+                                        key={idx}
+                                        className="flex items-start gap-3"
+                                    >
+                                        <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-[#14bace] text-xs font-bold text-white">
+                                            {idx + 1}
+                                        </span>
+                                        <span>{misi}</span>
+                                    </li>
+                                ))}
                             </ol>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Struktur Organisasi Section */}
-            <section className="bg-white py-16 sm:py-24">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="mb-12 max-w-3xl">
-                        <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-[#e8f8fa] px-3 py-1 font-poppins text-xs font-semibold tracking-wider text-[#087f8c] uppercase">
-                            <Users2 className="size-3.5" />
-                            <span>Struktur Organisasi</span>
-                        </div>
-                        <h2 className="font-poppins text-3xl font-bold text-[#1d2b2d]">
-                            Susunan Kepengurusan
-                        </h2>
-                        <p className="mt-2 font-sans text-sm text-gray-600">
-                            Sinergi antara Dewan Pembina dan Pengurus Harian
-                            yang amanah mengabdi untuk kepentingan anak binaan.
-                        </p>
-                    </div>
-
-                    {/* Dewan Pembina */}
-                    <div className="mb-12">
-                        <h3 className="mb-6 flex items-center gap-2 font-poppins text-lg font-bold text-[#1d2b2d]">
-                            <span className="h-4 w-1 rounded-full bg-[#14bace]"></span>
-                            <span>Dewan Pembina</span>
-                        </h3>
-                        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                            {dewanPembina.map((item) => (
-                                <div
-                                    key={item.jabatan}
-                                    className="flex flex-col justify-between rounded-2xl border border-[#e4eaec] bg-[#fbfdfd] p-6"
-                                >
-                                    <div>
-                                        <div className="flex items-center justify-between">
-                                            <h4 className="font-poppins text-base font-bold text-[#1d2b2d]">
-                                                {item.jabatan}
-                                            </h4>
-                                            <span className="rounded-md bg-[#e8f8fa] px-2.5 py-1 text-[10px] font-semibold tracking-wider text-[#087f8c] uppercase">
-                                                {item.status}
-                                            </span>
-                                        </div>
-                                        <p className="mt-3 font-sans text-xs leading-relaxed text-gray-600">
-                                            {item.deskripsi}
-                                        </p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Pengurus Harian */}
-                    <div>
-                        <h3 className="mb-6 flex items-center gap-2 font-poppins text-lg font-bold text-[#1d2b2d]">
-                            <span className="h-4 w-1 rounded-full bg-[#186972]"></span>
-                            <span>Pengurus Harian & Operasional</span>
-                        </h3>
-                        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-                            {pengurusHarian.map((item) => (
-                                <div
-                                    key={item.jabatan}
-                                    className="flex flex-col justify-between rounded-2xl border border-[#e4eaec] bg-[#fbfdfd] p-6"
-                                >
-                                    <div>
-                                        <div className="flex flex-col gap-1">
-                                            <h4 className="font-poppins text-base font-bold text-[#1d2b2d]">
-                                                {item.jabatan}
-                                            </h4>
-                                            <span className="self-start rounded bg-[#e8f8fa] px-2 py-0.5 text-[10px] font-semibold text-[#087f8c]">
-                                                {item.status}
-                                            </span>
-                                        </div>
-                                        <p className="mt-3 font-sans text-xs leading-relaxed text-gray-600">
-                                            {item.deskripsi}
-                                        </p>
-                                    </div>
-                                </div>
-                            ))}
                         </div>
                     </div>
                 </div>

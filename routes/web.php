@@ -2,14 +2,19 @@
 
 use App\Http\Controllers\Admin\AnakYatimController;
 use App\Http\Controllers\Admin\DonasiController;
+use App\Http\Controllers\Admin\LaporanTahunanAdminController;
 use App\Http\Controllers\Admin\RekeningYayasanController;
 use App\Http\Controllers\Admin\TransaksiKeuanganController;
+use App\Http\Controllers\Api\MidtransWebhookController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PublicAnakYatimController;
+use App\Http\Controllers\PublicBeritaUmumController;
 use App\Http\Controllers\PublicBidangController;
 use App\Http\Controllers\PublicDonasiController;
 use App\Http\Controllers\PublicHomeController;
 use App\Http\Controllers\PublicKegiatanController;
+use App\Http\Controllers\PublicLaporanTahunanController;
+use App\Http\Controllers\PublicRekapKegiatanController;
 use App\Models\Kegiatan;
 use App\Models\User;
 use Illuminate\Support\Facades\Gate;
@@ -27,11 +32,24 @@ Route::get('/bidang', [PublicBidangController::class, 'index'])->name('bidang');
 Route::get('/bidang/{bidang}', [PublicBidangController::class, 'show'])->name('bidang.show');
 Route::get('/kegiatan', [PublicKegiatanController::class, 'index'])->name('kegiatan');
 Route::get('/kegiatan/{kegiatan}', [PublicKegiatanController::class, 'show'])->name('kegiatan.show');
+Route::get('/berita-umum', [PublicBeritaUmumController::class, 'index'])->name('berita-umum');
+Route::get('/berita-umum/{slug}', [PublicBeritaUmumController::class, 'show'])->name('berita-umum.show');
+Route::get('/laporan-tahunan', [PublicLaporanTahunanController::class, 'index'])->name('laporan-tahunan');
+Route::get('/laporan-tahunan/{tahun}/preview', [PublicLaporanTahunanController::class, 'preview'])->name('laporan-tahunan.preview');
+Route::get('/laporan-tahunan/{tahun}/download', [PublicLaporanTahunanController::class, 'download'])->name('laporan-tahunan.download');
+Route::get('/rekap-kegiatan', fn () => redirect()->route('laporan-tahunan'));
+Route::get('/rekap-kegiatan-tahunan', fn () => redirect()->route('laporan-tahunan'));
 Route::get('/anak-yatim', [PublicAnakYatimController::class, 'index'])->name('anak-yatim');
 Route::get('/anak-yatim/{anak_yatim}', [PublicAnakYatimController::class, 'show'])->name('anak-yatim.show');
 Route::inertia('/profil', 'public/profil')->name('profil');
+Route::inertia('/profil-pimpinan', 'public/profil-pimpinan')->name('profil-pimpinan');
 Route::get('/donasi', [PublicDonasiController::class, 'index'])->name('donasi');
 Route::post('/donasi', [PublicDonasiController::class, 'store'])->name('donasi.store');
+Route::get('/donasi/status/{kode}', [PublicDonasiController::class, 'checkStatus'])->name('donasi.status');
+
+// Midtrans Webhook (CSRF-exempt)
+Route::post('/midtrans/webhook', [MidtransWebhookController::class, 'handle'])->name('midtrans.webhook');
+Route::post('/api/midtrans/webhook', [MidtransWebhookController::class, 'handle']);
 
 // Dashboard & Protected Admin/Super Admin Routes
 Route::middleware(['auth', 'role:admin,super_admin'])->group(function () {
@@ -64,7 +82,10 @@ Route::middleware(['auth', 'role:admin,super_admin'])->group(function () {
             ]);
         })->name('kegiatan.show');
 
-        Route::inertia('laporan', 'admin/laporan/index')->name('laporan');
+        Route::get('laporan', [LaporanTahunanAdminController::class, 'index'])->name('laporan');
+        Route::put('laporan/{tahun}', [LaporanTahunanAdminController::class, 'update'])->name('laporan.update');
+        Route::get('laporan/{tahun}/preview', [LaporanTahunanAdminController::class, 'preview'])->name('laporan.preview');
+        Route::get('laporan/{tahun}/download', [LaporanTahunanAdminController::class, 'download'])->name('laporan.download');
 
         // Super Admin Restricted Modules
         Route::middleware(['role:super_admin'])->group(function () {

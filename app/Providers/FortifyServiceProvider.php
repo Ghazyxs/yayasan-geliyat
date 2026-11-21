@@ -58,6 +58,10 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::loginView(fn (Request $request) => Inertia::render('auth/login', [
             'canResetPassword' => Features::enabled(Features::resetPasswords()),
             'status' => $request->session()->get('status'),
+            'demoPasswords' => app()->isLocal() ? [
+                (string) env('SEED_SUPER_ADMIN_EMAIL', 'ketua@geliyat.or.id') => (string) (env('SEED_SUPER_ADMIN_PASSWORD') ?: 'password'),
+                (string) env('SEED_ADMIN_EMAIL', 'admin@geliyat.or.id') => (string) (env('SEED_ADMIN_PASSWORD') ?: 'password'),
+            ] : null,
         ]));
 
         Fortify::resetPasswordView(fn (Request $request) => Inertia::render('auth/reset-password', [

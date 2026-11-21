@@ -16,9 +16,14 @@ import { request } from '@/routes/password';
 type Props = {
     status?: string;
     canResetPassword: boolean;
+    demoPasswords?: Record<string, string> | null;
 };
 
-export default function Login({ status, canResetPassword }: Props) {
+export default function Login({
+    status,
+    canResetPassword,
+    demoPasswords,
+}: Props) {
     const { appEnv } = usePage().props as unknown as { appEnv: string };
     const isLocalEnv = appEnv === 'local';
 
@@ -29,7 +34,7 @@ export default function Login({ status, canResetPassword }: Props) {
     // Fungsi ini hanya dipakai pada lingkungan development lokal
     const fillTestAccount = (userEmail: string) => {
         setEmail(userEmail);
-        setPassword('password');
+        setPassword(demoPasswords?.[userEmail] || 'password');
     };
 
     return (

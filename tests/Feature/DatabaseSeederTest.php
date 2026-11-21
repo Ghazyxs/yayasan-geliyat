@@ -24,7 +24,7 @@ test('database seeder runs successfully and creates exactly four master bidang',
     );
 
     $kemanusiaan = Bidang::where('kode', Bidang::KEMANUSIAAN)->first();
-    expect($kemanusiaan->nama)->toBe('Bidang Kemanusiaan & Yatim');
+    expect($kemanusiaan->nama)->toBe('Bidang Kemanusiaan');
 });
 
 test('user seeder creates super admin with null bidang_id and admin with valid kemanusiaan bidang_id', function () {
@@ -98,6 +98,19 @@ test('seeder is idempotent when executed multiple times', function () {
     // Tidak boleh terjadi duplikasi baris
     expect(Bidang::count())->toBe(4);
     expect(User::whereIn('email', ['ketua@geliyat.or.id', 'admin@geliyat.or.id'])->count())->toBe(2);
+});
+
+test('user seeder does not overwrite existing user password when re-run', function () {
+    $this->seed(DatabaseSeeder::class);
+
+    $admin = User::where('email', 'admin@geliyat.or.id')->firstOrFail();
+    $admin->update(['password' => 'CustomAdminPassword2026!']);
+
+    // Jalankan ulang seeder
+    $this->seed(DatabaseSeeder::class);
+
+    $admin->refresh();
+    expect(Hash::check('CustomAdminPassword2026!', $admin->password))->toBeTrue();
 });
 
 test('seeder does not insert dummy operational data into anak_yatim, donasi, or transaksi_keuangan', function () {

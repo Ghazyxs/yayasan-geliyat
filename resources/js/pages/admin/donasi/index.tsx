@@ -77,6 +77,11 @@ interface DonasiItem {
     rekening_tujuan: string;
     nominal: number;
     pesan_doa: string | null;
+    metode_pembayaran?: string | null;
+    midtrans_payment_type?: string | null;
+    midtrans_transaction_status?: string | null;
+    email_donatur?: string | null;
+    paid_at?: string | null;
     status_verifikasi: 'menunggu' | 'terverifikasi' | 'ditolak' | 'dibatalkan';
     verified_at: string | null;
     verified_at_formatted: string | null;
@@ -885,6 +890,13 @@ export default function DonasiAdmin({
                                                             }
                                                         </span>
                                                     </div>
+                                                    {item.metode_pembayaran === 'midtrans' && (
+                                                        <div className="mt-1">
+                                                            <span className="inline-flex items-center gap-1 rounded bg-[#e8f8fa] px-1.5 py-0.5 text-[10px] font-semibold text-[#087f8c]">
+                                                                Midtrans{item.midtrans_payment_type ? ` • ${item.midtrans_payment_type.toUpperCase().replace(/_/g, ' ')}` : ''}
+                                                            </span>
+                                                        </div>
+                                                    )}
                                                 </td>
 
                                                 {/* Status & Buku Kas */}
@@ -1158,11 +1170,26 @@ export default function DonasiAdmin({
                                     </div>
                                     <div className="sm:col-span-2">
                                         <span className="text-[11px] text-slate-400">
-                                            Rekening Tujuan Yayasan
+                                            Rekening / Jalur Donasi
                                         </span>
                                         <p className="mt-0.5 font-medium text-slate-700">
                                             {detailItem.rekening_tujuan}
+                                            {detailItem.metode_pembayaran === 'midtrans' && (
+                                                <span className="ml-2 inline-flex items-center rounded-full bg-[#e8f8fa] px-2 py-0.5 text-[10px] font-bold text-[#087f8c]">
+                                                    Midtrans Snap ({detailItem.midtrans_payment_type?.toUpperCase().replace(/_/g, ' ') || 'Online'})
+                                                </span>
+                                            )}
                                         </p>
+                                        {detailItem.email_donatur && (
+                                            <p className="mt-1 text-xs text-slate-500">
+                                                Email Donatur: {detailItem.email_donatur}
+                                            </p>
+                                        )}
+                                        {detailItem.paid_at && (
+                                            <p className="mt-0.5 text-xs text-emerald-600 font-medium">
+                                                Waktu Pembayaran: {detailItem.paid_at}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
 

@@ -1,6 +1,7 @@
 import { ReactNode } from 'react';
 import PublicNavbar from '@/components/public-navbar';
 import PublicFooter from '@/components/public-footer';
+import WhatsAppFloat from '@/components/whatsapp-float';
 
 interface PublicLayoutProps {
     children: ReactNode;
@@ -17,6 +18,9 @@ export default function PublicLayout({ children }: PublicLayoutProps) {
 
             {/* Footer */}
             <PublicFooter />
+
+            {/* Floating WhatsApp Helpdesk */}
+            <WhatsAppFloat />
         </div>
     );
 }

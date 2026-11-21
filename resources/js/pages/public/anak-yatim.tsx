@@ -108,41 +108,39 @@ export default function AnakYatimPage({ anakList = [] }: AnakYatimPageProps) {
                     <p className="mt-3 max-w-2xl font-sans text-sm text-slate-600 sm:text-base">
                         Mengenal lebih dekat semangat belajar, jenjang
                         pendidikan, dan potensi anak-anak yatim binaan Yayasan
-                        Geliyat di Kecamatan Ujungberung, Kota Bandung.
+                        Geliyat Mahdiesa Nahate di Kota Bandung.
                     </p>
                 </div>
             </div>
 
-            {/* Statistik Ringkas Binaan */}
+            {/* Statistik Ringkas Binaan (Data Riil Database) */}
             <section className="border-b border-[#e4eaec] bg-white py-8">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                    <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
                         <div className="rounded-xl border border-[#e4eaec] bg-[#fbfdfd] p-4 text-center">
                             <p className="font-poppins text-2xl font-extrabold text-[#14bace] sm:text-3xl">
-                                420
+                                {anakList.length}
                             </p>
                             <p className="mt-1 font-sans text-xs font-medium text-slate-500">
-                                Total Anak Yatim Terdata
-                            </p>
-                        </div>
-                        <div className="rounded-xl border border-[#e4eaec] bg-[#fbfdfd] p-4 text-center">
-                            <p className="font-poppins text-2xl font-extrabold text-[#087f8c] sm:text-3xl">
-                                37
-                            </p>
-                            <p className="mt-1 font-sans text-xs font-medium text-slate-500">
-                                Siswa Aktif Les Rutin (SD–SMA)
+                                Anak Binaan Terdaftar Publik
                             </p>
                         </div>
                         <div className="rounded-xl border border-[#e4eaec] bg-[#fbfdfd] p-4 text-center">
                             <p className="font-poppins text-2xl font-extrabold text-[#186972] sm:text-3xl">
-                                5
+                                {
+                                    new Set(
+                                        anakList
+                                            .map((a) => a.kelurahan)
+                                            .filter(Boolean),
+                                    ).size
+                                }
                             </p>
                             <p className="mt-1 font-sans text-xs font-medium text-slate-500">
-                                Kelurahan Wilayah Binaan
+                                Wilayah Kelurahan Tercatat
                             </p>
                         </div>
-                        <div className="rounded-xl border border-[#e4eaec] bg-[#fbfdfd] p-4 text-center">
-                            <p className="font-poppins text-2xl font-extrabold text-[#14bace] sm:text-3xl">
+                        <div className="col-span-2 rounded-xl border border-[#e4eaec] bg-[#fbfdfd] p-4 text-center md:col-span-1">
+                            <p className="font-poppins text-2xl font-extrabold text-[#087f8c] sm:text-3xl">
                                 4
                             </p>
                             <p className="mt-1 font-sans text-xs font-medium text-slate-500">

@@ -27,10 +27,10 @@ class PublicBidangController extends Controller
      * @var array<string, string>
      */
     private const DEFAULT_IMAGES = [
-        Bidang::PENDIDIKAN => 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=1200&auto=format&fit=crop',
-        Bidang::KEMANUSIAAN => 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=1200&auto=format&fit=crop',
+        Bidang::PENDIDIKAN => '/images/bidang/pendidikan.jpg',
+        Bidang::KEMANUSIAAN => '/images/bidang/kemanusiaan.jpg',
         Bidang::EKONOMI => 'https://images.unsplash.com/photo-1556740738-b6a63e27c4df?q=80&w=1200&auto=format&fit=crop',
-        Bidang::KEAGAMAAN => 'https://images.unsplash.com/photo-1609599006353-e629aaabfeae?q=80&w=1200&auto=format&fit=crop',
+        Bidang::KEAGAMAAN => '/images/bidang/keagamaan.jpg',
     ];
 
     /**
@@ -135,10 +135,10 @@ class PublicBidangController extends Controller
             'tujuan' => $tujuan,
             'program_kerja' => $programs,
             'informasi_tambahan' => [
-                'sasaran_utama' => (string) ($info['sasaran_utama'] ?? 'Anak yatim & keluarga binaan di 5 kelurahan Ujungberung'),
+                'sasaran_utama' => (string) ($info['sasaran_utama'] ?? 'Anak yatim & ibu yatim binaan'),
                 'lokasi_pelaksanaan' => (string) ($info['lokasi_pelaksanaan'] ?? 'Kecamatan Ujungberung, Kota Bandung'),
-                'frekuensi_kegiatan' => (string) ($info['frekuensi_kegiatan'] ?? 'Rutin Pekanan & Bulanan'),
-                'koordinator_unit' => (string) ($info['koordinator_unit'] ?? 'Pengurus Bidang ' . $bidang->nama),
+                'frekuensi_kegiatan' => (string) ($info['frekuensi_kegiatan'] ?? 'Rutin Terjadwal'),
+                'koordinator_unit' => (string) ($info['koordinator_unit'] ?? 'Pengurus ' . $bidang->nama),
             ],
             'kegiatan_count' => (int) ($bidang->kegiatan_count ?? 0),
             'anak_yatim_count' => (int) ($bidang->anak_yatim_count ?? 0),

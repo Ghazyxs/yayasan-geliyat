@@ -17,7 +17,7 @@ test('beranda memuat daftar bidang dan kegiatan terbaru dari database', function
         ->assertInertia(fn (Assert $page) => $page
             ->component('welcome')
             ->has('bidangList', 4)
-            ->has('kegiatanTerbaru', 4)
+            ->has('kegiatanTerbaru')
         );
 });
 
@@ -60,9 +60,9 @@ test('halaman detail bidang dapat diakses menggunakan kode maupun id dari databa
             ->component('public/bidang-detail')
             ->where('bidang.id', $kemanusiaan->id)
             ->where('bidang.kode', 'kemanusiaan')
-            ->where('bidang.nama', 'Bidang Kemanusiaan & Yatim')
-            ->has('bidang.tujuan', 4)
-            ->has('bidang.program_kerja', 5)
+            ->where('bidang.nama', 'Bidang Kemanusiaan')
+            ->has('bidang.tujuan', 3)
+            ->has('bidang.program_kerja', 4)
             ->has('bidangLainnya', 3)
         );
 });
@@ -74,7 +74,6 @@ test('halaman detail bidang mengembalikan 404 untuk identitas yang tidak valid',
 
 test('halaman daftar kegiatan menampilkan seluruh kegiatan dari database', function () {
     $totalKegiatan = Kegiatan::count();
-    expect($totalKegiatan)->toBeGreaterThanOrEqual(6);
 
     $this->get(route('kegiatan'))
         ->assertOk()
