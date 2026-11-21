@@ -1,6 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, Calendar, ChevronRight, User } from 'lucide-react';
 import PublicLayout from '@/layouts/public-layout';
+import { useLanguage } from '@/hooks/use-language';
 import type { BeritaUmumItem } from './berita-umum';
 
 interface BeritaUmumDetailProps {
@@ -12,6 +13,7 @@ export default function BeritaUmumDetail({
     berita,
     beritaLainnya = [],
 }: BeritaUmumDetailProps) {
+    const { t, translateCategory } = useLanguage();
     const paragraphs = (berita.isi || '')
         .split(/\r?\n\s*\r?\n|\r?\n/)
         .map((p) => p.trim())
@@ -20,7 +22,7 @@ export default function BeritaUmumDetail({
     return (
         <PublicLayout>
             <Head
-                title={`${berita.judul} - Berita Umum Yayasan Geliyat Mahdiesa Nahate`}
+                title={`${berita.judul} - ${t('Berita Umum Yayasan Geliyat Mahdiesa Nahate', 'General News - Yayasan Geliyat Mahdiesa Nahate')}`}
             />
 
             {/* Breadcrumbs */}
@@ -32,7 +34,7 @@ export default function BeritaUmumDetail({
                             prefetch={false}
                             className="transition-colors hover:text-[#14bace]"
                         >
-                            Beranda
+                            {t('Beranda', 'Home')}
                         </Link>
                         <ChevronRight className="size-4 text-gray-400" />
                         <Link
@@ -40,7 +42,7 @@ export default function BeritaUmumDetail({
                             prefetch={false}
                             className="transition-colors hover:text-[#14bace]"
                         >
-                            Berita Umum
+                            {t('Berita Umum', 'General News')}
                         </Link>
                         <ChevronRight className="size-4 text-gray-400" />
                         <span className="line-clamp-1 font-semibold text-[#186972]">
@@ -57,7 +59,7 @@ export default function BeritaUmumDetail({
                         <article className="lg:col-span-8">
                             <div className="mb-4 flex flex-wrap items-center gap-4 text-sm text-gray-600">
                                 <span className="font-poppins font-semibold text-[#186972]">
-                                    {berita.kategori}
+                                    {translateCategory(berita.kategori)}
                                 </span>
                                 <span className="text-gray-300">•</span>
                                 <span className="inline-flex items-center gap-1.5">
@@ -102,7 +104,7 @@ export default function BeritaUmumDetail({
                                     className="inline-flex items-center gap-2 font-poppins text-sm font-semibold text-[#186972] transition-colors hover:text-[#14bace]"
                                 >
                                     <ArrowLeft className="size-4" />
-                                    Kembali ke Berita Umum
+                                    {t('Kembali ke Berita Umum', 'Back to General News')}
                                 </Link>
                             </div>
                         </article>
@@ -111,13 +113,16 @@ export default function BeritaUmumDetail({
                         <aside className="lg:col-span-4">
                             <div className="rounded-2xl border border-[#e4eaec] bg-[#f7fcfd] p-6">
                                 <h2 className="font-poppins text-lg font-bold text-[#1d2b2d]">
-                                    Berita Umum Lainnya
+                                    {t('Berita Umum Lainnya', 'Other General News')}
                                 </h2>
                                 <div className="mt-1 h-0.5 w-12 bg-[#14bace]" />
 
                                 {beritaLainnya.length === 0 ? (
                                     <p className="mt-4 text-sm text-gray-500">
-                                        Belum ada berita umum lainnya.
+                                        {t(
+                                            'Belum ada berita umum lainnya.',
+                                            'No other general news yet.',
+                                        )}
                                     </p>
                                 ) : (
                                     <div className="mt-5 divide-y divide-[#e4eaec]">
@@ -129,7 +134,7 @@ export default function BeritaUmumDetail({
                                                 className="group block py-3.5 first:pt-0 last:pb-0"
                                             >
                                                 <span className="text-xs font-medium text-[#186972]">
-                                                    {item.kategori} •{' '}
+                                                    {translateCategory(item.kategori)} •{' '}
                                                     {
                                                         item.tanggal_publikasi_formatted
                                                     }
@@ -149,4 +154,3 @@ export default function BeritaUmumDetail({
         </PublicLayout>
     );
 }
-

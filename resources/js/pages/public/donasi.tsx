@@ -4,19 +4,13 @@ import {
     ChevronRight,
     CheckCircle2,
     AlertCircle,
-    HeartHandshake,
     Send,
     Clock,
-    UserCheck,
-    Wallet,
-    MessageSquareHeart,
     ShieldCheck,
-    CreditCard,
     Loader2,
-    Mail,
-    RefreshCw,
 } from 'lucide-react';
 import PublicLayout from '@/layouts/public-layout';
+import { useLanguage } from '@/hooks/use-language';
 
 declare global {
     interface Window {
@@ -60,30 +54,49 @@ const DEFAULT_NOMINAL_OPTIONS: number[] = [
     100000,
 ];
 
-const ALUR_BERDONASI = [
+const ALUR_BERDONASI_ID = [
     {
         num: '1',
         title: 'Isi Identitas Donatur',
-        desc: 'Masukkan nama lengkap (atau Hamba Allah) beserta nomor WhatsApp aktif Anda.',
-        icon: UserCheck,
+        desc: 'Masukkan nama lengkap atau pilih Hamba Allah beserta nomor WhatsApp aktif Anda.',
     },
     {
         num: '2',
         title: 'Pilih Nominal Donasi',
-        desc: 'Pilih salah satu nominal donasi yang tersedia mulai dari Rp5.000 hingga Rp100.000.',
-        icon: Wallet,
+        desc: 'Pilih salah satu nominal donasi yang tersedia atau masukkan nominal donasi kustom yang Anda kehendaki.',
     },
     {
         num: '3',
         title: 'Pilih Jalur Pembayaran',
-        desc: 'Tersedia QRIS, Transfer Bank (BCA, BNI, BRI, Mandiri, Permata), dan e-Wallet melalui Midtrans Snap.',
-        icon: CreditCard,
+        desc: 'Tersedia QRIS, Transfer Bank (BCA, BNI, BRI, Mandiri, Permata), dan e-Wallet.',
     },
     {
         num: '4',
         title: 'Konfirmasi Otomatis',
         desc: 'Pembayaran terverifikasi otomatis oleh sistem dan langsung tercatat pada buku kas amanah yayasan.',
-        icon: ShieldCheck,
+    },
+];
+
+const ALUR_BERDONASI_EN = [
+    {
+        num: '1',
+        title: 'Enter Donor Identity',
+        desc: 'Enter your full name or select Anonymous (Hamba Allah) along with your active WhatsApp number.',
+    },
+    {
+        num: '2',
+        title: 'Select Donation Amount',
+        desc: 'Choose one of the available preset donation amounts or enter your desired custom amount.',
+    },
+    {
+        num: '3',
+        title: 'Choose Payment Method',
+        desc: 'Supports QRIS, Bank Transfer (BCA, BNI, BRI, Mandiri, Permata), and e-Wallet.',
+    },
+    {
+        num: '4',
+        title: 'Automatic Confirmation',
+        desc: 'Your payment is verified automatically by the system and directly recorded in the foundation ledger.',
     },
 ];
 
@@ -93,6 +106,7 @@ export default function DonasiPage({
     midtransClientKey = null,
     midtransSnapJsUrl = 'https://app.sandbox.midtrans.com/snap/snap.js',
 }: DonasiPageProps) {
+    const { t } = useLanguage();
     const pageProps = usePage<{
         csrf_token?: string;
         flash?: { success?: string | null; error?: string | null };
@@ -101,11 +115,15 @@ export default function DonasiPage({
     const daftarNominal =
         nominalOptions && nominalOptions.length > 0 ? nominalOptions : DEFAULT_NOMINAL_OPTIONS;
 
+    const alurBerdonasi = t(ALUR_BERDONASI_ID, ALUR_BERDONASI_EN);
+
     // Form state
+    const [isHambaAllah, setIsHambaAllah] = useState(false);
     const [namaDonatur, setNamaDonatur] = useState('');
+    const [savedNama, setSavedNama] = useState('');
     const [noWhatsapp, setNoWhatsapp] = useState('');
-    const [email, setEmail] = useState('');
     const [nominal, setNominal] = useState<number | null>(null);
+    const [customNominalInput, setCustomNominalInput] = useState('');
     const [pesanDoa, setPesanDoa] = useState('');
 
     // UI & Validation state
@@ -146,6 +164,27 @@ export default function DonasiPage({
 
     const handleSelectNominal = (nom: number) => {
         setNominal(nom);
+        setCustomNominalInput('');
+        setNominalError(null);
+        if (fieldErrors.nominal) {
+            setFieldErrors((prev) => {
+                const next = { ...prev };
+                delete next.nominal;
+                return next;
+            });
+        }
+    };
+
+    const handleCustomNominalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const rawValue = e.target.value.replace(/[^0-9]/g, '');
+        if (!rawValue) {
+            setCustomNominalInput('');
+            setNominal(null);
+            return;
+        }
+        const num = parseInt(rawValue, 10);
+        setCustomNominalInput(num.toLocaleString('id-ID'));
+        setNominal(num);
         setNominalError(null);
         if (fieldErrors.nominal) {
             setFieldErrors((prev) => {
@@ -159,23 +198,33 @@ export default function DonasiPage({
     const validateForm = () => {
         const errors: Record<string, string> = {};
 
-        if (!namaDonatur.trim()) {
-            errors.nama_donatur = 'Nama donatur wajib diisi.';
+        const donorName = isHambaAllah ? 'Hamba Allah' : namaDonatur.trim();
+        if (!donorName) {
+            errors.nama_donatur = t(
+                'Nama donatur wajib diisi.',
+                'Donor name is required.',
+            );
         }
 
         if (!noWhatsapp.trim()) {
-            errors.no_whatsapp = 'Nomor WhatsApp wajib diisi.';
+            errors.no_whatsapp = t(
+                'Nomor WhatsApp wajib diisi.',
+                'WhatsApp number is required.',
+            );
         } else if (!/^[0-9+\-\s()]{8,25}$/.test(noWhatsapp.trim())) {
-            errors.no_whatsapp = 'Format nomor WhatsApp tidak valid (minimal 8 angka).';
+            errors.no_whatsapp = t(
+                'Format nomor WhatsApp tidak valid (minimal 8 angka).',
+                'Invalid WhatsApp number format (minimum 8 digits).',
+            );
         }
 
-        if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-            errors.email = 'Format email tidak valid.';
-        }
-
-        if (nominal === null || !daftarNominal.includes(nominal)) {
-            errors.nominal = 'Silakan pilih salah satu nominal donasi terlebih dahulu.';
-            setNominalError('Silakan pilih salah satu nominal donasi terlebih dahulu.');
+        if (nominal === null || nominal < 1000) {
+            const msg = t(
+                'Silakan pilih atau masukkan nominal donasi (minimal Rp1.000).',
+                'Please select or enter a donation amount (minimum Rp1,000).',
+            );
+            errors.nominal = msg;
+            setNominalError(msg);
         }
 
         setFieldErrors(errors);
@@ -193,7 +242,6 @@ export default function DonasiPage({
         setGlobalAlert(null);
 
         try {
-            // Ambil CSRF token dari meta tag atau inertia page props
             const csrfMeta = document.querySelector('meta[name="csrf-token"]');
             const token = csrfMeta?.getAttribute('content') || pageProps.csrf_token || '';
 
@@ -206,9 +254,8 @@ export default function DonasiPage({
                     'X-Requested-With': 'XMLHttpRequest',
                 },
                 body: JSON.stringify({
-                    nama_donatur: namaDonatur.trim(),
+                    nama_donatur: isHambaAllah ? 'Hamba Allah' : namaDonatur.trim(),
                     no_whatsapp: noWhatsapp.trim(),
-                    email: email.trim() || undefined,
                     nominal: nominal,
                     pesan_doa: pesanDoa.trim() || undefined,
                 }),
@@ -226,45 +273,59 @@ export default function DonasiPage({
                 } else {
                     setGlobalAlert({
                         type: 'error',
-                        message: result.message || 'Terjadi kendala saat memproses donasi. Silakan coba kembali.',
+                        message:
+                            result.message ||
+                            t(
+                                'Terjadi kendala saat memproses donasi. Silakan coba kembali.',
+                                'An error occurred while processing the donation. Please try again.',
+                            ),
                     });
                 }
                 setIsSubmitting(false);
                 return;
             }
 
-            // Jika Midtrans Snap Token tersedia
             if (result.snap_token) {
                 if (typeof window.snap !== 'undefined' && window.snap.pay) {
                     window.snap.pay(result.snap_token, {
-                        onSuccess: (paymentResult: any) => {
+                        onSuccess: () => {
                             setGlobalAlert({
                                 type: 'success',
-                                message: 'Alhamdulillah! Pembayaran donasi Anda berhasil dan terverifikasi otomatis.',
+                                message: t(
+                                    'Alhamdulillah! Pembayaran donasi Anda berhasil dan terverifikasi otomatis.',
+                                    'Alhamdulillah! Your donation payment was successful and verified automatically.',
+                                ),
                                 kode_donasi: result.kode_donasi,
                                 nominal: result.nominal,
                             });
-                            // Reset form
+                            setIsHambaAllah(false);
                             setNamaDonatur('');
+                            setSavedNama('');
                             setNoWhatsapp('');
-                            setEmail('');
                             setNominal(null);
+                            setCustomNominalInput('');
                             setPesanDoa('');
                             setIsSubmitting(false);
                         },
-                        onPending: (paymentResult: any) => {
+                        onPending: () => {
                             setGlobalAlert({
                                 type: 'pending',
-                                message: 'Pembayaran Anda sedang diproses. Silakan selesaikan pembayaran sesuai instruksi Midtrans.',
+                                message: t(
+                                    'Pembayaran Anda sedang diproses. Silakan selesaikan pembayaran sesuai instruksi.',
+                                    'Your payment is being processed. Please complete the payment according to the instructions.',
+                                ),
                                 kode_donasi: result.kode_donasi,
                                 nominal: result.nominal,
                             });
                             setIsSubmitting(false);
                         },
-                        onError: (errorResult: any) => {
+                        onError: () => {
                             setGlobalAlert({
                                 type: 'error',
-                                message: 'Pembayaran donasi gagal atau ditolak. Silakan gunakan metode pembayaran lainnya.',
+                                message: t(
+                                    'Pembayaran donasi gagal atau ditolak. Silakan gunakan metode pembayaran lainnya.',
+                                    'Donation payment failed or was declined. Please use another payment method.',
+                                ),
                                 kode_donasi: result.kode_donasi,
                             });
                             setIsSubmitting(false);
@@ -272,7 +333,10 @@ export default function DonasiPage({
                         onClose: () => {
                             setGlobalAlert({
                                 type: 'pending',
-                                message: 'Jendela pembayaran ditutup. Anda dapat melanjutkan pembayaran nanti dengan kode donasi ini.',
+                                message: t(
+                                    'Jendela pembayaran ditutup. Anda dapat melanjutkan pembayaran nanti dengan kode donasi ini.',
+                                    'Payment window was closed. You can complete your payment later using this donation code.',
+                                ),
                                 kode_donasi: result.kode_donasi,
                                 nominal: result.nominal,
                             });
@@ -280,35 +344,44 @@ export default function DonasiPage({
                         },
                     });
                 } else if (result.redirect_url) {
-                    // Fallback redirect jika popup terblokir
                     window.location.href = result.redirect_url;
                 } else {
                     setGlobalAlert({
                         type: 'pending',
-                        message: 'Data donasi tercatat. Modul pembayaran sedang dimuat, silakan muat ulang halaman.',
+                        message: t(
+                            'Data donasi tercatat. Modul pembayaran sedang dimuat, silakan muat ulang halaman.',
+                            'Donation recorded. Payment module is loading, please refresh the page.',
+                        ),
                         kode_donasi: result.kode_donasi,
                     });
                     setIsSubmitting(false);
                 }
             } else {
-                // Kredensial Midtrans belum aktif (fallback tercatat status menunggu)
                 setGlobalAlert({
                     type: 'success',
-                    message: 'Pengajuan donasi berhasil dicatat dan sedang dalam antrean verifikasi.',
+                    message: t(
+                        'Pengajuan donasi berhasil dicatat dan sedang dalam antrean verifikasi.',
+                        'Your donation submission has been recorded and is queued for verification.',
+                    ),
                     kode_donasi: result.kode_donasi,
                     nominal: result.nominal,
                 });
+                setIsHambaAllah(false);
                 setNamaDonatur('');
+                setSavedNama('');
                 setNoWhatsapp('');
-                setEmail('');
                 setNominal(null);
+                setCustomNominalInput('');
                 setPesanDoa('');
                 setIsSubmitting(false);
             }
-        } catch (err: any) {
+        } catch {
             setGlobalAlert({
                 type: 'error',
-                message: 'Tidak dapat terhubung ke server. Periksa koneksi internet Anda dan coba lagi.',
+                message: t(
+                    'Tidak dapat terhubung ke server. Periksa koneksi internet Anda dan coba lagi.',
+                    'Unable to connect to the server. Please check your internet connection and try again.',
+                ),
             });
             setIsSubmitting(false);
         }
@@ -318,31 +391,36 @@ export default function DonasiPage({
 
     return (
         <PublicLayout>
-            <Head title="Donasi Digital - Yayasan Geliyat Mahdiesa Nahate" />
+            <Head
+                title={t(
+                    'Donasi Digital - Yayasan Geliyat Mahdiesa Nahate',
+                    'Digital Donation - Yayasan Geliyat Mahdiesa Nahate',
+                )}
+            />
 
             {/* Banner Header with Breadcrumbs */}
             <div className="border-b border-[#e4eaec] bg-gradient-to-r from-[#d1f6fa]/60 via-[#e8f8fa] to-[#f7fcfd] py-10 sm:py-14">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <h1 className="font-poppins text-3xl font-bold text-slate-800 sm:text-4xl">
-                        Donasi & Sedekah Digital
+                        {t('Donasi & Sedekah Digital', 'Digital Donation & Charity')}
                     </h1>
                     <nav className="mt-2 flex items-center gap-2 font-poppins text-sm text-slate-500">
                         <Link
                             href="/"
                             className="transition-colors hover:text-[#14bace]"
                         >
-                            Beranda
+                            {t('Beranda', 'Home')}
                         </Link>
                         <ChevronRight className="size-4 text-slate-400" />
                         <span className="font-semibold text-[#087f8c]">
-                            Donasi Digital (Midtrans)
+                            {t('Donasi Digital', 'Digital Donation')}
                         </span>
                     </nav>
                     <p className="mt-3 max-w-2xl font-sans text-sm text-slate-600 sm:text-base">
-                        Penyaluran infaq, sedekah, dan santunan pendidikan yang
-                        amanah untuk membina anak-anak yatim dan memberdayakan
-                        ibu yatim Yayasan Geliyat Mahdiesa Nahate secara
-                        transparan.
+                        {t(
+                            'Penyaluran infaq, sedekah, dan santunan pendidikan yang amanah untuk membina anak-anak yatim dan memberdayakan ibu yatim Yayasan Geliyat Mahdiesa Nahate secara transparan.',
+                            'Trustworthy distribution of charity, alms, and educational aid to mentor orphans and empower mothers of orphans at Yayasan Geliyat Mahdiesa Nahate transparently.',
+                        )}
                     </p>
                 </div>
             </div>
@@ -378,10 +456,19 @@ export default function DonasiPage({
                                 <div className="w-full">
                                     <h4 className="font-poppins text-sm font-bold sm:text-base">
                                         {globalAlert.type === 'success'
-                                            ? 'Alhamdulillah, Pembayaran Donasi Berhasil!'
+                                            ? t(
+                                                  'Alhamdulillah, Pembayaran Donasi Berhasil!',
+                                                  'Alhamdulillah, Donation Payment Successful!',
+                                              )
                                             : globalAlert.type === 'pending'
-                                              ? 'Menunggu Penyelesaian Pembayaran'
-                                              : 'Pemberitahuan Transaksi'}
+                                              ? t(
+                                                    'Menunggu Penyelesaian Pembayaran',
+                                                    'Awaiting Payment Completion',
+                                                )
+                                              : t(
+                                                    'Pemberitahuan Transaksi',
+                                                    'Transaction Notice',
+                                                )}
                                     </h4>
                                     <p className="mt-1 text-xs leading-relaxed sm:text-sm">
                                         {globalAlert.message}
@@ -391,7 +478,7 @@ export default function DonasiPage({
                                         <div className="mt-3 flex flex-wrap items-center gap-4 rounded-xl border border-current/15 bg-white/80 p-3 text-xs sm:text-sm">
                                             <div>
                                                 <span className="block text-[11px] text-slate-500">
-                                                    Kode Donasi
+                                                    {t('Kode Donasi', 'Donation Code')}
                                                 </span>
                                                 <span className="font-mono font-bold text-slate-800">
                                                     {globalAlert.kode_donasi}
@@ -400,7 +487,7 @@ export default function DonasiPage({
                                             {globalAlert.nominal && (
                                                 <div>
                                                     <span className="block text-[11px] text-slate-500">
-                                                        Nominal
+                                                        {t('Nominal', 'Amount')}
                                                     </span>
                                                     <span className="font-semibold text-[#087f8c]">
                                                         {formatRupiah(globalAlert.nominal)}
@@ -410,7 +497,7 @@ export default function DonasiPage({
                                             <div className="ml-auto">
                                                 <span className="inline-flex items-center gap-1 rounded-full bg-[#e8f8fa] px-2.5 py-0.5 text-[11px] font-bold text-[#087f8c]">
                                                     <ShieldCheck className="size-3" />
-                                                    Tercatat Resmi
+                                                    {t('Tercatat Resmi', 'Officially Recorded')}
                                                 </span>
                                             </div>
                                         </div>
@@ -429,7 +516,10 @@ export default function DonasiPage({
                                 </div>
                                 <div className="w-full">
                                     <h4 className="font-poppins text-sm font-bold text-emerald-900 sm:text-base">
-                                        Alhamdulillah, Data Donasi Berhasil Dicatat!
+                                        {t(
+                                            'Alhamdulillah, Data Donasi Berhasil Dicatat!',
+                                            'Alhamdulillah, Donation Data Recorded Successfully!',
+                                        )}
                                     </h4>
                                     <p className="mt-1 text-xs leading-relaxed text-emerald-800 sm:text-sm">
                                         {pageProps.flash.success}
@@ -443,59 +533,48 @@ export default function DonasiPage({
                         {/* Kolom Kiri: Alur Berdonasi */}
                         <div className="flex flex-col justify-between rounded-3xl border border-[#e4eaec] bg-white p-6 shadow-xs sm:p-8 lg:col-span-5">
                             <div>
-                                <span className="font-poppins text-xs font-bold tracking-wider text-[#14bace] uppercase">
-                                    Mudah & Terpercaya
-                                </span>
-                                <h2 className="mt-1 font-poppins text-xl font-bold text-slate-800 sm:text-2xl">
-                                    Alur Berdonasi Online
+                                <h2 className="font-poppins text-xl font-bold text-slate-800 sm:text-2xl">
+                                    {t('Alur Berdonasi Online', 'Online Donation Flow')}
                                 </h2>
-                                <p className="mt-1 font-sans text-xs leading-relaxed text-slate-500 sm:text-sm">
-                                    Pembayaran donasi kini terhubung langsung dengan Midtrans Snap untuk kemudahan sedekah digital:
-                                </p>
 
                                 <div className="mt-6 space-y-3.5">
-                                    {ALUR_BERDONASI.map((step) => {
-                                        const StepIcon = step.icon;
-                                        return (
-                                            <div
-                                                key={step.num}
-                                                className="group flex items-start gap-3.5 rounded-2xl border border-[#e4eaec] bg-[#fbfdfd] p-4 transition hover:border-[#14bace]/40 hover:bg-[#f7fcfd]"
-                                            >
-                                                <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-[#e8f8fa] font-poppins text-sm font-bold text-[#087f8c] transition group-hover:bg-[#14bace] group-hover:text-white">
-                                                    <StepIcon className="size-5" />
-                                                </div>
+                                    {alurBerdonasi.map((step) => (
+                                        <div
+                                            key={step.num}
+                                            className="rounded-2xl border border-[#e4eaec] bg-[#fbfdfd] p-4 transition hover:border-[#14bace]/40 hover:bg-[#f7fcfd]"
+                                        >
+                                            <div className="flex items-start gap-2.5">
+                                                <span className="font-poppins text-sm font-bold text-slate-800">
+                                                    {step.num}.
+                                                </span>
                                                 <div className="min-w-0 flex-1">
-                                                    <div className="flex items-center gap-2">
-                                                        <span className="inline-flex size-5 items-center justify-center rounded-full bg-[#14bace]/15 font-poppins text-[11px] font-bold text-[#087f8c]">
-                                                            {step.num}
-                                                        </span>
-                                                        <h3 className="font-poppins text-xs font-bold text-slate-800 sm:text-sm">
-                                                            {step.title}
-                                                        </h3>
-                                                    </div>
+                                                    <h3 className="font-poppins text-sm font-bold text-slate-800">
+                                                        {step.title}
+                                                    </h3>
                                                     <p className="mt-1 font-sans text-xs leading-relaxed text-slate-500">
                                                         {step.desc}
                                                     </p>
                                                 </div>
                                             </div>
-                                        );
-                                    })}
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
 
                             {/* Komitmen Penyaluran Highlight */}
                             <div className="mt-6 rounded-2xl border border-[#cbebf0] bg-[#f7fcfd] p-4 sm:p-5">
-                                <div className="flex items-start gap-3">
-                                    <HeartHandshake className="mt-0.5 size-6 shrink-0 text-[#14bace]" />
-                                    <div>
-                                        <h3 className="font-poppins text-xs font-bold text-slate-800 sm:text-sm">
-                                            Keamanan & Transparansi Donasi
-                                        </h3>
-                                        <p className="mt-1 font-sans text-xs leading-relaxed text-slate-600">
-                                            Setiap donasi melalui Midtrans diverifikasi menggunakan enkripsi SHA-512 dan otomatis dicatat pada buku kas amanah untuk kebutuhan binaan yatim.
-                                        </p>
-                                    </div>
-                                </div>
+                                <h3 className="font-poppins text-xs font-bold text-slate-800 sm:text-sm">
+                                    {t(
+                                        'Keamanan & Transparansi Donasi',
+                                        'Donation Security & Transparency',
+                                    )}
+                                </h3>
+                                <p className="mt-1 font-sans text-xs leading-relaxed text-slate-600">
+                                    {t(
+                                        'Setiap donasi diverifikasi menggunakan sistem keamanan digital terenkripsi dan otomatis dicatat pada buku kas amanah untuk kebutuhan binaan yatim.',
+                                        'Every donation is verified using an encrypted digital security system and automatically recorded in our trustworthy ledger for mentored orphans.',
+                                    )}
+                                </p>
                             </div>
                         </div>
 
@@ -504,17 +583,14 @@ export default function DonasiPage({
                             <div className="flex h-full flex-col justify-between rounded-3xl border border-[#e4eaec] bg-white p-6 shadow-xs sm:p-8">
                                 <div>
                                     <div className="border-b border-slate-100 pb-4">
-                                        <div className="flex items-center justify-between">
-                                            <h2 className="font-poppins text-xl font-bold text-slate-800 sm:text-2xl">
-                                                Formulir Donasi
-                                            </h2>
-                                            <span className="inline-flex items-center gap-1 rounded-full bg-[#e8f8fa] px-3 py-1 font-poppins text-xs font-semibold text-[#087f8c]">
-                                                <CreditCard className="size-3.5 text-[#14bace]" />
-                                                Midtrans Snap
-                                            </span>
-                                        </div>
+                                        <h2 className="font-poppins text-xl font-bold text-slate-800 sm:text-2xl">
+                                            {t('Formulir Donasi', 'Donation Form')}
+                                        </h2>
                                         <p className="mt-1 font-sans text-xs text-slate-500 sm:text-sm">
-                                            Lengkapi identitas donatur dan pilih nominal donasi yang ingin Anda salurkan:
+                                            {t(
+                                                'Lengkapi identitas donatur dan pilih nominal donasi yang ingin Anda salurkan:',
+                                                'Complete your donor details and choose the donation amount you wish to contribute:',
+                                            )}
                                         </p>
                                     </div>
 
@@ -525,21 +601,71 @@ export default function DonasiPage({
                                         {/* Identitas Donatur: Nama & WhatsApp */}
                                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                             <div>
-                                                <label
-                                                    htmlFor="nama_donatur"
-                                                    className="mb-1.5 block font-poppins text-xs font-semibold text-slate-700"
-                                                >
-                                                    Nama Lengkap / Hamba Allah{' '}
-                                                    <span className="text-rose-500">
-                                                        *
-                                                    </span>
-                                                </label>
+                                                <div className="mb-1.5 flex flex-wrap items-center justify-between gap-1">
+                                                    <label
+                                                        htmlFor="nama_donatur"
+                                                        className="font-poppins text-xs font-semibold text-slate-700"
+                                                    >
+                                                        {t('Nama Lengkap', 'Full Name')}{' '}
+                                                        <span className="text-rose-500">
+                                                            *
+                                                        </span>
+                                                    </label>
+                                                    <div className="flex items-center gap-2.5">
+                                                        <label className="inline-flex cursor-pointer items-center gap-1 font-poppins text-xs text-slate-600 hover:text-[#087f8c]">
+                                                            <input
+                                                                type="radio"
+                                                                name="donor_identity"
+                                                                checked={!isHambaAllah}
+                                                                onChange={() => {
+                                                                    setIsHambaAllah(false);
+                                                                    setNamaDonatur(savedNama);
+                                                                }}
+                                                                className="size-3.5 accent-[#14bace]"
+                                                            />
+                                                            <span>
+                                                                {t('Nama Sendiri', 'Own Name')}
+                                                            </span>
+                                                        </label>
+                                                        <label className="inline-flex cursor-pointer items-center gap-1 font-poppins text-xs text-slate-600 hover:text-[#087f8c]">
+                                                            <input
+                                                                type="radio"
+                                                                name="donor_identity"
+                                                                checked={isHambaAllah}
+                                                                onChange={() => {
+                                                                    if (!isHambaAllah && namaDonatur !== 'Hamba Allah') {
+                                                                        setSavedNama(namaDonatur);
+                                                                    }
+                                                                    setIsHambaAllah(true);
+                                                                    setNamaDonatur('Hamba Allah');
+                                                                    if (fieldErrors.nama_donatur) {
+                                                                        setFieldErrors((prev) => {
+                                                                            const next = { ...prev };
+                                                                            delete next.nama_donatur;
+                                                                            return next;
+                                                                        });
+                                                                    }
+                                                                }}
+                                                                className="size-3.5 accent-[#14bace]"
+                                                            />
+                                                            <span>Hamba Allah</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
                                                 <input
                                                     id="nama_donatur"
                                                     type="text"
                                                     required
-                                                    placeholder="Contoh: Ahmad Fauzan"
-                                                    value={namaDonatur}
+                                                    disabled={isHambaAllah}
+                                                    placeholder={
+                                                        isHambaAllah
+                                                            ? 'Hamba Allah'
+                                                            : t(
+                                                                  'Contoh: Ahmad Fauzan',
+                                                                  'e.g. Ahmad Fauzan',
+                                                              )
+                                                    }
+                                                    value={isHambaAllah ? 'Hamba Allah' : namaDonatur}
                                                     onChange={(e) => {
                                                         setNamaDonatur(e.target.value);
                                                         if (fieldErrors.nama_donatur) {
@@ -550,9 +676,13 @@ export default function DonasiPage({
                                                             });
                                                         }
                                                     }}
-                                                    className="w-full rounded-xl border border-[#e4eaec] bg-white px-3.5 py-2.5 font-sans text-sm text-slate-800 outline-hidden transition focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20"
+                                                    className={`w-full rounded-xl border border-[#e4eaec] px-3.5 py-2.5 font-sans text-sm outline-hidden transition ${
+                                                        isHambaAllah
+                                                            ? 'cursor-not-allowed bg-slate-100 font-medium text-slate-500'
+                                                            : 'bg-white text-slate-800 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20'
+                                                    }`}
                                                 />
-                                                {fieldErrors.nama_donatur && (
+                                                {fieldErrors.nama_donatur && !isHambaAllah && (
                                                     <p className="mt-1 text-xs text-rose-600">
                                                         {fieldErrors.nama_donatur}
                                                     </p>
@@ -564,7 +694,7 @@ export default function DonasiPage({
                                                     htmlFor="no_whatsapp"
                                                     className="mb-1.5 block font-poppins text-xs font-semibold text-slate-700"
                                                 >
-                                                    Nomor WhatsApp{' '}
+                                                    {t('Nomor WhatsApp', 'WhatsApp Number')}{' '}
                                                     <span className="text-rose-500">
                                                         *
                                                     </span>
@@ -573,7 +703,10 @@ export default function DonasiPage({
                                                     id="no_whatsapp"
                                                     type="tel"
                                                     required
-                                                    placeholder="Contoh: 081234567890"
+                                                    placeholder={t(
+                                                        'Contoh: 081234567890',
+                                                        'e.g. 081234567890',
+                                                    )}
                                                     value={noWhatsapp}
                                                     onChange={(e) => {
                                                         setNoWhatsapp(e.target.value);
@@ -595,46 +728,14 @@ export default function DonasiPage({
                                             </div>
                                         </div>
 
-                                        {/* Email Donatur (Opsional) */}
-                                        <div>
-                                            <label
-                                                htmlFor="email"
-                                                className="mb-1.5 block font-poppins text-xs font-semibold text-slate-700"
-                                            >
-                                                Alamat Email Donatur (Opsional)
-                                            </label>
-                                            <div className="relative">
-                                                <input
-                                                    id="email"
-                                                    type="email"
-                                                    placeholder="Contoh: ahmad@gmail.com (untuk bukti pembayaran)"
-                                                    value={email}
-                                                    onChange={(e) => {
-                                                        setEmail(e.target.value);
-                                                        if (fieldErrors.email) {
-                                                            setFieldErrors((prev) => {
-                                                                const next = { ...prev };
-                                                                delete next.email;
-                                                                return next;
-                                                            });
-                                                        }
-                                                    }}
-                                                    className="w-full rounded-xl border border-[#e4eaec] bg-white px-3.5 py-2.5 pl-9 font-sans text-sm text-slate-800 outline-hidden transition focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20"
-                                                />
-                                                <Mail className="absolute left-3 top-3 size-4 text-slate-400" />
-                                            </div>
-                                            {fieldErrors.email && (
-                                                <p className="mt-1 text-xs text-rose-600">
-                                                    {fieldErrors.email}
-                                                </p>
-                                            )}
-                                        </div>
-
                                         {/* Pilihan Nominal Donasi */}
                                         <div>
                                             <div className="mb-2 flex items-center justify-between">
                                                 <label className="font-poppins text-xs font-semibold text-slate-700">
-                                                    Pilih Nominal Donasi{' '}
+                                                    {t(
+                                                        'Pilih Nominal Donasi',
+                                                        'Select Donation Amount',
+                                                    )}{' '}
                                                     <span className="text-rose-500">
                                                         *
                                                     </span>
@@ -642,18 +743,22 @@ export default function DonasiPage({
                                                 {nominal !== null && (
                                                     <span className="inline-flex items-center gap-1 rounded-full bg-[#e8f8fa] px-2.5 py-0.5 font-poppins text-xs font-bold text-[#087f8c]">
                                                         <CheckCircle2 className="size-3.5 text-[#14bace]" />
-                                                        Dipilih: {formatRupiah(nominal)}
+                                                        {t('Dipilih:', 'Selected:')}{' '}
+                                                        {formatRupiah(nominal)}
                                                     </span>
                                                 )}
                                             </div>
 
                                             <div
                                                 role="radiogroup"
-                                                aria-label="Pilihan Nominal Donasi"
+                                                aria-label={t(
+                                                    'Pilihan Nominal Donasi',
+                                                    'Donation Amount Options',
+                                                )}
                                                 className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4"
                                             >
                                                 {daftarNominal.map((nom) => {
-                                                    const isSelected = nominal === nom;
+                                                    const isSelected = nominal === nom && !customNominalInput;
                                                     return (
                                                         <button
                                                             key={nom}
@@ -684,6 +789,36 @@ export default function DonasiPage({
                                                 })}
                                             </div>
 
+                                            {/* Custom Nominal Input */}
+                                            <div className="mt-3">
+                                                <label
+                                                    htmlFor="custom_nominal"
+                                                    className="mb-1 block font-poppins text-xs font-medium text-slate-600"
+                                                >
+                                                    {t(
+                                                        'Atau Masukkan Nominal Lainnya (Rp):',
+                                                        'Or Enter Custom Amount (Rp):',
+                                                    )}
+                                                </label>
+                                                <div className="relative">
+                                                    <span className="absolute top-2.5 left-3.5 font-poppins text-sm font-semibold text-slate-500">
+                                                        Rp
+                                                    </span>
+                                                    <input
+                                                        id="custom_nominal"
+                                                        type="text"
+                                                        inputMode="numeric"
+                                                        placeholder={t(
+                                                            'Contoh: 150.000',
+                                                            'e.g. 150.000',
+                                                        )}
+                                                        value={customNominalInput}
+                                                        onChange={handleCustomNominalChange}
+                                                        className="w-full rounded-xl border border-[#e4eaec] bg-white py-2.5 pr-3.5 pl-10 font-sans text-sm font-semibold text-slate-800 outline-hidden transition focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20"
+                                                    />
+                                                </div>
+                                            </div>
+
                                             {activeNominalError && (
                                                 <p className="mt-2 text-xs text-rose-600">
                                                     {activeNominalError}
@@ -697,12 +832,18 @@ export default function DonasiPage({
                                                 htmlFor="pesan_doa"
                                                 className="mb-1.5 block font-poppins text-xs font-semibold text-slate-700"
                                             >
-                                                Pesan & Doa Kebaikan (Opsional)
+                                                {t(
+                                                    'Pesan & Doa Kebaikan (Opsional)',
+                                                    'Message & Prayer (Optional)',
+                                                )}
                                             </label>
                                             <textarea
                                                 id="pesan_doa"
                                                 rows={3}
-                                                placeholder="Tuliskan doa atau harapan untuk adik-adik yatim binaan..."
+                                                placeholder={t(
+                                                    'Tuliskan doa atau harapan untuk adik-adik yatim binaan...',
+                                                    'Write a prayer or message of hope for the mentored orphans...',
+                                                )}
                                                 value={pesanDoa}
                                                 onChange={(e) => setPesanDoa(e.target.value)}
                                                 className="w-full rounded-xl border border-[#e4eaec] bg-white px-3.5 py-2.5 font-sans text-sm text-slate-800 outline-hidden transition focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20"
@@ -719,22 +860,27 @@ export default function DonasiPage({
                                                 {isSubmitting ? (
                                                     <>
                                                         <Loader2 className="size-4 animate-spin" />
-                                                        <span>Menyiapkan Pembayaran...</span>
+                                                        <span>
+                                                            {t(
+                                                                'Menyiapkan Pembayaran...',
+                                                                'Preparing Payment...',
+                                                            )}
+                                                        </span>
                                                     </>
                                                 ) : (
                                                     <>
                                                         <Send className="size-4" />
                                                         <span>
                                                             {nominal !== null
-                                                                ? `Bayar Donasi ${formatRupiah(nominal)}`
-                                                                : 'Lanjutkan ke Pembayaran'}
+                                                                ? `${t('Bayar Donasi', 'Pay Donation')} ${formatRupiah(nominal)}`
+                                                                : t(
+                                                                      'Lanjutkan ke Pembayaran',
+                                                                      'Proceed to Payment',
+                                                                  )}
                                                         </span>
                                                     </>
                                                 )}
                                             </button>
-                                            <p className="mt-2.5 text-center font-sans text-[11px] text-slate-400">
-                                                Didukung pembayaran digital terenkripsi (QRIS, GoPay, ShopeePay, Virtual Account Bank) melalui Midtrans.
-                                            </p>
                                         </div>
                                     </form>
                                 </div>

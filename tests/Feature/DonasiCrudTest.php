@@ -146,11 +146,19 @@ test('public donor can view simplified donation page and submit preset nominal d
     expect($donasi->verified_by)->toBeNull();
     expect($donasi->verified_at)->toBeNull();
 
-    // 4. Nominal bebas yang tidak ada pada daftar pilihan ditolak oleh validasi
+    // 4. Nominal kustom (bebas) kini diterima selama memenuhi batas minimal (>= Rp1.000)
     $this->from(route('donasi'))->post(route('donasi.store'), [
         'nama_donatur' => 'Donatur Nominal Bebas',
         'no_whatsapp' => '081234567890',
         'nominal' => 12000,
+    ])->assertRedirect(route('donasi'))
+        ->assertSessionHasNoErrors();
+
+    // 4b. Nominal di bawah batas minimal (kurang dari Rp1.000) ditolak oleh validasi
+    $this->from(route('donasi'))->post(route('donasi.store'), [
+        'nama_donatur' => 'Donatur Di Bawah Batas',
+        'no_whatsapp' => '081234567890',
+        'nominal' => 500,
     ])->assertRedirect(route('donasi'))
         ->assertSessionHasErrors('nominal');
 

@@ -1,17 +1,34 @@
 import { useState } from 'react';
 import { Link, usePage } from '@inertiajs/react';
-import { ArrowRight, Menu, X, LogIn, LayoutDashboard, ChevronDown } from 'lucide-react';
+import {
+    ArrowRight,
+    Menu,
+    X,
+    LogIn,
+    LayoutDashboard,
+    ChevronDown,
+    Globe,
+} from 'lucide-react';
+import { useLanguage } from '@/hooks/use-language';
 
 interface NavItem {
-    label: string;
+    labelId: string;
+    labelEn: string;
     href: string;
     match: string;
 }
 
 const navItems: NavItem[] = [
-    { label: 'Beranda', href: '/', match: '/' },
-    { label: 'Bidang', href: '/bidang', match: '/bidang' },
-    { label: 'Profil', href: '/profil', match: '/profil' },
+    { labelId: 'Beranda', labelEn: 'Home', href: '/', match: '/' },
+    { labelId: 'Bidang', labelEn: 'Divisions', href: '/bidang', match: '/bidang' },
+    { labelId: 'Kegiatan', labelEn: 'Activities', href: '/kegiatan', match: '/kegiatan' },
+    { labelId: 'Profil', labelEn: 'Profile', href: '/profil', match: '/profil' },
+    {
+        labelId: 'Laporan Tahunan',
+        labelEn: 'Annual Report',
+        href: '/laporan-tahunan',
+        match: '/laporan-tahunan',
+    },
 ];
 
 export default function PublicNavbar() {
@@ -19,10 +36,11 @@ export default function PublicNavbar() {
     const { auth } = usePage().props as unknown as {
         auth?: { user?: { name: string; role?: string } };
     };
+    const { lang, setLang, t } = useLanguage();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [berandaDropdownOpen, setBerandaDropdownOpen] = useState(false);
+    const [kegiatanDropdownOpen, setKegiatanDropdownOpen] = useState(false);
     const [profilDropdownOpen, setProfilDropdownOpen] = useState(false);
-    const [mobileBerandaOpen, setMobileBerandaOpen] = useState(true);
+    const [mobileKegiatanOpen, setMobileKegiatanOpen] = useState(true);
     const [mobileProfilOpen, setMobileProfilOpen] = useState(true);
 
     const isCurrent = (match: string) => {
@@ -32,10 +50,8 @@ export default function PublicNavbar() {
         return url.startsWith(match);
     };
 
-    const isBerandaActive =
-        url === '/' ||
-        url.startsWith('/kegiatan') ||
-        url.startsWith('/berita-umum');
+    const isKegiatanActive =
+        url.startsWith('/kegiatan') || url.startsWith('/berita-umum');
 
     const isProfilActive =
         url === '/profil' || url.startsWith('/profil-pimpinan');
@@ -56,37 +72,39 @@ export default function PublicNavbar() {
                                 GELIYAT
                             </span>
                             <span className="font-poppins text-[10px] leading-tight font-medium tracking-[2px] text-[#186972] uppercase">
-                                Gerakan Peduli Yatim
+                                {t('Gerakan Peduli Yatim', 'Orphan Care Movement')}
                             </span>
                         </div>
                     </Link>
 
                     {/* Desktop Navigation Links */}
-                    <nav className="hidden items-center gap-5 md:flex lg:gap-7 xl:gap-8">
+                    <nav className="hidden items-center gap-5 md:flex lg:gap-6 xl:gap-8">
                         {navItems.map((item) => {
-                            if (item.href === '/') {
+                            const label = t(item.labelId, item.labelEn);
+
+                            if (item.href === '/kegiatan') {
                                 return (
                                     <div
                                         key={item.href}
                                         className="relative group flex flex-col items-center py-2"
-                                        onMouseEnter={() => setBerandaDropdownOpen(true)}
-                                        onMouseLeave={() => setBerandaDropdownOpen(false)}
+                                        onMouseEnter={() => setKegiatanDropdownOpen(true)}
+                                        onMouseLeave={() => setKegiatanDropdownOpen(false)}
                                     >
-                                        <div className="flex items-center gap-1 cursor-pointer">
+                                        <div className="flex cursor-pointer items-center gap-1">
                                             <Link
-                                                href="/"
+                                                href="/kegiatan"
                                                 prefetch={false}
-                                                className={`font-poppins text-sm lg:text-base whitespace-nowrap transition-colors duration-150 ${
-                                                    isBerandaActive
+                                                className={`font-poppins text-sm whitespace-nowrap transition-colors duration-150 lg:text-base ${
+                                                    isKegiatanActive
                                                         ? 'font-bold text-[#14bace]'
                                                         : 'font-medium text-[#1d2b2d] hover:text-[#14bace]'
                                                 }`}
                                             >
-                                                {item.label}
+                                                {label}
                                             </Link>
                                             <ChevronDown
                                                 className={`size-3.5 transition-transform duration-200 ${
-                                                    berandaDropdownOpen
+                                                    kegiatanDropdownOpen
                                                         ? 'rotate-180 text-[#14bace]'
                                                         : 'text-slate-400 group-hover:text-[#14bace]'
                                                 }`}
@@ -95,25 +113,25 @@ export default function PublicNavbar() {
 
                                         <span
                                             className={`absolute bottom-0 h-[3px] rounded-full transition-all duration-200 ${
-                                                isBerandaActive
+                                                isKegiatanActive
                                                     ? 'w-6 bg-[#14bace] opacity-100'
                                                     : 'w-0 bg-[#14bace] opacity-0 group-hover:w-4 group-hover:opacity-60'
                                             }`}
                                         />
 
-                                        {/* Dropdown Menu Beranda */}
+                                        {/* Dropdown Menu Kegiatan */}
                                         <div
-                                            className={`absolute top-full left-1/2 -translate-x-1/2 pt-2 w-60 transition-all duration-150 z-50 ${
-                                                berandaDropdownOpen
-                                                    ? 'opacity-100 visible pointer-events-auto translate-y-0'
-                                                    : 'opacity-0 invisible pointer-events-none -translate-y-1'
+                                            className={`absolute top-full left-1/2 z-50 w-60 -translate-x-1/2 pt-2 transition-all duration-150 ${
+                                                kegiatanDropdownOpen
+                                                    ? 'pointer-events-auto visible translate-y-0 opacity-100'
+                                                    : 'pointer-events-none invisible -translate-y-1 opacity-0'
                                             }`}
                                         >
                                             <div className="rounded-2xl border border-[#e4eaec] bg-white p-2 shadow-xl ring-1 ring-black/5">
                                                 <Link
                                                     href="/kegiatan"
                                                     prefetch={false}
-                                                    onClick={() => setBerandaDropdownOpen(false)}
+                                                    onClick={() => setKegiatanDropdownOpen(false)}
                                                     className={`flex flex-col rounded-xl px-3.5 py-2.5 transition-colors ${
                                                         url.startsWith('/kegiatan')
                                                             ? 'bg-[#e8f8fa] text-[#087f8c]'
@@ -121,17 +139,20 @@ export default function PublicNavbar() {
                                                     }`}
                                                 >
                                                     <span className="font-poppins text-xs font-bold">
-                                                        Berita Kegiatan
+                                                        {t('Berita Kegiatan', 'Activity News')}
                                                     </span>
                                                     <span className="text-[11px] text-slate-500">
-                                                        Aktivitas dan program yayasan.
+                                                        {t(
+                                                            'Aktivitas dan program yayasan.',
+                                                            'Foundation activities and programs.',
+                                                        )}
                                                     </span>
                                                 </Link>
                                                 <div className="my-1 border-t border-slate-100" />
                                                 <Link
                                                     href="/berita-umum"
                                                     prefetch={false}
-                                                    onClick={() => setBerandaDropdownOpen(false)}
+                                                    onClick={() => setKegiatanDropdownOpen(false)}
                                                     className={`flex flex-col rounded-xl px-3.5 py-2.5 transition-colors ${
                                                         url.startsWith('/berita-umum')
                                                             ? 'bg-[#e8f8fa] text-[#087f8c]'
@@ -139,10 +160,13 @@ export default function PublicNavbar() {
                                                     }`}
                                                 >
                                                     <span className="font-poppins text-xs font-bold">
-                                                        Berita Umum
+                                                        {t('Berita Umum', 'General News')}
                                                     </span>
                                                     <span className="text-[11px] text-slate-500">
-                                                        Artikel, informasi, dan pengumuman.
+                                                        {t(
+                                                            'Artikel, informasi, dan pengumuman.',
+                                                            'Articles, information, and announcements.',
+                                                        )}
                                                     </span>
                                                 </Link>
                                             </div>
@@ -159,17 +183,17 @@ export default function PublicNavbar() {
                                         onMouseEnter={() => setProfilDropdownOpen(true)}
                                         onMouseLeave={() => setProfilDropdownOpen(false)}
                                     >
-                                        <div className="flex items-center gap-1 cursor-pointer">
+                                        <div className="flex cursor-pointer items-center gap-1">
                                             <Link
                                                 href="/profil"
                                                 prefetch={false}
-                                                className={`font-poppins text-sm lg:text-base whitespace-nowrap transition-colors duration-150 ${
+                                                className={`font-poppins text-sm whitespace-nowrap transition-colors duration-150 lg:text-base ${
                                                     isProfilActive
                                                         ? 'font-bold text-[#14bace]'
                                                         : 'font-medium text-[#1d2b2d] hover:text-[#14bace]'
                                                 }`}
                                             >
-                                                {item.label}
+                                                {label}
                                             </Link>
                                             <ChevronDown
                                                 className={`size-3.5 transition-transform duration-200 ${
@@ -190,10 +214,10 @@ export default function PublicNavbar() {
 
                                         {/* Dropdown Menu Profil */}
                                         <div
-                                            className={`absolute top-full left-1/2 -translate-x-1/2 pt-2 w-60 transition-all duration-150 z-50 ${
+                                            className={`absolute top-full left-1/2 z-50 w-60 -translate-x-1/2 pt-2 transition-all duration-150 ${
                                                 profilDropdownOpen
-                                                    ? 'opacity-100 visible pointer-events-auto translate-y-0'
-                                                    : 'opacity-0 invisible pointer-events-none -translate-y-1'
+                                                    ? 'pointer-events-auto visible translate-y-0 opacity-100'
+                                                    : 'pointer-events-none invisible -translate-y-1 opacity-0'
                                             }`}
                                         >
                                             <div className="rounded-2xl border border-[#e4eaec] bg-white p-2 shadow-xl ring-1 ring-black/5">
@@ -208,10 +232,13 @@ export default function PublicNavbar() {
                                                     }`}
                                                 >
                                                     <span className="font-poppins text-xs font-bold">
-                                                        Profil Yayasan
+                                                        {t('Profil Yayasan', 'Foundation Profile')}
                                                     </span>
                                                     <span className="text-[11px] text-slate-500">
-                                                        Visi, misi, dan latar belakang.
+                                                        {t(
+                                                            'Visi, misi, dan latar belakang.',
+                                                            'Vision, mission, and background.',
+                                                        )}
                                                     </span>
                                                 </Link>
                                                 <div className="my-1 border-t border-slate-100" />
@@ -226,10 +253,13 @@ export default function PublicNavbar() {
                                                     }`}
                                                 >
                                                     <span className="font-poppins text-xs font-bold">
-                                                        Profil Pimpinan
+                                                        {t('Profil Pimpinan', 'Leadership Profile')}
                                                     </span>
                                                     <span className="text-[11px] text-slate-500">
-                                                        Ketua, Sekretaris, dan Bendahara Yayasan.
+                                                        {t(
+                                                            'Ketua, Sekretaris, dan Bendahara Yayasan.',
+                                                            'Chairperson, Secretary, and Treasurer.',
+                                                        )}
                                                     </span>
                                                 </Link>
                                             </div>
@@ -244,7 +274,7 @@ export default function PublicNavbar() {
                                     key={item.href}
                                     href={item.href}
                                     prefetch={false}
-                                    className="group relative flex flex-col items-center py-2 font-poppins text-sm lg:text-base whitespace-nowrap"
+                                    className="group relative flex flex-col items-center py-2 font-poppins text-sm whitespace-nowrap lg:text-base"
                                 >
                                     <span
                                         className={`transition-colors duration-150 ${
@@ -253,7 +283,7 @@ export default function PublicNavbar() {
                                                 : 'font-medium text-[#1d2b2d] hover:text-[#14bace]'
                                         }`}
                                     >
-                                        {item.label}
+                                        {label}
                                     </span>
                                     <span
                                         className={`absolute bottom-0 h-[3px] rounded-full transition-all duration-200 ${
@@ -267,8 +297,41 @@ export default function PublicNavbar() {
                         })}
                     </nav>
 
-                    {/* Actions: Donasi CTA & Admin / Auth */}
-                    <div className="hidden items-center gap-3 md:flex">
+                    {/* Actions: Language Switcher, Auth & Donasi CTA */}
+                    <div className="hidden items-center gap-2.5 md:flex">
+                        {/* Language Switcher Pill */}
+                        <div
+                            className="inline-flex items-center rounded-lg border border-[#e4eaec] bg-[#f7fcfd] p-0.5"
+                            role="group"
+                            aria-label="Pilih Bahasa / Select Language"
+                        >
+                            <Globe className="mr-1 ml-1.5 size-3.5 text-[#087f8c]" />
+                            <button
+                                type="button"
+                                onClick={() => setLang('id')}
+                                className={`rounded-md px-2 py-1 font-poppins text-[11px] font-bold transition-all ${
+                                    lang === 'id'
+                                        ? 'bg-[#14bace] text-white shadow-2xs'
+                                        : 'text-slate-600 hover:text-[#087f8c]'
+                                }`}
+                                title="Bahasa Indonesia"
+                            >
+                                ID
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setLang('en')}
+                                className={`rounded-md px-2 py-1 font-poppins text-[11px] font-bold transition-all ${
+                                    lang === 'en'
+                                        ? 'bg-[#14bace] text-white shadow-2xs'
+                                        : 'text-slate-600 hover:text-[#087f8c]'
+                                }`}
+                                title="English"
+                            >
+                                EN
+                            </button>
+                        </div>
+
                         {auth?.user ? (
                             <div className="flex items-center gap-1.5">
                                 <Link
@@ -276,27 +339,27 @@ export default function PublicNavbar() {
                                     className="flex items-center gap-1.5 rounded-lg bg-[#e8f8fa] px-3 py-2 text-xs font-semibold text-[#186972] transition-colors hover:bg-[#d5f3f7]"
                                 >
                                     <LayoutDashboard className="size-4" />
-                                    <span>Panel</span>
+                                    <span>{t('Panel', 'Dashboard')}</span>
                                 </Link>
                                 <Link
                                     href="/logout"
                                     method="post"
                                     as="button"
                                     className="rounded-lg px-2.5 py-2 text-xs font-medium text-rose-600 transition-colors hover:bg-rose-50 hover:text-rose-700"
-                                    title="Keluar Akun"
+                                    title={t('Keluar Akun', 'Log Out')}
                                 >
-                                    Keluar
+                                    {t('Keluar', 'Logout')}
                                 </Link>
                             </div>
                         ) : (
                             <Link
                                 href="/login"
                                 prefetch={false}
-                                className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-[#718083] transition-colors hover:text-[#1d2b2d]"
-                                title="Login Pengurus"
+                                className="flex items-center gap-1.5 px-2.5 py-2 text-xs font-medium text-[#718083] transition-colors hover:text-[#1d2b2d]"
+                                title={t('Login Pengurus', 'Admin Login')}
                             >
                                 <LogIn className="size-4" />
-                                <span>Masuk</span>
+                                <span>{t('Masuk', 'Login')}</span>
                             </Link>
                         )}
 
@@ -305,19 +368,45 @@ export default function PublicNavbar() {
                             prefetch={false}
                             className="flex items-center gap-2 rounded-lg bg-[#14bace] px-5 py-2.5 font-poppins text-sm font-semibold text-white shadow-sm transition-all duration-150 hover:bg-[#087f8c] active:scale-95 lg:text-base"
                         >
-                            <span>Donasi</span>
+                            <span>{t('Donasi', 'Donate')}</span>
                             <ArrowRight className="size-4" />
                         </Link>
                     </div>
 
-                    {/* Mobile Hamburger Toggle */}
+                    {/* Mobile Hamburger & Actions */}
                     <div className="flex items-center gap-2 md:hidden">
+                        {/* Mobile Language Toggle */}
+                        <div className="inline-flex items-center rounded-md border border-[#e4eaec] bg-[#f7fcfd] p-0.5">
+                            <button
+                                type="button"
+                                onClick={() => setLang('id')}
+                                className={`rounded px-1.5 py-0.5 font-poppins text-[10px] font-bold transition ${
+                                    lang === 'id'
+                                        ? 'bg-[#14bace] text-white'
+                                        : 'text-slate-600'
+                                }`}
+                            >
+                                ID
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setLang('en')}
+                                className={`rounded px-1.5 py-0.5 font-poppins text-[10px] font-bold transition ${
+                                    lang === 'en'
+                                        ? 'bg-[#14bace] text-white'
+                                        : 'text-slate-600'
+                                }`}
+                            >
+                                EN
+                            </button>
+                        </div>
+
                         <Link
                             href="/donasi"
                             prefetch={false}
                             className="flex items-center gap-1 rounded-md bg-[#14bace] px-3 py-1.5 text-xs font-semibold text-white"
                         >
-                            <span>Donasi</span>
+                            <span>{t('Donasi', 'Donate')}</span>
                         </Link>
                         <button
                             type="button"
@@ -339,43 +428,30 @@ export default function PublicNavbar() {
             {mobileMenuOpen && (
                 <div className="animate-in space-y-2 border-t border-[#e4eaec] bg-white px-4 pt-3 pb-6 shadow-lg duration-200 slide-in-from-top-2 md:hidden">
                     {navItems.map((item) => {
-                        if (item.href === '/') {
+                        const label = t(item.labelId, item.labelEn);
+
+                        if (item.href === '/kegiatan') {
                             return (
                                 <div key={item.href} className="space-y-1">
                                     <button
                                         type="button"
-                                        onClick={() => setMobileBerandaOpen(!mobileBerandaOpen)}
+                                        onClick={() => setMobileKegiatanOpen(!mobileKegiatanOpen)}
                                         className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 font-poppins text-sm transition-colors ${
-                                            isBerandaActive
+                                            isKegiatanActive
                                                 ? 'bg-[#e8f8fa] font-semibold text-[#087f8c]'
                                                 : 'text-[#1d2b2d] hover:bg-gray-50'
                                         }`}
                                     >
-                                        <span>Beranda</span>
+                                        <span>{label}</span>
                                         <ChevronDown
                                             className={`size-4 transition-transform duration-200 ${
-                                                mobileBerandaOpen ? 'rotate-180' : ''
+                                                mobileKegiatanOpen ? 'rotate-180' : ''
                                             }`}
                                         />
                                     </button>
 
-                                    {mobileBerandaOpen && (
+                                    {mobileKegiatanOpen && (
                                         <div className="ml-3 space-y-1 border-l-2 border-[#14bace]/40 pl-3">
-                                            <Link
-                                                href="/"
-                                                prefetch={false}
-                                                onClick={() => setMobileMenuOpen(false)}
-                                                className={`flex items-center justify-between rounded-lg px-3 py-2 font-poppins text-xs transition-colors ${
-                                                    url === '/'
-                                                        ? 'bg-[#e8f8fa] font-semibold text-[#087f8c]'
-                                                        : 'text-slate-600 hover:bg-gray-50'
-                                                }`}
-                                            >
-                                                <span>Halaman Utama</span>
-                                                {url === '/' && (
-                                                    <span className="size-1.5 rounded-full bg-[#14bace]" />
-                                                )}
-                                            </Link>
                                             <Link
                                                 href="/kegiatan"
                                                 prefetch={false}
@@ -386,7 +462,7 @@ export default function PublicNavbar() {
                                                         : 'text-slate-600 hover:bg-gray-50'
                                                 }`}
                                             >
-                                                <span>Berita Kegiatan</span>
+                                                <span>{t('Berita Kegiatan', 'Activity News')}</span>
                                                 {url.startsWith('/kegiatan') && (
                                                     <span className="size-1.5 rounded-full bg-[#14bace]" />
                                                 )}
@@ -401,7 +477,7 @@ export default function PublicNavbar() {
                                                         : 'text-slate-600 hover:bg-gray-50'
                                                 }`}
                                             >
-                                                <span>Berita Umum</span>
+                                                <span>{t('Berita Umum', 'General News')}</span>
                                                 {url.startsWith('/berita-umum') && (
                                                     <span className="size-1.5 rounded-full bg-[#14bace]" />
                                                 )}
@@ -424,7 +500,7 @@ export default function PublicNavbar() {
                                                 : 'text-[#1d2b2d] hover:bg-gray-50'
                                         }`}
                                     >
-                                        <span>Profil</span>
+                                        <span>{label}</span>
                                         <ChevronDown
                                             className={`size-4 transition-transform duration-200 ${
                                                 mobileProfilOpen ? 'rotate-180' : ''
@@ -444,7 +520,7 @@ export default function PublicNavbar() {
                                                         : 'text-slate-600 hover:bg-gray-50'
                                                 }`}
                                             >
-                                                <span>Profil Yayasan</span>
+                                                <span>{t('Profil Yayasan', 'Foundation Profile')}</span>
                                                 {url === '/profil' && (
                                                     <span className="size-1.5 rounded-full bg-[#14bace]" />
                                                 )}
@@ -459,7 +535,7 @@ export default function PublicNavbar() {
                                                         : 'text-slate-600 hover:bg-gray-50'
                                                 }`}
                                             >
-                                                <span>Profil Pimpinan</span>
+                                                <span>{t('Profil Pimpinan', 'Leadership Profile')}</span>
                                                 {url.startsWith('/profil-pimpinan') && (
                                                     <span className="size-1.5 rounded-full bg-[#14bace]" />
                                                 )}
@@ -483,7 +559,7 @@ export default function PublicNavbar() {
                                         : 'text-[#1d2b2d] hover:bg-gray-50'
                                 }`}
                             >
-                                <span>{item.label}</span>
+                                <span>{label}</span>
                                 {active && (
                                     <span className="size-2 rounded-full bg-[#14bace]" />
                                 )}
@@ -500,7 +576,7 @@ export default function PublicNavbar() {
                                     className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#e8f8fa] py-2.5 text-sm font-semibold text-[#087f8c]"
                                 >
                                     <LayoutDashboard className="size-4" />
-                                    <span>Dashboard Pengurus</span>
+                                    <span>{t('Dashboard Pengurus', 'Admin Dashboard')}</span>
                                 </Link>
                                 <Link
                                     href="/logout"
@@ -509,7 +585,7 @@ export default function PublicNavbar() {
                                     onClick={() => setMobileMenuOpen(false)}
                                     className="flex w-full items-center justify-center gap-2 rounded-lg py-2 text-xs font-medium text-rose-600 hover:bg-rose-50"
                                 >
-                                    <span>Keluar Akun (Logout)</span>
+                                    <span>{t('Keluar Akun (Logout)', 'Log Out')}</span>
                                 </Link>
                             </>
                         ) : (
@@ -519,7 +595,7 @@ export default function PublicNavbar() {
                                 className="flex w-full items-center justify-center gap-2 rounded-lg bg-gray-50 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100"
                             >
                                 <LogIn className="size-4" />
-                                <span>Masuk Pengurus</span>
+                                <span>{t('Masuk Pengurus', 'Admin Login')}</span>
                             </Link>
                         )}
                     </div>
