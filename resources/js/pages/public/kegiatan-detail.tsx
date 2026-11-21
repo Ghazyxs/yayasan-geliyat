@@ -11,6 +11,7 @@ import {
     User,
 } from 'lucide-react';
 import PublicLayout from '@/layouts/public-layout';
+import { useLanguage } from '@/hooks/use-language';
 import { type KegiatanData } from './kegiatan';
 
 interface KegiatanDetailProps {
@@ -22,6 +23,7 @@ export default function KegiatanDetailPage({
     kegiatan,
     kegiatanLainnya = [],
 }: KegiatanDetailProps) {
+    const { t, translateCategory } = useLanguage();
     const paragrafList =
         kegiatan.paragraf_berita && kegiatan.paragraf_berita.length > 0
             ? kegiatan.paragraf_berita
@@ -29,7 +31,9 @@ export default function KegiatanDetailPage({
 
     return (
         <PublicLayout>
-            <Head title={`${kegiatan.judul} - Berita & Kegiatan Geliyat`} />
+            <Head
+                title={`${kegiatan.judul} - ${t('Berita & Kegiatan Geliyat', 'Geliyat News & Activities')}`}
+            />
 
             {/* Article Header & Breadcrumb Banner */}
             <div className="border-b border-[#e4eaec] bg-gradient-to-r from-[#d1f6fa]/60 via-[#e8f8fa] to-[#f7fcfd] py-8 sm:py-12">
@@ -41,7 +45,7 @@ export default function KegiatanDetailPage({
                             prefetch={false}
                             className="transition-colors hover:text-[#14bace]"
                         >
-                            Beranda
+                            {t('Beranda', 'Home')}
                         </Link>
                         <ChevronRight className="size-3.5 text-gray-400" />
                         <Link
@@ -49,7 +53,7 @@ export default function KegiatanDetailPage({
                             prefetch={false}
                             className="transition-colors hover:text-[#14bace]"
                         >
-                            Kegiatan
+                            {t('Kegiatan', 'Activities')}
                         </Link>
                         <ChevronRight className="size-3.5 text-gray-400" />
                         <span className="line-clamp-1 font-semibold text-[#186972]">
@@ -65,14 +69,19 @@ export default function KegiatanDetailPage({
                             className="inline-flex items-center gap-2 rounded-lg border border-[#e4eaec] bg-white px-3.5 py-1.5 font-poppins text-xs font-semibold text-[#1d2b2d] shadow-2xs transition hover:border-[#14bace] hover:text-[#087f8c]"
                         >
                             <ArrowLeft className="size-3.5" />
-                            <span>Kembali ke Halaman Kegiatan</span>
+                            <span>
+                                {t(
+                                    'Kembali ke Halaman Kegiatan',
+                                    'Back to Activities Page',
+                                )}
+                            </span>
                         </Link>
                     </div>
 
                     {/* Category & Bidang Badge */}
                     <div className="mt-6 flex flex-wrap items-center gap-2.5">
                         <span className="inline-flex items-center rounded-full bg-[#14bace] px-3.5 py-1 font-poppins text-xs font-bold tracking-wider text-white uppercase shadow-2xs">
-                            {kegiatan.kategori}
+                            {translateCategory(kegiatan.kategori)}
                         </span>
                         {kegiatan.bidang && (
                             <Link
@@ -97,7 +106,7 @@ export default function KegiatanDetailPage({
                             <Calendar className="size-4 shrink-0 text-[#14bace]" />
                             <span>
                                 <strong className="font-semibold text-[#1d2b2d]">
-                                    Tanggal Pelaksanaan:
+                                    {t('Tanggal Pelaksanaan:', 'Date:')}
                                 </strong>{' '}
                                 {kegiatan.tanggal_kegiatan}
                             </span>
@@ -107,7 +116,7 @@ export default function KegiatanDetailPage({
                             <MapPin className="size-4 shrink-0 text-[#14bace]" />
                             <span>
                                 <strong className="font-semibold text-[#1d2b2d]">
-                                    Lokasi:
+                                    {t('Lokasi:', 'Location:')}
                                 </strong>{' '}
                                 {kegiatan.lokasi}
                             </span>
@@ -135,7 +144,10 @@ export default function KegiatanDetailPage({
                                     className="max-h-[460px] w-full object-cover"
                                 />
                                 <figcaption className="border-t border-gray-100 bg-white px-5 py-3 font-sans text-xs text-gray-500">
-                                    Dokumentasi utama kegiatan:{' '}
+                                    {t(
+                                        'Dokumentasi utama kegiatan:',
+                                        'Main activity documentation:',
+                                    )}{' '}
                                     <span className="font-medium text-gray-700">
                                         {kegiatan.judul}
                                     </span>{' '}
@@ -147,7 +159,9 @@ export default function KegiatanDetailPage({
                             <div className="rounded-2xl border border-[#14bace]/30 border-l-4 border-l-[#14bace] bg-[#e8f8fa]/50 p-5 sm:p-6">
                                 <div className="mb-2 flex items-center gap-2 font-poppins text-xs font-bold tracking-wider text-[#087f8c] uppercase">
                                     <FileText className="size-4 text-[#14bace]" />
-                                    <span>Ringkasan Kegiatan</span>
+                                    <span>
+                                        {t('Ringkasan Kegiatan', 'Activity Summary')}
+                                    </span>
                                 </div>
                                 <p className="font-sans text-sm leading-relaxed font-medium text-[#1d2b2d] sm:text-base">
                                     {kegiatan.ringkasan || kegiatan.deskripsi}
@@ -157,7 +171,10 @@ export default function KegiatanDetailPage({
                             {/* Isi Berita / Deskripsi Lengkap */}
                             <div className="rounded-2xl border border-[#e4eaec] bg-white p-6 shadow-xs sm:p-8">
                                 <h2 className="mb-4 border-b border-gray-100 pb-3 font-poppins text-lg font-bold text-[#1d2b2d] sm:text-xl">
-                                    Deskripsi Lengkap & Laporan Kegiatan
+                                    {t(
+                                        'Deskripsi Lengkap & Laporan Kegiatan',
+                                        'Full Description & Activity Report',
+                                    )}
                                 </h2>
                                 <div className="space-y-4 font-sans text-sm leading-relaxed text-gray-700 sm:text-base sm:leading-loose">
                                     {paragrafList.map((paragraf, index) => (
@@ -176,11 +193,16 @@ export default function KegiatanDetailPage({
                                             </div>
                                             <div>
                                                 <h2 className="font-poppins text-lg font-bold text-[#1d2b2d] sm:text-xl">
-                                                    Dokumentasi Kegiatan
+                                                    {t(
+                                                        'Dokumentasi Kegiatan',
+                                                        'Activity Gallery',
+                                                    )}
                                                 </h2>
                                                 <p className="font-sans text-xs text-gray-500">
-                                                    Galeri foto pelaksanaan
-                                                    kegiatan di lapangan
+                                                    {t(
+                                                        'Galeri foto pelaksanaan kegiatan di lapangan',
+                                                        'Photo gallery of field activity implementation',
+                                                    )}
                                                 </p>
                                             </div>
                                         </div>
@@ -222,7 +244,12 @@ export default function KegiatanDetailPage({
                                     className="inline-flex items-center gap-2 font-poppins text-xs font-semibold text-[#087f8c] transition hover:text-[#14bace] sm:text-sm"
                                 >
                                     <ArrowLeft className="size-4" />
-                                    <span>Kembali ke Daftar Kegiatan</span>
+                                    <span>
+                                        {t(
+                                            'Kembali ke Daftar Kegiatan',
+                                            'Back to Activities List',
+                                        )}
+                                    </span>
                                 </Link>
 
                                 {kegiatan.bidang && (
@@ -232,7 +259,7 @@ export default function KegiatanDetailPage({
                                         className="inline-flex items-center gap-1.5 font-poppins text-xs font-semibold text-[#1d2b2d] transition hover:text-[#14bace] sm:text-sm"
                                     >
                                         <span>
-                                            Lihat {kegiatan.bidang.nama}
+                                            {t('Lihat', 'View')} {kegiatan.bidang.nama}
                                         </span>
                                         <ArrowRight className="size-4" />
                                     </Link>
@@ -246,22 +273,22 @@ export default function KegiatanDetailPage({
                                 {/* Detail Pelaksanaan Box */}
                                 <div className="rounded-2xl border border-[#e4eaec] bg-white p-6 shadow-xs">
                                     <h3 className="border-b border-gray-100 pb-3 font-poppins text-base font-bold text-[#1d2b2d]">
-                                        Informasi Kegiatan
+                                        {t('Informasi Kegiatan', 'Activity Details')}
                                     </h3>
 
                                     <dl className="mt-4 space-y-4">
                                         <div>
                                             <dt className="font-poppins text-xs font-semibold text-gray-400 uppercase">
-                                                Kategori Bidang
+                                                {t('Kategori Bidang', 'Division Category')}
                                             </dt>
                                             <dd className="mt-1 font-poppins text-sm font-bold text-[#087f8c]">
-                                                {kegiatan.kategori}
+                                                {translateCategory(kegiatan.kategori)}
                                             </dd>
                                         </div>
 
                                         <div>
                                             <dt className="font-poppins text-xs font-semibold text-gray-400 uppercase">
-                                                Tanggal Pelaksanaan
+                                                {t('Tanggal Pelaksanaan', 'Date')}
                                             </dt>
                                             <dd className="mt-1 font-sans text-sm font-medium text-[#1d2b2d]">
                                                 {kegiatan.tanggal_kegiatan}
@@ -270,7 +297,7 @@ export default function KegiatanDetailPage({
 
                                         <div>
                                             <dt className="font-poppins text-xs font-semibold text-gray-400 uppercase">
-                                                Lokasi Kegiatan
+                                                {t('Lokasi Kegiatan', 'Location')}
                                             </dt>
                                             <dd className="mt-1 font-sans text-sm font-medium text-[#1d2b2d]">
                                                 {kegiatan.lokasi}
@@ -280,7 +307,7 @@ export default function KegiatanDetailPage({
                                         {kegiatan.bidang && (
                                             <div>
                                                 <dt className="font-poppins text-xs font-semibold text-gray-400 uppercase">
-                                                    Unit Pelaksana
+                                                    {t('Unit Pelaksana', 'Executing Unit')}
                                                 </dt>
                                                 <dd className="mt-1">
                                                     <Link
@@ -299,19 +326,23 @@ export default function KegiatanDetailPage({
                                 {/* CTA Donasi */}
                                 <div className="rounded-2xl bg-gradient-to-br from-[#186972] to-[#087f8c] p-6 text-white shadow-md">
                                     <h3 className="font-poppins text-base font-bold">
-                                        Dukung Kegiatan Yayasan
+                                        {t(
+                                            'Dukung Kegiatan Yayasan',
+                                            'Support Foundation Activities',
+                                        )}
                                     </h3>
                                     <p className="mt-2 font-sans text-xs leading-relaxed text-white/90">
-                                        Mari ambil bagian dalam mendukung
-                                        kegiatan pendampingan dan santunan anak
-                                        yatim binaan Yayasan Geliyat.
+                                        {t(
+                                            'Mari ambil bagian dalam mendukung kegiatan pendampingan dan santunan anak yatim binaan Yayasan Geliyat.',
+                                            'Take part in supporting mentoring and charity programs for orphans mentored by Yayasan Geliyat.',
+                                        )}
                                     </p>
                                     <Link
                                         href="/donasi"
                                         prefetch={false}
                                         className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-white py-2.5 font-poppins text-xs font-bold text-[#087f8c] shadow-xs transition hover:bg-[#e8f8fa]"
                                     >
-                                        <span>Donasi Sekarang</span>
+                                        <span>{t('Donasi Sekarang', 'Donate Now')}</span>
                                         <ArrowRight className="size-3.5" />
                                     </Link>
                                 </div>
@@ -328,10 +359,13 @@ export default function KegiatanDetailPage({
                         <div className="mb-8 flex items-center justify-between">
                             <div>
                                 <span className="font-poppins text-xs font-bold tracking-wider text-[#14bace] uppercase">
-                                    Berita Terkait
+                                    {t('Berita Terkait', 'Related News')}
                                 </span>
                                 <h2 className="mt-1 font-poppins text-xl font-bold text-[#1d2b2d] sm:text-2xl">
-                                    Kegiatan Yayasan Lainnya
+                                    {t(
+                                        'Kegiatan Yayasan Lainnya',
+                                        'Other Foundation Activities',
+                                    )}
                                 </h2>
                             </div>
                             <Link
@@ -339,7 +373,7 @@ export default function KegiatanDetailPage({
                                 prefetch={false}
                                 className="inline-flex items-center gap-1.5 font-poppins text-xs font-semibold text-[#14bace] hover:text-[#087f8c] sm:text-sm"
                             >
-                                <span>Semua Kegiatan</span>
+                                <span>{t('Semua Kegiatan', 'All Activities')}</span>
                                 <ArrowRight className="size-4" />
                             </Link>
                         </div>
@@ -360,7 +394,7 @@ export default function KegiatanDetailPage({
                                                 className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
                                             />
                                             <span className="absolute top-3 left-3 rounded-md bg-white/95 px-2.5 py-1 text-[10px] font-bold tracking-wider text-[#087f8c] uppercase shadow-xs">
-                                                {item.kategori}
+                                                {translateCategory(item.kategori)}
                                             </span>
                                         </div>
                                         <div className="p-5">
@@ -394,4 +428,3 @@ export default function KegiatanDetailPage({
         </PublicLayout>
     );
 }
-

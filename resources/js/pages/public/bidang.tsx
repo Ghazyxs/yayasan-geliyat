@@ -6,10 +6,10 @@ import {
     Users,
     ChevronRight,
     ArrowRight,
-    CheckCircle2,
     type LucideIcon,
 } from 'lucide-react';
 import PublicLayout from '@/layouts/public-layout';
+import { useLanguage } from '@/hooks/use-language';
 
 export interface ProgramKerjaItem {
     nama: string;
@@ -73,15 +73,22 @@ export function getBidangImagePosition(kode: string): string {
 }
 
 export default function BidangPage({ bidangList = [] }: BidangPageProps) {
+    const { t, translateBidang } = useLanguage();
+
     return (
         <PublicLayout>
-            <Head title="Bidang Yayasan - Empat Pilar Program Geliyat" />
+            <Head
+                title={t(
+                    'Bidang Yayasan - Empat Pilar Program Geliyat',
+                    'Foundation Divisions - Four Core Pillars of Geliyat',
+                )}
+            />
 
             {/* Banner Header with Breadcrumbs */}
             <div className="border-b border-[#e4eaec] bg-gradient-to-r from-[#d1f6fa]/60 via-[#e8f8fa] to-[#f7fcfd] py-10 sm:py-14">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <h1 className="font-poppins text-3xl font-bold text-[#1d2b2d] sm:text-4xl">
-                        Bidang Yayasan
+                        {t('Bidang Yayasan', 'Foundation Divisions')}
                     </h1>
                     <nav className="mt-2 flex items-center gap-2 font-poppins text-sm text-gray-500">
                         <Link
@@ -89,18 +96,18 @@ export default function BidangPage({ bidangList = [] }: BidangPageProps) {
                             prefetch={false}
                             className="transition-colors hover:text-[#14bace]"
                         >
-                            Beranda
+                            {t('Beranda', 'Home')}
                         </Link>
                         <ChevronRight className="size-4 text-gray-400" />
                         <span className="font-semibold text-[#186972]">
-                            Empat Bidang
+                            {t('Empat Bidang', 'Four Divisions')}
                         </span>
                     </nav>
                     <p className="mt-4 max-w-3xl font-sans text-sm leading-relaxed text-gray-600 sm:text-base">
-                        Yayasan Geliyat Mahdiesa Nahate mengelola empat bidang
-                        utama — Pendidikan, Keagamaan, Kemanusiaan, dan
-                        Pengembangan Ekonomi — untuk membina anak yatim dan
-                        memberdayakan ibu yatim secara berkelanjutan.
+                        {t(
+                            'Yayasan Geliyat Mahdiesa Nahate mengelola empat bidang utama — Pendidikan, Keagamaan, Kemanusiaan, dan Pengembangan Ekonomi — untuk membina anak yatim dan memberdayakan ibu yatim secara berkelanjutan.',
+                            'Yayasan Geliyat Mahdiesa Nahate manages four core divisions — Education, Religious, Humanitarian, and Economic Development — to mentor orphans and empower mothers of orphans sustainably.',
+                        )}
                     </p>
                 </div>
             </div>
@@ -108,8 +115,8 @@ export default function BidangPage({ bidangList = [] }: BidangPageProps) {
             {/* List of Fields from Database */}
             <section className="bg-white py-16 sm:py-20">
                 <div className="mx-auto max-w-7xl space-y-16 px-4 sm:px-6 lg:px-8">
-                    {bidangList.map((bidang, idx) => {
-                        const IconComponent = getBidangIcon(bidang.kode);
+                    {bidangList.map((rawBidang, idx) => {
+                        const bidang = translateBidang(rawBidang);
                         const detailHref = `/bidang/${bidang.kode}`;
 
                         return (
@@ -133,7 +140,7 @@ export default function BidangPage({ bidangList = [] }: BidangPageProps) {
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-[#1d2b2d]/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                                         <div className="absolute right-4 bottom-4 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3.5 py-1.5 font-poppins text-xs font-semibold text-[#1d2b2d] opacity-0 shadow-sm transition-all duration-300 group-hover:opacity-100">
-                                            <span>Lihat Detail</span>
+                                            <span>{t('Lihat Detail', 'View Details')}</span>
                                             <ArrowRight className="size-3.5 text-[#14bace]" />
                                         </div>
                                     </Link>
@@ -163,21 +170,19 @@ export default function BidangPage({ bidangList = [] }: BidangPageProps) {
 
                                     {/* Programs sub-list */}
                                     {bidang.program_kerja.length > 0 && (
-                                        <div className="mt-6 w-full space-y-2.5 border-t border-gray-100 pt-4">
+                                        <div className="mt-6 w-full border-t border-gray-100 pt-4">
                                             <p className="font-poppins text-xs font-bold tracking-wider text-gray-400 uppercase">
-                                                Program Kerja Utama:
+                                                {t('Program Kerja Utama:', 'Key Work Programs:')}
                                             </p>
-                                            {bidang.program_kerja.map(
-                                                (prog) => (
-                                                    <div
-                                                        key={prog.nama}
-                                                        className="flex items-start gap-2.5 font-sans text-xs text-gray-700 sm:text-sm"
-                                                    >
-                                                        <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-[#14bace]" />
-                                                        <span>{prog.nama}</span>
-                                                    </div>
-                                                ),
-                                            )}
+                                            <ol className="mt-2.5 list-decimal space-y-1.5 pl-4 font-sans text-xs text-gray-700 sm:text-sm">
+                                                {bidang.program_kerja.map(
+                                                    (prog) => (
+                                                        <li key={prog.nama}>
+                                                            {prog.nama}
+                                                        </li>
+                                                    ),
+                                                )}
+                                            </ol>
                                         </div>
                                     )}
 
@@ -187,16 +192,8 @@ export default function BidangPage({ bidangList = [] }: BidangPageProps) {
                                             prefetch={false}
                                             className="inline-flex items-center gap-2 rounded-xl bg-[#14bace] px-5 py-2.5 font-poppins text-xs font-semibold text-white shadow-sm transition hover:bg-[#087f8c] sm:text-sm"
                                         >
-                                            <span>Lihat Detail Bidang</span>
+                                            <span>{t('Lihat Detail Bidang', 'View Division Details')}</span>
                                             <ArrowRight className="size-3.5" />
-                                        </Link>
-
-                                        <Link
-                                            href="/donasi"
-                                            prefetch={false}
-                                            className="inline-flex items-center gap-2 rounded-xl border border-[#e4eaec] bg-white px-5 py-2.5 font-poppins text-xs font-semibold text-[#1d2b2d] shadow-xs transition hover:border-[#14bace]/50 hover:bg-[#f7fcfd] sm:text-sm"
-                                        >
-                                            <span>Dukung Program Ini</span>
                                         </Link>
                                     </div>
                                 </div>

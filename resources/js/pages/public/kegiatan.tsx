@@ -8,6 +8,7 @@ import {
     ArrowRight,
 } from 'lucide-react';
 import PublicLayout from '@/layouts/public-layout';
+import { useLanguage } from '@/hooks/use-language';
 
 export interface DokumentasiItem {
     url: string;
@@ -50,6 +51,7 @@ const categories = [
 ];
 
 export default function KegiatanPage({ kegiatanList = [] }: KegiatanPageProps) {
+    const { t, translateCategory } = useLanguage();
     const [selectedCategory, setSelectedCategory] = useState('Semua');
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -69,13 +71,18 @@ export default function KegiatanPage({ kegiatanList = [] }: KegiatanPageProps) {
 
     return (
         <PublicLayout>
-            <Head title="Kegiatan & Berita - Yayasan Geliyat" />
+            <Head
+                title={t(
+                    'Kegiatan & Berita - Yayasan Geliyat',
+                    'Activities & News - Yayasan Geliyat',
+                )}
+            />
 
             {/* Banner Header with Breadcrumbs */}
             <div className="border-b border-[#e4eaec] bg-gradient-to-r from-[#d1f6fa]/60 via-[#e8f8fa] to-[#f7fcfd] py-10 sm:py-14">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <h1 className="font-poppins text-3xl font-bold text-[#1d2b2d] sm:text-4xl">
-                        Kegiatan Yayasan
+                        {t('Kegiatan Yayasan', 'Foundation Activities')}
                     </h1>
                     <nav className="mt-2 flex items-center gap-2 font-poppins text-sm text-gray-500">
                         <Link
@@ -83,39 +90,28 @@ export default function KegiatanPage({ kegiatanList = [] }: KegiatanPageProps) {
                             prefetch={false}
                             className="transition-colors hover:text-[#14bace]"
                         >
-                            Beranda
+                            {t('Beranda', 'Home')}
                         </Link>
                         <ChevronRight className="size-4 text-gray-400" />
                         <span className="font-semibold text-[#186972]">
-                            Kegiatan
+                            {t('Kegiatan', 'Activities')}
                         </span>
                     </nav>
                     <p className="mt-3 max-w-2xl font-sans text-sm text-gray-600 sm:text-base">
-                        Publikasi resmi dan dokumentasi berbagai kegiatan
-                        pendampingan belajar, santunan bulanan, serta pembinaan
-                        yatim di Ujungberung.
+                        {t(
+                            'Publikasi resmi dan dokumentasi berbagai kegiatan pendampingan belajar, santunan bulanan, serta pembinaan yatim di Ujungberung.',
+                            'Official publications and documentation of tutoring, monthly aid, and orphan mentoring activities in Ujungberung.',
+                        )}
                     </p>
                 </div>
             </div>
 
             {/* Filter & Search Bar */}
-            <section className="sticky top-20 z-40 border-b border-[#e4eaec] bg-white py-8 shadow-xs">
+            <section className="sticky top-20 z-40 border-b border-[#e4eaec] bg-white py-6 shadow-xs">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col items-stretch justify-between gap-4 md:flex-row md:items-center">
-                        {/* Search Input */}
-                        <div className="relative w-full md:w-80">
-                            <Search className="absolute top-1/2 left-4 size-4 -translate-y-1/2 text-gray-400" />
-                            <input
-                                type="text"
-                                placeholder="Cari kegiatan..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full rounded-full border border-[#b1b1b1] py-2.5 pr-4 pl-11 font-sans text-sm outline-hidden transition focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20"
-                            />
-                        </div>
-
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         {/* Category Pills */}
-                        <div className="flex scrollbar-none items-center gap-2 overflow-x-auto pb-1 md:pb-0">
+                        <div className="flex flex-wrap gap-2">
                             {categories.map((cat) => {
                                 const active = selectedCategory === cat;
                                 return (
@@ -123,16 +119,31 @@ export default function KegiatanPage({ kegiatanList = [] }: KegiatanPageProps) {
                                         key={cat}
                                         type="button"
                                         onClick={() => setSelectedCategory(cat)}
-                                        className={`shrink-0 rounded-full px-5 py-2 font-poppins text-xs transition-all sm:text-sm ${
+                                        className={`rounded-lg px-4 py-2 font-poppins text-sm font-medium transition-colors ${
                                             active
-                                                ? 'bg-[#1d2b2d] font-semibold text-white shadow-xs'
-                                                : 'border border-[#1d2b2d] bg-white text-[#1d2b2d] hover:bg-gray-50'
+                                                ? 'bg-[#186972] text-white shadow-sm'
+                                                : 'border border-[#e4eaec] bg-white text-gray-600 hover:border-[#14bace] hover:text-[#186972]'
                                         }`}
                                     >
-                                        {cat}
+                                        {translateCategory(cat)}
                                     </button>
                                 );
                             })}
+                        </div>
+
+                        {/* Search Input */}
+                        <div className="relative w-full sm:w-72">
+                            <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-gray-400" />
+                            <input
+                                type="text"
+                                placeholder={t(
+                                    'Cari kegiatan...',
+                                    'Search activities...',
+                                )}
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="w-full rounded-lg border border-[#e4eaec] bg-white py-2 pr-4 pl-10 text-sm text-[#1d2b2d] placeholder:text-gray-400 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-none"
+                            />
                         </div>
                     </div>
                 </div>
@@ -144,11 +155,16 @@ export default function KegiatanPage({ kegiatanList = [] }: KegiatanPageProps) {
                     {filteredActivities.length === 0 ? (
                         <div className="rounded-2xl border border-[#e4eaec] bg-white p-8 py-16 text-center">
                             <p className="font-poppins text-base font-semibold text-gray-700">
-                                Tidak ada kegiatan yang cocok
+                                {t(
+                                    'Tidak ada kegiatan yang cocok',
+                                    'No matching activities found',
+                                )}
                             </p>
                             <p className="mt-1 text-xs text-gray-500">
-                                Coba ubah kata kunci pencarian atau pilih
-                                kategori lain.
+                                {t(
+                                    'Coba ubah kata kunci pencarian atau pilih kategori lain.',
+                                    'Try changing your search keyword or selecting another category.',
+                                )}
                             </p>
                             <button
                                 type="button"
@@ -158,7 +174,7 @@ export default function KegiatanPage({ kegiatanList = [] }: KegiatanPageProps) {
                                 }}
                                 className="mt-4 rounded-lg bg-[#14bace] px-4 py-2 text-xs font-semibold text-white"
                             >
-                                Reset Filter
+                                {t('Reset Filter', 'Reset Filter')}
                             </button>
                         </div>
                     ) : (
@@ -178,7 +194,7 @@ export default function KegiatanPage({ kegiatanList = [] }: KegiatanPageProps) {
                                                 className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
                                             />
                                             <span className="absolute top-3.5 left-3.5 rounded-md bg-white/95 px-3 py-1 text-[11px] font-bold tracking-wider text-[#087f8c] uppercase shadow-xs">
-                                                {act.kategori}
+                                                {translateCategory(act.kategori)}
                                             </span>
                                         </div>
 
@@ -208,7 +224,7 @@ export default function KegiatanPage({ kegiatanList = [] }: KegiatanPageProps) {
                                             </span>
                                         </div>
                                         <span className="inline-flex shrink-0 items-center gap-1 font-poppins font-semibold text-[#14bace] transition-transform group-hover:translate-x-0.5">
-                                            <span>Baca Berita</span>
+                                            <span>{t('Baca Berita', 'Read News')}</span>
                                             <ArrowRight className="size-3.5" />
                                         </span>
                                     </div>

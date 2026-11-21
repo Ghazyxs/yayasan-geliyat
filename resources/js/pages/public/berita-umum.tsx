@@ -8,6 +8,7 @@ import {
     Search,
 } from 'lucide-react';
 import PublicLayout from '@/layouts/public-layout';
+import { useLanguage } from '@/hooks/use-language';
 
 export interface BeritaUmumItem {
     id: number;
@@ -37,6 +38,7 @@ const categories = [
 export default function BeritaUmumPage({
     beritaList = [],
 }: BeritaUmumPageProps) {
+    const { t, translateCategory } = useLanguage();
     const [selectedCategory, setSelectedCategory] = useState('Semua');
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -56,17 +58,24 @@ export default function BeritaUmumPage({
 
     return (
         <PublicLayout>
-            <Head title="Berita Umum - Yayasan Geliyat Mahdiesa Nahate" />
+            <Head
+                title={t(
+                    'Berita Umum - Yayasan Geliyat Mahdiesa Nahate',
+                    'General News - Yayasan Geliyat Mahdiesa Nahate',
+                )}
+            />
 
             {/* Banner Header with Breadcrumbs */}
             <div className="border-b border-[#e4eaec] bg-gradient-to-r from-[#d1f6fa]/60 via-[#e8f8fa] to-[#f7fcfd] py-10 sm:py-14">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <h1 className="font-poppins text-3xl font-bold text-[#1d2b2d] sm:text-4xl">
-                        Berita Umum
+                        {t('Berita Umum', 'General News')}
                     </h1>
                     <p className="mt-2 max-w-2xl text-sm text-gray-600 sm:text-base">
-                        Artikel, pengumuman, dan informasi resmi dari Yayasan
-                        Geliyat Mahdiesa Nahate.
+                        {t(
+                            'Artikel, pengumuman, dan informasi resmi dari Yayasan Geliyat Mahdiesa Nahate.',
+                            'Official articles, announcements, and information from Yayasan Geliyat Mahdiesa Nahate.',
+                        )}
                     </p>
                     <nav className="mt-4 flex items-center gap-2 font-poppins text-sm text-gray-500">
                         <Link
@@ -74,11 +83,11 @@ export default function BeritaUmumPage({
                             prefetch={false}
                             className="transition-colors hover:text-[#14bace]"
                         >
-                            Beranda
+                            {t('Beranda', 'Home')}
                         </Link>
                         <ChevronRight className="size-4 text-gray-400" />
                         <span className="font-semibold text-[#186972]">
-                            Berita Umum
+                            {t('Berita Umum', 'General News')}
                         </span>
                     </nav>
                 </div>
@@ -105,7 +114,7 @@ export default function BeritaUmumPage({
                                                 : 'border border-[#e4eaec] bg-white text-gray-600 hover:border-[#14bace] hover:text-[#186972]'
                                         }`}
                                     >
-                                        {category}
+                                        {translateCategory(category)}
                                     </button>
                                 );
                             })}
@@ -117,7 +126,10 @@ export default function BeritaUmumPage({
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Cari berita atau pengumuman..."
+                                placeholder={t(
+                                    'Cari berita atau pengumuman...',
+                                    'Search news or announcements...',
+                                )}
                                 className="w-full rounded-lg border border-[#e4eaec] bg-white py-2 pr-4 pl-10 text-sm text-[#1d2b2d] placeholder:text-gray-400 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-none"
                             />
                         </div>
@@ -131,13 +143,19 @@ export default function BeritaUmumPage({
                             </div>
                             <h2 className="font-poppins text-lg font-semibold text-[#1d2b2d]">
                                 {beritaList.length === 0
-                                    ? 'Belum Ada Berita Umum'
-                                    : 'Berita Tidak Ditemukan'}
+                                    ? t('Belum Ada Berita Umum', 'No General News Yet')
+                                    : t('Berita Tidak Ditemukan', 'No News Found')}
                             </h2>
                             <p className="mx-auto mt-2 max-w-md text-sm text-gray-600">
                                 {beritaList.length === 0
-                                    ? 'Saat ini belum ada artikel, informasi, atau pengumuman yang dipublikasikan oleh Yayasan Geliyat Mahdiesa Nahate.'
-                                    : 'Tidak ada berita yang sesuai dengan kata kunci atau kategori yang dipilih.'}
+                                    ? t(
+                                          'Saat ini belum ada artikel, informasi, atau pengumuman yang dipublikasikan oleh Yayasan Geliyat Mahdiesa Nahate.',
+                                          'There are currently no articles, information, or announcements published by Yayasan Geliyat Mahdiesa Nahate.',
+                                      )
+                                    : t(
+                                          'Tidak ada berita yang sesuai dengan kata kunci atau kategori yang dipilih.',
+                                          'No news items match the selected keyword or category.',
+                                      )}
                             </p>
                         </div>
                     ) : (
@@ -164,7 +182,7 @@ export default function BeritaUmumPage({
                                     <div className="flex flex-1 flex-col p-6">
                                         <div className="mb-2 flex items-center justify-between gap-2 text-xs text-gray-500">
                                             <span className="font-semibold text-[#186972]">
-                                                {item.kategori}
+                                                {translateCategory(item.kategori)}
                                             </span>
                                             <span className="inline-flex items-center gap-1.5">
                                                 <Calendar className="size-3.5 text-[#14bace]" />
@@ -193,7 +211,7 @@ export default function BeritaUmumPage({
                                                 prefetch={false}
                                                 className="inline-flex items-center gap-1.5 font-poppins text-sm font-semibold text-[#186972] transition-colors hover:text-[#14bace]"
                                             >
-                                                Baca Selengkapnya
+                                                {t('Baca Selengkapnya', 'Read More')}
                                                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
                                             </Link>
                                         </div>
@@ -207,4 +225,3 @@ export default function BeritaUmumPage({
         </PublicLayout>
     );
 }
-
