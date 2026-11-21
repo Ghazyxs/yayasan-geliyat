@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AnakYatimController;
 use App\Http\Controllers\Admin\DonasiController;
 use App\Http\Controllers\Admin\KegiatanController;
 use App\Http\Controllers\Admin\LaporanTahunanAdminController;
+use App\Http\Controllers\Admin\PenggunaController;
 use App\Http\Controllers\Admin\RekeningYayasanController;
 use App\Http\Controllers\Admin\TransaksiKeuanganController;
 use App\Http\Controllers\Api\MidtransWebhookController;
@@ -96,8 +97,12 @@ Route::middleware(['auth', 'role:admin,super_admin'])->group(function () {
             Route::delete('rekening/{rekening}', [RekeningYayasanController::class, 'destroy'])->name('rekening.destroy');
 
             Route::get('keuangan', [TransaksiKeuanganController::class, 'index'])->name('keuangan');
+            Route::get('keuangan/{transaksi}', [TransaksiKeuanganController::class, 'show'])->name('keuangan.show');
+            Route::get('keuangan/{transaksi}/bukti-nota', [TransaksiKeuanganController::class, 'buktiNota'])->name('keuangan.bukti');
             Route::post('transaksi', [TransaksiKeuanganController::class, 'store'])->name('transaksi.store');
-            Route::inertia('pengguna', 'admin/pengguna/index')->name('pengguna');
+
+            Route::get('pengguna', [PenggunaController::class, 'index'])->name('pengguna');
+            Route::post('pengguna', [PenggunaController::class, 'store'])->name('pengguna.store');
         });
     });
 });
