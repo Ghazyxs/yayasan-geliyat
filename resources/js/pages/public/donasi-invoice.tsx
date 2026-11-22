@@ -75,14 +75,16 @@ function formatDateTime(iso: string | null, lang: 'id' | 'en'): string {
     const d = new Date(iso);
     if (Number.isNaN(d.getTime())) return '-';
 
-    return new Intl.DateTimeFormat(lang === 'id' ? 'id-ID' : 'en-US', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        timeZone: 'Asia/Jakarta',
-    }).format(d) + ' WIB';
+    return (
+        new Intl.DateTimeFormat(lang === 'id' ? 'id-ID' : 'en-US', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZone: 'Asia/Jakarta',
+        }).format(d) + ' WIB'
+    );
 }
 
 export default function DonasiInvoicePage({
@@ -282,8 +284,14 @@ export default function DonasiInvoicePage({
                     </nav>
                     <h1 className="mt-3 font-poppins text-2xl font-bold text-[#1d2b2d] sm:text-3xl">
                         {isVerified
-                            ? t('Bukti Invoice Donasi Resmi', 'Official Donation Invoice')
-                            : t('Status & Penyelesaian Pembayaran', 'Payment Status & Continuation')}
+                            ? t(
+                                  'Bukti Invoice Donasi Resmi',
+                                  'Official Donation Invoice',
+                              )
+                            : t(
+                                  'Status & Penyelesaian Pembayaran',
+                                  'Payment Status & Continuation',
+                              )}
                     </h1>
                 </div>
             </div>
@@ -339,26 +347,39 @@ export default function DonasiInvoicePage({
                                     {isVerified && (
                                         <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-3.5 py-1.5 font-poppins text-xs font-bold text-emerald-700">
                                             <CheckCircle2 className="size-4" />
-                                            {t('LUNAS / TERVERIFIKASI', 'PAID / VERIFIED')}
+                                            {t(
+                                                'LUNAS / TERVERIFIKASI',
+                                                'PAID / VERIFIED',
+                                            )}
                                         </span>
                                     )}
                                     {isPending && !isLocallyExpired && (
                                         <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3.5 py-1.5 font-poppins text-xs font-bold text-amber-700">
                                             <Clock className="size-4" />
-                                            {t('MENUNGGU PEMBAYARAN', 'AWAITING PAYMENT')}
+                                            {t(
+                                                'MENUNGGU PEMBAYARAN',
+                                                'AWAITING PAYMENT',
+                                            )}
                                         </span>
                                     )}
-                                    {(donasi.status_verifikasi === 'dibatalkan' ||
+                                    {(donasi.status_verifikasi ===
+                                        'dibatalkan' ||
                                         isLocallyExpired) && (
                                         <span className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-100 px-3.5 py-1.5 font-poppins text-xs font-bold text-slate-600">
                                             <Ban className="size-4" />
-                                            {t('KEDALUWARSA / DIBATALKAN', 'EXPIRED / CANCELLED')}
+                                            {t(
+                                                'KEDALUWARSA / DIBATALKAN',
+                                                'EXPIRED / CANCELLED',
+                                            )}
                                         </span>
                                     )}
                                     {donasi.status_verifikasi === 'ditolak' && (
                                         <span className="inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-3.5 py-1.5 font-poppins text-xs font-bold text-rose-700">
                                             <AlertCircle className="size-4" />
-                                            {t('PEMBAYARAN DITOLAK', 'PAYMENT DECLINED')}
+                                            {t(
+                                                'PEMBAYARAN DITOLAK',
+                                                'PAYMENT DECLINED',
+                                            )}
                                         </span>
                                     )}
                                 </div>
@@ -379,7 +400,10 @@ export default function DonasiInvoicePage({
                                         {donasi.expires_at_iso && (
                                             <p className="mt-0.5 font-sans text-xs text-amber-800">
                                                 {t('Batas waktu:', 'Deadline:')}{' '}
-                                                {formatDateTime(donasi.expires_at_iso, lang)}
+                                                {formatDateTime(
+                                                    donasi.expires_at_iso,
+                                                    lang,
+                                                )}
                                             </p>
                                         )}
                                     </div>
@@ -401,7 +425,10 @@ export default function DonasiInvoicePage({
                                 <div className="mb-4 flex flex-col justify-between gap-2 border-b border-[#e4eaec] pb-4 sm:flex-row sm:items-end">
                                     <div>
                                         <span className="font-sans text-xs text-slate-500">
-                                            {t('Total Nominal Donasi', 'Total Donation Amount')}
+                                            {t(
+                                                'Total Nominal Donasi',
+                                                'Total Donation Amount',
+                                            )}
                                         </span>
                                         <p className="mt-0.5 font-poppins text-3xl font-bold text-[#087f8c]">
                                             {formatRupiah(donasi.nominal)}
@@ -415,7 +442,10 @@ export default function DonasiInvoicePage({
                                 <dl className="divide-y divide-slate-100 text-xs sm:text-sm">
                                     <div className="flex items-center justify-between gap-4 py-3">
                                         <dt className="text-slate-500">
-                                            {t('Kode Donasi / Invoice', 'Donation / Invoice Code')}
+                                            {t(
+                                                'Kode Donasi / Invoice',
+                                                'Donation / Invoice Code',
+                                            )}
                                         </dt>
                                         <dd className="font-mono font-bold text-[#1d2b2d]">
                                             {donasi.kode_donasi}
@@ -432,7 +462,10 @@ export default function DonasiInvoicePage({
                                     {donasi.email_masked && (
                                         <div className="flex items-center justify-between gap-4 py-3">
                                             <dt className="text-slate-500">
-                                                {t('Email Penerima Invoice', 'Invoice Recipient Email')}
+                                                {t(
+                                                    'Email Penerima Invoice',
+                                                    'Invoice Recipient Email',
+                                                )}
                                             </dt>
                                             <dd className="font-mono text-slate-700">
                                                 {donasi.email_masked}
@@ -441,25 +474,40 @@ export default function DonasiInvoicePage({
                                     )}
                                     <div className="flex items-center justify-between gap-4 py-3">
                                         <dt className="text-slate-500">
-                                            {t('Tanggal Pengajuan', 'Submission Date')}
+                                            {t(
+                                                'Tanggal Pengajuan',
+                                                'Submission Date',
+                                            )}
                                         </dt>
                                         <dd className="text-right text-slate-700">
-                                            {formatDateTime(donasi.created_at_iso, lang)}
+                                            {formatDateTime(
+                                                donasi.created_at_iso,
+                                                lang,
+                                            )}
                                         </dd>
                                     </div>
                                     {isVerified && (
                                         <>
                                             <div className="flex items-center justify-between gap-4 py-3">
                                                 <dt className="text-slate-500">
-                                                    {t('Waktu Pembayaran', 'Payment Timestamp')}
+                                                    {t(
+                                                        'Waktu Pembayaran',
+                                                        'Payment Timestamp',
+                                                    )}
                                                 </dt>
                                                 <dd className="text-right font-semibold text-emerald-700">
-                                                    {formatDateTime(donasi.paid_at_iso, lang)}
+                                                    {formatDateTime(
+                                                        donasi.paid_at_iso,
+                                                        lang,
+                                                    )}
                                                 </dd>
                                             </div>
                                             <div className="flex items-center justify-between gap-4 py-3">
                                                 <dt className="text-slate-500">
-                                                    {t('Metode Pembayaran', 'Payment Method')}
+                                                    {t(
+                                                        'Metode Pembayaran',
+                                                        'Payment Method',
+                                                    )}
                                                 </dt>
                                                 <dd className="text-right font-semibold text-[#1d2b2d]">
                                                     {donasi.metode_label}
@@ -472,7 +520,10 @@ export default function DonasiInvoicePage({
                                 {donasi.pesan_doa && (
                                     <div className="mt-4 rounded-xl border-l-4 border-[#14bace] bg-white p-4">
                                         <p className="font-poppins text-[11px] font-bold tracking-wider text-[#087f8c] uppercase">
-                                            {t('Pesan & Doa Donatur', 'Donor Message & Prayer')}
+                                            {t(
+                                                'Pesan & Doa Donatur',
+                                                'Donor Message & Prayer',
+                                            )}
                                         </p>
                                         <p className="mt-1 font-sans text-xs leading-relaxed text-slate-600 italic sm:text-sm">
                                             "{donasi.pesan_doa}"
@@ -482,7 +533,7 @@ export default function DonasiInvoicePage({
                             </div>
 
                             {/* Pesan status bila expired / ditolak */}
-                            {((donasi.status_verifikasi === 'dibatalkan' ||
+                            {(donasi.status_verifikasi === 'dibatalkan' ||
                                 donasi.status_verifikasi === 'ditolak' ||
                                 isLocallyExpired) && (
                                 <div className="mt-6 rounded-2xl border border-slate-200 bg-slate-50 p-4 text-xs leading-relaxed text-slate-600 sm:text-sm">
@@ -492,7 +543,7 @@ export default function DonasiInvoicePage({
                                             'The payment window for this transaction has expired or been cancelled. Please start a new donation if you still wish to contribute.',
                                         )}
                                 </div>
-                            ))}
+                            )}
 
                             {/* Tombol Aksi */}
                             <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between print:hidden">
@@ -503,7 +554,10 @@ export default function DonasiInvoicePage({
                                 >
                                     <ArrowLeft className="size-4" />
                                     <span>
-                                        {t('Kembali ke Halaman Donasi', 'Back to Donation Page')}
+                                        {t(
+                                            'Kembali ke Halaman Donasi',
+                                            'Back to Donation Page',
+                                        )}
                                     </span>
                                 </Link>
 
@@ -522,14 +576,19 @@ export default function DonasiInvoicePage({
                                                     <RefreshCw className="size-4" />
                                                 )}
                                                 <span>
-                                                    {t('Cek Status Pembayaran', 'Check Payment Status')}
+                                                    {t(
+                                                        'Cek Status Pembayaran',
+                                                        'Check Payment Status',
+                                                    )}
                                                 </span>
                                             </button>
 
                                             {donasi.can_resume && (
                                                 <button
                                                     type="button"
-                                                    onClick={handleResumePayment}
+                                                    onClick={
+                                                        handleResumePayment
+                                                    }
                                                     disabled={isOpeningSnap}
                                                     className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#14bace] px-6 py-3 font-poppins text-xs font-bold text-white shadow-sm transition hover:bg-[#087f8c] disabled:opacity-60 sm:text-sm"
                                                 >
@@ -557,13 +616,18 @@ export default function DonasiInvoicePage({
                                         >
                                             <Printer className="size-4" />
                                             <span>
-                                                {t('Cetak / Simpan PDF', 'Print / Save PDF')}
+                                                {t(
+                                                    'Cetak / Simpan PDF',
+                                                    'Print / Save PDF',
+                                                )}
                                             </span>
                                         </button>
                                     )}
 
-                                    {(donasi.status_verifikasi === 'dibatalkan' ||
-                                        donasi.status_verifikasi === 'ditolak' ||
+                                    {(donasi.status_verifikasi ===
+                                        'dibatalkan' ||
+                                        donasi.status_verifikasi ===
+                                            'ditolak' ||
                                         isLocallyExpired) && (
                                         <Link
                                             href="/donasi"
@@ -572,7 +636,10 @@ export default function DonasiInvoicePage({
                                         >
                                             <Heart className="size-4" />
                                             <span>
-                                                {t('Buat Donasi Baru', 'Make New Donation')}
+                                                {t(
+                                                    'Buat Donasi Baru',
+                                                    'Make New Donation',
+                                                )}
                                             </span>
                                         </Link>
                                     )}

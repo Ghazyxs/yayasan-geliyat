@@ -309,7 +309,9 @@ export default function KegiatanAdmin({
         form.setData({
             jenis_konten: item.jenis_konten,
             judul: item.judul,
-            bidang_id: item.bidang_id ? String(item.bidang_id) : defaultBidangId,
+            bidang_id: item.bidang_id
+                ? String(item.bidang_id)
+                : defaultBidangId,
             tanggal_kegiatan:
                 item.tanggal_iso || new Date().toISOString().slice(0, 10),
             lokasi: item.lokasi || '',
@@ -530,7 +532,7 @@ export default function KegiatanAdmin({
 
                 {/* Stat Cards */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div className="rounded-xl border border-[#e4eaec] border-t-4 border-t-[#14bace] bg-white p-4 shadow-2xs">
+                    <div className="rounded-xl border border-t-4 border-[#e4eaec] border-t-[#14bace] bg-white p-4 shadow-2xs">
                         <span className="text-xs font-medium text-slate-500">
                             Total Publikasi
                         </span>
@@ -542,7 +544,7 @@ export default function KegiatanAdmin({
                         </p>
                     </div>
 
-                    <div className="rounded-xl border border-[#e4eaec] border-t-4 border-t-[#087f8c] bg-white p-4 shadow-2xs">
+                    <div className="rounded-xl border border-t-4 border-[#e4eaec] border-t-[#087f8c] bg-white p-4 shadow-2xs">
                         <span className="text-xs font-medium text-slate-500">
                             Berita Kegiatan
                         </span>
@@ -554,7 +556,7 @@ export default function KegiatanAdmin({
                         </p>
                     </div>
 
-                    <div className="rounded-xl border border-[#e4eaec] border-t-4 border-t-sky-500 bg-white p-4 shadow-2xs">
+                    <div className="rounded-xl border border-t-4 border-[#e4eaec] border-t-sky-500 bg-white p-4 shadow-2xs">
                         <span className="text-xs font-medium text-slate-500">
                             Berita Umum
                         </span>
@@ -566,7 +568,7 @@ export default function KegiatanAdmin({
                         </p>
                     </div>
 
-                    <div className="rounded-xl border border-[#e4eaec] border-t-4 border-t-emerald-500 bg-white p-4 shadow-2xs">
+                    <div className="rounded-xl border border-t-4 border-[#e4eaec] border-t-emerald-500 bg-white p-4 shadow-2xs">
                         <span className="text-xs font-medium text-slate-500">
                             Kegiatan Tahun Ini
                         </span>
@@ -727,7 +729,9 @@ export default function KegiatanAdmin({
                                                 <div className="flex items-start gap-3">
                                                     {item.gambar_url ? (
                                                         <img
-                                                            src={item.gambar_url}
+                                                            src={
+                                                                item.gambar_url
+                                                            }
                                                             alt={item.judul}
                                                             className="size-12 shrink-0 rounded-lg border border-[#e4eaec] object-cover"
                                                         />
@@ -1005,7 +1009,10 @@ export default function KegiatanAdmin({
                                         required
                                         value={form.data.judul}
                                         onChange={(e) =>
-                                            form.setData('judul', e.target.value)
+                                            form.setData(
+                                                'judul',
+                                                e.target.value,
+                                            )
                                         }
                                         placeholder="Contoh: Santunan Rutin & Bingkisan Sekolah Anak Binaan"
                                         className="border-[#e4eaec] bg-white text-slate-800 shadow-none focus-visible:border-[#14bace] focus-visible:ring-2 focus-visible:ring-[#14bace]/20"
@@ -1214,7 +1221,9 @@ export default function KegiatanAdmin({
                                                         >
                                                             <img
                                                                 src={doc.url}
-                                                                alt={doc.caption}
+                                                                alt={
+                                                                    doc.caption
+                                                                }
                                                                 className="size-12 shrink-0 rounded object-cover"
                                                             />
                                                             <span className="min-w-0 flex-1 truncate text-[11px] text-slate-700">
@@ -1322,7 +1331,10 @@ export default function KegiatanAdmin({
                                         required
                                         value={form.data.judul}
                                         onChange={(e) =>
-                                            form.setData('judul', e.target.value)
+                                            form.setData(
+                                                'judul',
+                                                e.target.value,
+                                            )
                                         }
                                         placeholder="Contoh: Jadwal Penyaluran Santunan Bulan Ini"
                                         className="border-[#e4eaec] bg-white text-slate-800 shadow-none focus-visible:border-[#14bace] focus-visible:ring-2 focus-visible:ring-[#14bace]/20"

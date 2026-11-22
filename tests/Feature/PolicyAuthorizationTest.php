@@ -39,7 +39,7 @@ function buatKegiatanTest(array $attributes = []): Kegiatan
 function buatDonasiTest(array $attributes = []): Donasi
 {
     return Donasi::create(array_merge([
-        'kode_donasi' => 'DON-' . uniqid(),
+        'kode_donasi' => 'DON-'.uniqid(),
         'nama_donatur' => 'Hamba Allah',
         'no_whatsapp' => '081234567890',
         'jenis_donasi' => 'Donasi Umum',

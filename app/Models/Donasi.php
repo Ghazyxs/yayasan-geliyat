@@ -33,6 +33,7 @@ use Throwable;
  * @property string $rekening_tujuan
  * @property int $nominal
  * @property string $status_verifikasi
+ * @property Carbon|null $verified_at
  * @property int|null $verified_by
  * @property string|null $no_whatsapp
  * @property string|null $email_donatur
@@ -44,10 +45,10 @@ use Throwable;
  * @property string|null $midtrans_payment_type
  * @property string|null $midtrans_fraud_status
  * @property array<string, mixed>|null $midtrans_payload
- * @property \Illuminate\Support\Carbon|null $paid_at
- * @property \Illuminate\Support\Carbon|null $payment_expires_at
- * @property \Illuminate\Support\Carbon|null $pending_email_sent_at
- * @property \Illuminate\Support\Carbon|null $invoice_sent_at
+ * @property Carbon|null $paid_at
+ * @property Carbon|null $payment_expires_at
+ * @property Carbon|null $pending_email_sent_at
+ * @property Carbon|null $invoice_sent_at
  */
 #[Table('donasi')]
 #[Fillable([
@@ -179,7 +180,7 @@ class Donasi extends Model
      * Jika database master rekening masih kosong sama sekali (fase transisi awal),
      * gunakan fallback konfigurasi REKENING_RESMI agar tidak merusak sistem & pengujian lama.
      *
-     * @return array<int, array{id: int|null, kode: string, bank: string, nomor: string, atas_nama: string, icon: string}>
+     * @return array<int, array{id?: int|null, kode: string, bank: string, nomor: string, atas_nama: string, icon: string}>
      */
     public static function daftarRekeningAktif(): array
     {

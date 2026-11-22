@@ -178,8 +178,8 @@ export default function AnakYatimAdmin() {
         anakYatim,
         stats,
         filters,
-        jenjangList = ['SD', 'SMP', 'SMA/SMK', 'Perguruan Tinggi', 'Lainnya'],
-        kelurahanList = [],
+        jenjangList,
+        kelurahanList,
         permissions,
         flash,
     } = usePage<PageProps>().props;
@@ -579,7 +579,7 @@ export default function AnakYatimAdmin() {
 
                 {/* Summary Cards berdasarkan Jenjang Pendidikan */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div className="rounded-xl border border-[#e4eaec] border-t-4 border-t-[#14bace] bg-white p-5 shadow-2xs">
+                    <div className="rounded-xl border border-t-4 border-[#e4eaec] border-t-[#14bace] bg-white p-5 shadow-2xs">
                         <span className="text-xs font-semibold tracking-wide text-slate-500 uppercase">
                             Anak SD
                         </span>
@@ -591,7 +591,7 @@ export default function AnakYatimAdmin() {
                         </span>
                     </div>
 
-                    <div className="rounded-xl border border-[#e4eaec] border-t-4 border-t-[#087f8c] bg-white p-5 shadow-2xs">
+                    <div className="rounded-xl border border-t-4 border-[#e4eaec] border-t-[#087f8c] bg-white p-5 shadow-2xs">
                         <span className="text-xs font-semibold tracking-wide text-slate-500 uppercase">
                             Anak SMP
                         </span>
@@ -603,7 +603,7 @@ export default function AnakYatimAdmin() {
                         </span>
                     </div>
 
-                    <div className="rounded-xl border border-[#e4eaec] border-t-4 border-t-indigo-500 bg-white p-5 shadow-2xs">
+                    <div className="rounded-xl border border-t-4 border-[#e4eaec] border-t-indigo-500 bg-white p-5 shadow-2xs">
                         <span className="text-xs font-semibold tracking-wide text-slate-500 uppercase">
                             Anak SMA
                         </span>
@@ -615,7 +615,7 @@ export default function AnakYatimAdmin() {
                         </span>
                     </div>
 
-                    <div className="rounded-xl border border-[#e4eaec] border-t-4 border-t-cyan-700 bg-white p-5 shadow-2xs">
+                    <div className="rounded-xl border border-t-4 border-[#e4eaec] border-t-cyan-700 bg-white p-5 shadow-2xs">
                         <span className="text-xs font-semibold tracking-wide text-slate-500 uppercase">
                             Perguruan Tinggi
                         </span>

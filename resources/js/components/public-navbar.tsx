@@ -20,9 +20,24 @@ interface NavItem {
 
 const navItems: NavItem[] = [
     { labelId: 'Beranda', labelEn: 'Home', href: '/', match: '/' },
-    { labelId: 'Bidang', labelEn: 'Divisions', href: '/bidang', match: '/bidang' },
-    { labelId: 'Kegiatan', labelEn: 'Activities', href: '/kegiatan', match: '/kegiatan' },
-    { labelId: 'Profil', labelEn: 'Profile', href: '/profil', match: '/profil' },
+    {
+        labelId: 'Bidang',
+        labelEn: 'Divisions',
+        href: '/bidang',
+        match: '/bidang',
+    },
+    {
+        labelId: 'Kegiatan',
+        labelEn: 'Activities',
+        href: '/kegiatan',
+        match: '/kegiatan',
+    },
+    {
+        labelId: 'Profil',
+        labelEn: 'Profile',
+        href: '/profil',
+        match: '/profil',
+    },
     {
         labelId: 'Laporan Tahunan',
         labelEn: 'Annual Report',
@@ -72,7 +87,10 @@ export default function PublicNavbar() {
                                 GELIYAT
                             </span>
                             <span className="font-poppins text-[10px] leading-tight font-medium tracking-[2px] text-[#186972] uppercase">
-                                {t('Gerakan Peduli Yatim', 'Orphan Care Movement')}
+                                {t(
+                                    'Gerakan Peduli Yatim',
+                                    'Orphan Care Movement',
+                                )}
                             </span>
                         </div>
                     </Link>
@@ -86,9 +104,13 @@ export default function PublicNavbar() {
                                 return (
                                     <div
                                         key={item.href}
-                                        className="relative group flex flex-col items-center py-2"
-                                        onMouseEnter={() => setKegiatanDropdownOpen(true)}
-                                        onMouseLeave={() => setKegiatanDropdownOpen(false)}
+                                        className="group relative flex flex-col items-center py-2"
+                                        onMouseEnter={() =>
+                                            setKegiatanDropdownOpen(true)
+                                        }
+                                        onMouseLeave={() =>
+                                            setKegiatanDropdownOpen(false)
+                                        }
                                     >
                                         <div className="flex cursor-pointer items-center gap-1">
                                             <Link
@@ -131,15 +153,24 @@ export default function PublicNavbar() {
                                                 <Link
                                                     href="/kegiatan"
                                                     prefetch={false}
-                                                    onClick={() => setKegiatanDropdownOpen(false)}
+                                                    onClick={() =>
+                                                        setKegiatanDropdownOpen(
+                                                            false,
+                                                        )
+                                                    }
                                                     className={`flex flex-col rounded-xl px-3.5 py-2.5 transition-colors ${
-                                                        url.startsWith('/kegiatan')
+                                                        url.startsWith(
+                                                            '/kegiatan',
+                                                        )
                                                             ? 'bg-[#e8f8fa] text-[#087f8c]'
                                                             : 'text-[#1d2b2d] hover:bg-slate-50'
                                                     }`}
                                                 >
                                                     <span className="font-poppins text-xs font-bold">
-                                                        {t('Berita Kegiatan', 'Activity News')}
+                                                        {t(
+                                                            'Berita Kegiatan',
+                                                            'Activity News',
+                                                        )}
                                                     </span>
                                                     <span className="text-[11px] text-slate-500">
                                                         {t(
@@ -152,15 +183,24 @@ export default function PublicNavbar() {
                                                 <Link
                                                     href="/berita-umum"
                                                     prefetch={false}
-                                                    onClick={() => setKegiatanDropdownOpen(false)}
+                                                    onClick={() =>
+                                                        setKegiatanDropdownOpen(
+                                                            false,
+                                                        )
+                                                    }
                                                     className={`flex flex-col rounded-xl px-3.5 py-2.5 transition-colors ${
-                                                        url.startsWith('/berita-umum')
+                                                        url.startsWith(
+                                                            '/berita-umum',
+                                                        )
                                                             ? 'bg-[#e8f8fa] text-[#087f8c]'
                                                             : 'text-[#1d2b2d] hover:bg-slate-50'
                                                     }`}
                                                 >
                                                     <span className="font-poppins text-xs font-bold">
-                                                        {t('Berita Umum', 'General News')}
+                                                        {t(
+                                                            'Berita Umum',
+                                                            'General News',
+                                                        )}
                                                     </span>
                                                     <span className="text-[11px] text-slate-500">
                                                         {t(
@@ -179,9 +219,13 @@ export default function PublicNavbar() {
                                 return (
                                     <div
                                         key={item.href}
-                                        className="relative group flex flex-col items-center py-2"
-                                        onMouseEnter={() => setProfilDropdownOpen(true)}
-                                        onMouseLeave={() => setProfilDropdownOpen(false)}
+                                        className="group relative flex flex-col items-center py-2"
+                                        onMouseEnter={() =>
+                                            setProfilDropdownOpen(true)
+                                        }
+                                        onMouseLeave={() =>
+                                            setProfilDropdownOpen(false)
+                                        }
                                     >
                                         <div className="flex cursor-pointer items-center gap-1">
                                             <Link
@@ -224,7 +268,11 @@ export default function PublicNavbar() {
                                                 <Link
                                                     href="/profil"
                                                     prefetch={false}
-                                                    onClick={() => setProfilDropdownOpen(false)}
+                                                    onClick={() =>
+                                                        setProfilDropdownOpen(
+                                                            false,
+                                                        )
+                                                    }
                                                     className={`flex flex-col rounded-xl px-3.5 py-2.5 transition-colors ${
                                                         url === '/profil'
                                                             ? 'bg-[#e8f8fa] text-[#087f8c]'
@@ -232,7 +280,10 @@ export default function PublicNavbar() {
                                                     }`}
                                                 >
                                                     <span className="font-poppins text-xs font-bold">
-                                                        {t('Profil Yayasan', 'Foundation Profile')}
+                                                        {t(
+                                                            'Profil Yayasan',
+                                                            'Foundation Profile',
+                                                        )}
                                                     </span>
                                                     <span className="text-[11px] text-slate-500">
                                                         {t(
@@ -245,15 +296,24 @@ export default function PublicNavbar() {
                                                 <Link
                                                     href="/profil-pimpinan"
                                                     prefetch={false}
-                                                    onClick={() => setProfilDropdownOpen(false)}
+                                                    onClick={() =>
+                                                        setProfilDropdownOpen(
+                                                            false,
+                                                        )
+                                                    }
                                                     className={`flex flex-col rounded-xl px-3.5 py-2.5 transition-colors ${
-                                                        url.startsWith('/profil-pimpinan')
+                                                        url.startsWith(
+                                                            '/profil-pimpinan',
+                                                        )
                                                             ? 'bg-[#e8f8fa] text-[#087f8c]'
                                                             : 'text-[#1d2b2d] hover:bg-slate-50'
                                                     }`}
                                                 >
                                                     <span className="font-poppins text-xs font-bold">
-                                                        {t('Profil Pimpinan', 'Leadership Profile')}
+                                                        {t(
+                                                            'Profil Pimpinan',
+                                                            'Leadership Profile',
+                                                        )}
                                                     </span>
                                                     <span className="text-[11px] text-slate-500">
                                                         {t(
@@ -435,7 +495,11 @@ export default function PublicNavbar() {
                                 <div key={item.href} className="space-y-1">
                                     <button
                                         type="button"
-                                        onClick={() => setMobileKegiatanOpen(!mobileKegiatanOpen)}
+                                        onClick={() =>
+                                            setMobileKegiatanOpen(
+                                                !mobileKegiatanOpen,
+                                            )
+                                        }
                                         className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 font-poppins text-sm transition-colors ${
                                             isKegiatanActive
                                                 ? 'bg-[#e8f8fa] font-semibold text-[#087f8c]'
@@ -445,7 +509,9 @@ export default function PublicNavbar() {
                                         <span>{label}</span>
                                         <ChevronDown
                                             className={`size-4 transition-transform duration-200 ${
-                                                mobileKegiatanOpen ? 'rotate-180' : ''
+                                                mobileKegiatanOpen
+                                                    ? 'rotate-180'
+                                                    : ''
                                             }`}
                                         />
                                     </button>
@@ -455,30 +521,50 @@ export default function PublicNavbar() {
                                             <Link
                                                 href="/kegiatan"
                                                 prefetch={false}
-                                                onClick={() => setMobileMenuOpen(false)}
+                                                onClick={() =>
+                                                    setMobileMenuOpen(false)
+                                                }
                                                 className={`flex items-center justify-between rounded-lg px-3 py-2 font-poppins text-xs transition-colors ${
                                                     url.startsWith('/kegiatan')
                                                         ? 'bg-[#e8f8fa] font-semibold text-[#087f8c]'
                                                         : 'text-slate-600 hover:bg-gray-50'
                                                 }`}
                                             >
-                                                <span>{t('Berita Kegiatan', 'Activity News')}</span>
-                                                {url.startsWith('/kegiatan') && (
+                                                <span>
+                                                    {t(
+                                                        'Berita Kegiatan',
+                                                        'Activity News',
+                                                    )}
+                                                </span>
+                                                {url.startsWith(
+                                                    '/kegiatan',
+                                                ) && (
                                                     <span className="size-1.5 rounded-full bg-[#14bace]" />
                                                 )}
                                             </Link>
                                             <Link
                                                 href="/berita-umum"
                                                 prefetch={false}
-                                                onClick={() => setMobileMenuOpen(false)}
+                                                onClick={() =>
+                                                    setMobileMenuOpen(false)
+                                                }
                                                 className={`flex items-center justify-between rounded-lg px-3 py-2 font-poppins text-xs transition-colors ${
-                                                    url.startsWith('/berita-umum')
+                                                    url.startsWith(
+                                                        '/berita-umum',
+                                                    )
                                                         ? 'bg-[#e8f8fa] font-semibold text-[#087f8c]'
                                                         : 'text-slate-600 hover:bg-gray-50'
                                                 }`}
                                             >
-                                                <span>{t('Berita Umum', 'General News')}</span>
-                                                {url.startsWith('/berita-umum') && (
+                                                <span>
+                                                    {t(
+                                                        'Berita Umum',
+                                                        'General News',
+                                                    )}
+                                                </span>
+                                                {url.startsWith(
+                                                    '/berita-umum',
+                                                ) && (
                                                     <span className="size-1.5 rounded-full bg-[#14bace]" />
                                                 )}
                                             </Link>
@@ -493,7 +579,11 @@ export default function PublicNavbar() {
                                 <div key={item.href} className="space-y-1">
                                     <button
                                         type="button"
-                                        onClick={() => setMobileProfilOpen(!mobileProfilOpen)}
+                                        onClick={() =>
+                                            setMobileProfilOpen(
+                                                !mobileProfilOpen,
+                                            )
+                                        }
                                         className={`flex w-full items-center justify-between rounded-lg px-3 py-2.5 font-poppins text-sm transition-colors ${
                                             isProfilActive
                                                 ? 'bg-[#e8f8fa] font-semibold text-[#087f8c]'
@@ -503,7 +593,9 @@ export default function PublicNavbar() {
                                         <span>{label}</span>
                                         <ChevronDown
                                             className={`size-4 transition-transform duration-200 ${
-                                                mobileProfilOpen ? 'rotate-180' : ''
+                                                mobileProfilOpen
+                                                    ? 'rotate-180'
+                                                    : ''
                                             }`}
                                         />
                                     </button>
@@ -513,14 +605,21 @@ export default function PublicNavbar() {
                                             <Link
                                                 href="/profil"
                                                 prefetch={false}
-                                                onClick={() => setMobileMenuOpen(false)}
+                                                onClick={() =>
+                                                    setMobileMenuOpen(false)
+                                                }
                                                 className={`flex items-center justify-between rounded-lg px-3 py-2 font-poppins text-xs transition-colors ${
                                                     url === '/profil'
                                                         ? 'bg-[#e8f8fa] font-semibold text-[#087f8c]'
                                                         : 'text-slate-600 hover:bg-gray-50'
                                                 }`}
                                             >
-                                                <span>{t('Profil Yayasan', 'Foundation Profile')}</span>
+                                                <span>
+                                                    {t(
+                                                        'Profil Yayasan',
+                                                        'Foundation Profile',
+                                                    )}
+                                                </span>
                                                 {url === '/profil' && (
                                                     <span className="size-1.5 rounded-full bg-[#14bace]" />
                                                 )}
@@ -528,15 +627,26 @@ export default function PublicNavbar() {
                                             <Link
                                                 href="/profil-pimpinan"
                                                 prefetch={false}
-                                                onClick={() => setMobileMenuOpen(false)}
+                                                onClick={() =>
+                                                    setMobileMenuOpen(false)
+                                                }
                                                 className={`flex items-center justify-between rounded-lg px-3 py-2 font-poppins text-xs transition-colors ${
-                                                    url.startsWith('/profil-pimpinan')
+                                                    url.startsWith(
+                                                        '/profil-pimpinan',
+                                                    )
                                                         ? 'bg-[#e8f8fa] font-semibold text-[#087f8c]'
                                                         : 'text-slate-600 hover:bg-gray-50'
                                                 }`}
                                             >
-                                                <span>{t('Profil Pimpinan', 'Leadership Profile')}</span>
-                                                {url.startsWith('/profil-pimpinan') && (
+                                                <span>
+                                                    {t(
+                                                        'Profil Pimpinan',
+                                                        'Leadership Profile',
+                                                    )}
+                                                </span>
+                                                {url.startsWith(
+                                                    '/profil-pimpinan',
+                                                ) && (
                                                     <span className="size-1.5 rounded-full bg-[#14bace]" />
                                                 )}
                                             </Link>
@@ -576,7 +686,12 @@ export default function PublicNavbar() {
                                     className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#e8f8fa] py-2.5 text-sm font-semibold text-[#087f8c]"
                                 >
                                     <LayoutDashboard className="size-4" />
-                                    <span>{t('Dashboard Pengurus', 'Admin Dashboard')}</span>
+                                    <span>
+                                        {t(
+                                            'Dashboard Pengurus',
+                                            'Admin Dashboard',
+                                        )}
+                                    </span>
                                 </Link>
                                 <Link
                                     href="/logout"
@@ -585,7 +700,9 @@ export default function PublicNavbar() {
                                     onClick={() => setMobileMenuOpen(false)}
                                     className="flex w-full items-center justify-center gap-2 rounded-lg py-2 text-xs font-medium text-rose-600 hover:bg-rose-50"
                                 >
-                                    <span>{t('Keluar Akun (Logout)', 'Log Out')}</span>
+                                    <span>
+                                        {t('Keluar Akun (Logout)', 'Log Out')}
+                                    </span>
                                 </Link>
                             </>
                         ) : (
@@ -595,7 +712,9 @@ export default function PublicNavbar() {
                                 className="flex w-full items-center justify-center gap-2 rounded-lg bg-gray-50 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100"
                             >
                                 <LogIn className="size-4" />
-                                <span>{t('Masuk Pengurus', 'Admin Login')}</span>
+                                <span>
+                                    {t('Masuk Pengurus', 'Admin Login')}
+                                </span>
                             </Link>
                         )}
                     </div>

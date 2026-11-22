@@ -447,7 +447,7 @@ class AnakYatimController extends Controller
         $canViewSensitive = Gate::forUser($user)->allows('viewSensitiveData', $anak);
 
         $item = $anak->toArray();
-        $item['tanggal_lahir'] = $anak->tanggal_lahir?->format('Y-m-d');
+        $item['tanggal_lahir'] = $anak->tanggal_lahir->format('Y-m-d');
         $item['can_view_sensitive'] = $canViewSensitive;
         $item['can_update'] = Gate::forUser($user)->allows('update', $anak);
         $item['can_delete'] = Gate::forUser($user)->allows('delete', $anak);

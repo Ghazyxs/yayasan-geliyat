@@ -35,7 +35,7 @@ class PenggunaController extends Controller
                 'bidang_id' => $u->bidang_id,
                 'bidang_nama' => $u->isSuperAdmin()
                     ? 'Lintas Seluruh Bidang (Pimpinan)'
-                    : ($u->bidang?->nama ?? '-'),
+                    : ($u->bidang->nama ?? '-'),
                 'is_active' => (bool) $u->is_active,
                 'status_label' => $u->is_active ? 'Aktif' : 'Nonaktif',
                 'created_at_formatted' => $u->created_at?->format('d M Y'),

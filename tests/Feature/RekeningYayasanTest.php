@@ -186,7 +186,7 @@ test('inactive bank account cannot be selected for new donations', function () {
         'no_whatsapp' => '081234567899',
         'jenis_donasi' => Donasi::JENIS_DONASI_UMUM,
         'rekening_id' => $rekeningNonaktif->id,
-        'rekening_tujuan' => "Bank Muamalat - 9998887776",
+        'rekening_tujuan' => 'Bank Muamalat - 9998887776',
         'nominal' => 50000,
         'bukti_transfer' => $buktiFile,
     ]);
@@ -297,4 +297,3 @@ test('bank account without any donations can be safely deleted by super admin', 
         'id' => $rekening->id,
     ]);
 });
-

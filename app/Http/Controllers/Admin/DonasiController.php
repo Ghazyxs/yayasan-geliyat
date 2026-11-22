@@ -180,7 +180,7 @@ class DonasiController extends Controller
 
         $rekening = null;
         if (! empty($validated['rekening_id'])) {
-            $rekening = RekeningYayasan::find($validated['rekening_id']);
+            $rekening = RekeningYayasan::query()->find((int) $validated['rekening_id']);
         } elseif (! empty($validated['rekening_tujuan'])) {
             $rekening = RekeningYayasan::where(function ($query) use ($validated) {
                 $query->whereRaw("CONCAT(nama_bank, ' - ', nomor_rekening) = ?", [trim($validated['rekening_tujuan'])])
@@ -404,7 +404,7 @@ class DonasiController extends Controller
                 'kategori' => $donasi->transaksi->kategori,
                 'nominal' => (int) $donasi->transaksi->nominal,
                 'status_transaksi' => $donasi->transaksi->status_transaksi,
-                'tanggal_transaksi' => $donasi->transaksi->tanggal_transaksi?->format('Y-m-d'),
+                'tanggal_transaksi' => $donasi->transaksi->tanggal_transaksi->format('Y-m-d'),
                 'keterangan' => $donasi->transaksi->keterangan,
             ] : null,
             'can_verify' => $donasi->status_verifikasi === Donasi::STATUS_MENUNGGU && Gate::forUser($user)->allows('verify', $donasi),

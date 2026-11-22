@@ -172,4 +172,3 @@ class KegiatanSeeder extends Seeder
         }
     }
 }
-

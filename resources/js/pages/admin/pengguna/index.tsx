@@ -1,5 +1,10 @@
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { ShieldCheck, UserPlus, CheckCircle2, AlertTriangle } from 'lucide-react';
+import {
+    ShieldCheck,
+    UserPlus,
+    CheckCircle2,
+    AlertTriangle,
+} from 'lucide-react';
 import { FormEvent, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { BrandSelect } from '@/components/admin/brand-select';

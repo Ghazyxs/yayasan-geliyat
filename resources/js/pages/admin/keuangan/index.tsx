@@ -346,7 +346,7 @@ export default function KeuanganAdmin({
 
                 {/* Ringkasan Keuangan Sederhana (3 Kartu) */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                    <div className="rounded-xl border border-[#e4eaec] border-t-4 border-t-emerald-500 bg-white p-5 shadow-2xs">
+                    <div className="rounded-xl border border-t-4 border-[#e4eaec] border-t-emerald-500 bg-white p-5 shadow-2xs">
                         <span className="text-xs font-medium text-slate-500">
                             Total Pemasukan
                         </span>
@@ -359,7 +359,7 @@ export default function KeuanganAdmin({
                         </p>
                     </div>
 
-                    <div className="rounded-xl border border-[#e4eaec] border-t-4 border-t-rose-500 bg-white p-5 shadow-2xs">
+                    <div className="rounded-xl border border-t-4 border-[#e4eaec] border-t-rose-500 bg-white p-5 shadow-2xs">
                         <span className="text-xs font-medium text-slate-500">
                             Total Pengeluaran
                         </span>
@@ -372,7 +372,7 @@ export default function KeuanganAdmin({
                         </p>
                     </div>
 
-                    <div className="rounded-xl border border-[#cbebf0] border-t-4 border-t-[#14bace] bg-white p-5 shadow-2xs">
+                    <div className="rounded-xl border border-t-4 border-[#cbebf0] border-t-[#14bace] bg-white p-5 shadow-2xs">
                         <span className="text-xs font-semibold text-[#087f8c]">
                             Saldo Kas Saat Ini
                         </span>

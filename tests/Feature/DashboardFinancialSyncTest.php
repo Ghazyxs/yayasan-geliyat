@@ -341,4 +341,3 @@ test('transactions linked to donation are intrinsically classified as donation a
         // Dan TIDAK terhitung ke total belum terklasifikasi
         ->and(TransaksiKeuangan::totalBelumTerklasifikasi())->toBe(0);
 });
-

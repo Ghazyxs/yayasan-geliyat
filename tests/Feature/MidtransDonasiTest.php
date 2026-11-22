@@ -37,7 +37,7 @@ beforeEach(function () {
 
 function generateMidtransSignature(string $orderId, string $statusCode, string $grossAmount, string $serverKey): string
 {
-    return hash('sha512', $orderId . $statusCode . $grossAmount . $serverKey);
+    return hash('sha512', $orderId.$statusCode.$grossAmount.$serverKey);
 }
 
 test('public donation submission requires valid email, allows null whatsapp, requests Snap Token, and sends pending email once', function () {

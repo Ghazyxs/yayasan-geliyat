@@ -100,7 +100,7 @@ class PublicLaporanTahunanController extends Controller
     /**
      * Bangun objek Dompdf dengan data riil dari database.
      */
-    private function buildPdf(int $tahun)
+    private function buildPdf(int $tahun): \Barryvdh\DomPDF\PDF
     {
         $laporan = LaporanTahunan::getOrDefault($tahun);
         $start = sprintf('%04d-01-01', $tahun);
@@ -117,7 +117,7 @@ class PublicLaporanTahunanController extends Controller
         $logoPath = public_path('images/logo.png');
         $logoBase64 = '';
         if ($hasGd && file_exists($logoPath)) {
-            $logoBase64 = 'data:image/png;base64,' . base64_encode((string) file_get_contents($logoPath));
+            $logoBase64 = 'data:image/png;base64,'.base64_encode((string) file_get_contents($logoPath));
         }
 
         $pdf = Pdf::loadView('pdf.laporan-tahunan', [
@@ -132,4 +132,3 @@ class PublicLaporanTahunanController extends Controller
         return $pdf;
     }
 }
-

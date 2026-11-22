@@ -318,8 +318,8 @@ class KegiatanController extends Controller
             $retainedUrls = array_column($retainedDocs, 'url');
 
             foreach ($existingDocs as $oldDoc) {
-                $oldUrl = is_array($oldDoc) ? ($oldDoc['url'] ?? null) : (is_string($oldDoc) ? $oldDoc : null);
-                if (is_string($oldUrl) && ! in_array($oldUrl, $retainedUrls, true)) {
+                $oldUrl = $oldDoc['url'];
+                if (! in_array($oldUrl, $retainedUrls, true)) {
                     $this->collectPublicStoragePath($oldUrl, 'kegiatan/', $filesToDeleteAfterCommit);
                 }
             }
@@ -332,7 +332,7 @@ class KegiatanController extends Controller
             $request->input('dokumentasi_captions', []),
             trim((string) $validated['judul'])
         );
-        $finalDokumentasi = array_values(array_merge($retainedDocs, $newDocs));
+        $finalDokumentasi = array_merge($retainedDocs, $newDocs);
 
         $isiBerita = trim((string) $validated['isi_berita']);
         $ringkasan = ! empty($validated['ringkasan'])
@@ -375,8 +375,7 @@ class KegiatanController extends Controller
 
         if (is_array($kegiatan->dokumentasi)) {
             foreach ($kegiatan->dokumentasi as $doc) {
-                $url = is_array($doc) ? ($doc['url'] ?? null) : (is_string($doc) ? $doc : null);
-                $this->collectPublicStoragePath($url, 'kegiatan/', $filesToDelete);
+                $this->collectPublicStoragePath($doc['url'], 'kegiatan/', $filesToDelete);
             }
         }
 
@@ -565,16 +564,10 @@ class KegiatanController extends Controller
      */
     private function formatKegiatanItem(Kegiatan $kegiatan, User $user): array
     {
-        $dokumentasi = is_array($kegiatan->dokumentasi) ? array_values(array_map(function ($item) use ($kegiatan) {
-            if (is_string($item)) {
-                return ['url' => $item, 'caption' => $kegiatan->judul];
-            }
-
-            return [
-                'url' => (string) ($item['url'] ?? ''),
-                'caption' => (string) ($item['caption'] ?? $kegiatan->judul),
-            ];
-        }, $kegiatan->dokumentasi)) : [];
+        $dokumentasi = is_array($kegiatan->dokumentasi) ? array_values(array_map(fn (array $item) => [
+            'url' => (string) $item['url'],
+            'caption' => (string) ($item['caption'] ?? $kegiatan->judul),
+        ], $kegiatan->dokumentasi)) : [];
 
         return [
             'uid' => "kegiatan-{$kegiatan->id}",
@@ -589,13 +582,13 @@ class KegiatanController extends Controller
                 'nama' => $kegiatan->bidang->nama,
             ] : null,
             'lokasi' => $kegiatan->lokasi,
-            'tanggal_iso' => $kegiatan->tanggal_kegiatan?->format('Y-m-d') ?? '',
-            'tanggal_formatted' => $kegiatan->tanggal_kegiatan?->format('d M Y') ?? '-',
+            'tanggal_iso' => $kegiatan->tanggal_kegiatan->format('Y-m-d'),
+            'tanggal_formatted' => $kegiatan->tanggal_kegiatan->format('d M Y'),
             'ringkasan' => $kegiatan->ringkasan ?: $kegiatan->deskripsi,
             'isi_konten' => $kegiatan->isi_berita ?: $kegiatan->deskripsi,
             'gambar_url' => $kegiatan->gambar ?: null,
             'dokumentasi' => $dokumentasi,
-            'penulis' => $kegiatan->pembuat?->name ?? 'Pengurus Yayasan',
+            'penulis' => $kegiatan->pembuat->name ?? 'Pengurus Yayasan',
             'public_url' => route('kegiatan.show', $kegiatan->id),
             'can_update' => Gate::forUser($user)->allows('update', $kegiatan),
             'can_delete' => Gate::forUser($user)->allows('delete', $kegiatan),
@@ -636,7 +629,7 @@ class KegiatanController extends Controller
             'isi_konten' => $berita->isi,
             'gambar_url' => $gambarUrl,
             'dokumentasi' => [],
-            'penulis' => $berita->pembuat?->name ?? 'Tim Redaksi Yayasan',
+            'penulis' => $berita->pembuat->name ?? 'Tim Redaksi Yayasan',
             'public_url' => route('berita-umum.show', $berita->slug),
             'can_update' => $canManage,
             'can_delete' => $canManage,

@@ -195,4 +195,3 @@ class MidtransService
         return $this->isProduction() ? self::API_PRODUCTION : self::API_SANDBOX;
     }
 }
-

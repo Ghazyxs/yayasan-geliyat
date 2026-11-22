@@ -85,6 +85,7 @@ return new class extends Migration
                 // Super Admin dikecualikan karena berkedudukan lintas bidang (bidang_id = NULL)
                 if ($user->role === 'super_admin') {
                     $mappings[$user->id] = null;
+
                     continue;
                 }
 
@@ -121,10 +122,10 @@ return new class extends Migration
 
             if (! empty($unmappedUsers)) {
                 throw new RuntimeException(
-                    "MIGRATION DIHENTIKAN UNTUK MENCEGAH KEHILANGAN DATA!\n" .
-                    "Ditemukan user dengan nilai bidang yang tidak dapat dipetakan secara pasti:\n- " .
-                    implode("\n- ", $unmappedUsers) . "\n" .
-                    "Perbaiki data pada tabel users sebelum menjalankan ulang migrasi."
+                    "MIGRATION DIHENTIKAN UNTUK MENCEGAH KEHILANGAN DATA!\n".
+                    "Ditemukan user dengan nilai bidang yang tidak dapat dipetakan secara pasti:\n- ".
+                    implode("\n- ", $unmappedUsers)."\n".
+                    'Perbaiki data pada tabel users sebelum menjalankan ulang migrasi.'
                 );
             }
         }
@@ -158,7 +159,7 @@ return new class extends Migration
 
         if ($unassignedAdminCount > 0) {
             throw new RuntimeException(
-                "MIGRATION DIHENTIKAN: Terdeteksi {$unassignedAdminCount} admin tanpa bidang_id setelah backfill. " .
+                "MIGRATION DIHENTIKAN: Terdeteksi {$unassignedAdminCount} admin tanpa bidang_id setelah backfill. ".
                 "Kolom lama 'bidang' tetap dipertahankan."
             );
         }

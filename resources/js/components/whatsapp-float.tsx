@@ -15,7 +15,10 @@ export default function WhatsAppFloat() {
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={t('Hubungi Kami via WhatsApp', 'Contact Us via WhatsApp')}
+            aria-label={t(
+                'Hubungi Kami via WhatsApp',
+                'Contact Us via WhatsApp',
+            )}
             title={label}
             className="group fixed right-5 bottom-5 z-40 flex items-center gap-2.5 rounded-full bg-[#25D366] px-4 py-3 text-white shadow-lg ring-1 ring-black/5 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#1ebe5d] hover:shadow-xl active:scale-95 sm:right-6 sm:bottom-6"
         >

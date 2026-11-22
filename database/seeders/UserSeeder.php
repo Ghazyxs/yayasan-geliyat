@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         // Pengamanan tingkat tinggi: blokir otomatis di lingkungan production
-        if (app()->isProduction() && ! (bool) env('SEED_ALLOW_PRODUCTION', false)) {
+        if (app()->isProduction() && ! (bool) config('seed.allow_production', false)) {
             $this->command?->warn('Melewatkan pembuatan akun default karena aplikasi berada di environment production.');
             Log::warning('UserSeeder: Upaya seeding akun default dicegah karena lingkungan berstatus production.');
 
@@ -38,12 +38,12 @@ class UserSeeder extends Seeder
             throw new RuntimeException('Bidang Kemanusiaan belum tersedia. Pastikan BidangSeeder dijalankan sebelum UserSeeder.');
         }
 
-        // Resolusi kredensial dari environment (tanpa fallback hardcode password)
-        $superAdminEmail = env('SEED_SUPER_ADMIN_EMAIL', 'ketua@geliyat.or.id');
-        $superAdminPassword = env('SEED_SUPER_ADMIN_PASSWORD');
+        // Resolusi kredensial dari konfigurasi (tanpa fallback hardcode password)
+        $superAdminEmail = (string) config('seed.super_admin.email', 'ketua@geliyat.or.id');
+        $superAdminPassword = config('seed.super_admin.password');
 
-        $adminEmail = env('SEED_ADMIN_EMAIL', 'admin@geliyat.or.id');
-        $adminPassword = env('SEED_ADMIN_PASSWORD');
+        $adminEmail = (string) config('seed.admin.email', 'admin@geliyat.or.id');
+        $adminPassword = config('seed.admin.password');
 
         if (empty($superAdminPassword) || empty($adminPassword)) {
             throw new RuntimeException(
@@ -58,7 +58,7 @@ class UserSeeder extends Seeder
 
         if (! $superAdmin) {
             User::create([
-                'name' => env('SEED_SUPER_ADMIN_NAME', 'Nina Mahdiah, S.Ag., M.Sos.'),
+                'name' => (string) config('seed.super_admin.name', 'Nina Mahdiah, S.Ag., M.Sos.'),
                 'email' => $superAdminEmail,
                 'password' => $superAdminPassword,
                 'role' => 'super_admin',
@@ -77,7 +77,7 @@ class UserSeeder extends Seeder
                 $superAdminUpdates['bidang_id'] = null;
             }
             if ($superAdmin->name === 'H. Ahmad Fauzi') {
-                $superAdminUpdates['name'] = env('SEED_SUPER_ADMIN_NAME', 'Nina Mahdiah, S.Ag., M.Sos.');
+                $superAdminUpdates['name'] = (string) config('seed.super_admin.name', 'Nina Mahdiah, S.Ag., M.Sos.');
                 $superAdminUpdates['phone'] = '082126854485';
             }
 
@@ -92,7 +92,7 @@ class UserSeeder extends Seeder
 
         if (! $admin) {
             User::create([
-                'name' => env('SEED_ADMIN_NAME', 'Juaningsih'),
+                'name' => (string) config('seed.admin.name', 'Juaningsih'),
                 'email' => $adminEmail,
                 'password' => $adminPassword,
                 'role' => 'admin',
@@ -111,7 +111,7 @@ class UserSeeder extends Seeder
                 $adminUpdates['bidang_id'] = $bidangKemanusiaan->id;
             }
             if ($admin->name === 'Ibu Siti Rahmah') {
-                $adminUpdates['name'] = env('SEED_ADMIN_NAME', 'Juaningsih');
+                $adminUpdates['name'] = (string) config('seed.admin.name', 'Juaningsih');
                 $adminUpdates['phone'] = '085797243161';
             }
 

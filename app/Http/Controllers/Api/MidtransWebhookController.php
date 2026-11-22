@@ -72,4 +72,3 @@ class MidtransWebhookController extends Controller
         }
     }
 }
-

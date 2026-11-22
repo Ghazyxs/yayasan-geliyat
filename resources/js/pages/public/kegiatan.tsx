@@ -50,7 +50,7 @@ const categories = [
     'Kemanusiaan',
 ];
 
-export default function KegiatanPage({ kegiatanList = [] }: KegiatanPageProps) {
+export default function KegiatanPage({ kegiatanList }: KegiatanPageProps) {
     const { t, translateCategory } = useLanguage();
     const [selectedCategory, setSelectedCategory] = useState('Semua');
     const [searchQuery, setSearchQuery] = useState('');
@@ -194,7 +194,9 @@ export default function KegiatanPage({ kegiatanList = [] }: KegiatanPageProps) {
                                                 className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
                                             />
                                             <span className="absolute top-3.5 left-3.5 rounded-md bg-white/95 px-3 py-1 text-[11px] font-bold tracking-wider text-[#087f8c] uppercase shadow-xs">
-                                                {translateCategory(act.kategori)}
+                                                {translateCategory(
+                                                    act.kategori,
+                                                )}
                                             </span>
                                         </div>
 
@@ -224,7 +226,9 @@ export default function KegiatanPage({ kegiatanList = [] }: KegiatanPageProps) {
                                             </span>
                                         </div>
                                         <span className="inline-flex shrink-0 items-center gap-1 font-poppins font-semibold text-[#14bace] transition-transform group-hover:translate-x-0.5">
-                                            <span>{t('Baca Berita', 'Read News')}</span>
+                                            <span>
+                                                {t('Baca Berita', 'Read News')}
+                                            </span>
                                             <ArrowRight className="size-3.5" />
                                         </span>
                                     </div>

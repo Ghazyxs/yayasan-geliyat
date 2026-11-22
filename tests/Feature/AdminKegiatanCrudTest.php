@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Bidang;
 use App\Models\BeritaUmum;
+use App\Models\Bidang;
 use App\Models\Kegiatan;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;

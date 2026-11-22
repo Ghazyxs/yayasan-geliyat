@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * Buku kas yayasan. Transaksi tidak pernah dihapus; pembatalan
@@ -20,7 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $sumber_dana
  * @property string $kategori
  * @property int $nominal
- * @property \Illuminate\Support\Carbon $tanggal_transaksi
+ * @property Carbon $tanggal_transaksi
  * @property int|null $donasi_id
  * @property string $status_transaksi
  * @property string $keterangan

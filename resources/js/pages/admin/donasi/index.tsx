@@ -148,10 +148,7 @@ const DEFAULT_FILTERS = {
     tanggal: '',
 };
 
-const STATUS_BADGE: Record<
-    string,
-    { label: string; className: string }
-> = {
+const STATUS_BADGE: Record<string, { label: string; className: string }> = {
     menunggu: {
         label: 'Menunggu Pembayaran / Verifikasi',
         className: 'border-amber-200 bg-amber-50/90 text-amber-700',
@@ -434,7 +431,7 @@ export default function DonasiAdmin({
 
                 {/* Stat Cards (Tanpa Donasi Ditolak) */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                    <div className="rounded-xl border border-[#e4eaec] border-t-4 border-t-[#14bace] bg-white p-4 shadow-2xs">
+                    <div className="rounded-xl border border-t-4 border-[#e4eaec] border-t-[#14bace] bg-white p-4 shadow-2xs">
                         <span className="text-xs font-medium text-slate-500">
                             Total Donasi Terverifikasi
                         </span>
@@ -446,7 +443,7 @@ export default function DonasiAdmin({
                         </p>
                     </div>
 
-                    <div className="rounded-xl border border-[#e4eaec] border-t-4 border-t-amber-400 bg-white p-4 shadow-2xs">
+                    <div className="rounded-xl border border-t-4 border-[#e4eaec] border-t-amber-400 bg-white p-4 shadow-2xs">
                         <span className="text-xs font-medium text-slate-500">
                             Menunggu Pembayaran / Verifikasi
                         </span>
@@ -462,7 +459,7 @@ export default function DonasiAdmin({
                         </p>
                     </div>
 
-                    <div className="rounded-xl border border-[#e4eaec] border-t-4 border-t-slate-400 bg-white p-4 shadow-2xs">
+                    <div className="rounded-xl border border-t-4 border-[#e4eaec] border-t-slate-400 bg-white p-4 shadow-2xs">
                         <span className="text-xs font-medium text-slate-500">
                             Dibatalkan / Void
                         </span>
@@ -473,7 +470,8 @@ export default function DonasiAdmin({
                             </span>
                         </p>
                         <p className="mt-1 text-[11px] text-slate-400">
-                            Transaksi kas terkait berstatus VOID atau kedaluwarsa
+                            Transaksi kas terkait berstatus VOID atau
+                            kedaluwarsa
                         </p>
                     </div>
                 </div>
@@ -929,7 +927,8 @@ export default function DonasiAdmin({
                                     >
                                         {STATUS_BADGE[
                                             detailItem.status_verifikasi
-                                        ]?.label ?? detailItem.status_verifikasi}
+                                        ]?.label ??
+                                            detailItem.status_verifikasi}
                                     </span>
                                 </div>
                                 <DialogTitle className="mt-1 text-lg font-bold text-slate-800">
@@ -1471,10 +1470,7 @@ export default function DonasiAdmin({
                                     ariaLabel="Anak Binaan Tujuan"
                                     value={createForm.data.anak_yatim_id}
                                     onValueChange={(val) =>
-                                        createForm.setData(
-                                            'anak_yatim_id',
-                                            val,
-                                        )
+                                        createForm.setData('anak_yatim_id', val)
                                     }
                                     options={[
                                         {

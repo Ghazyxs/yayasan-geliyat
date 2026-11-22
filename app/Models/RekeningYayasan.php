@@ -6,9 +6,11 @@ use DomainException;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -19,10 +21,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property bool $is_active
  * @property string|null $catatan
  * @property int|null $created_by
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\User|null $pembuat
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Donasi> $donasi
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read User|null $pembuat
+ * @property-read Collection<int, Donasi> $donasi
  */
 #[Table('rekening_yayasan')]
 #[Fillable([
@@ -92,4 +94,3 @@ class RekeningYayasan extends Model
         return $this->hasMany(Donasi::class, 'rekening_id');
     }
 }
-

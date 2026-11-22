@@ -1,10 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import {
-    ArrowRight,
-    MapPin,
-    Calendar,
-    Newspaper,
-} from 'lucide-react';
+import { ArrowRight, MapPin, Calendar, Newspaper } from 'lucide-react';
 import PublicLayout from '@/layouts/public-layout';
 import { useLanguage } from '@/hooks/use-language';
 import { type BidangItem, getBidangIcon } from './public/bidang';
@@ -58,7 +53,9 @@ export default function Welcome({
                                     prefetch={false}
                                     className="flex items-center gap-2.5 rounded-xl bg-[#14bace] px-6 py-3.5 font-poppins text-base font-semibold text-white shadow-md shadow-[#14bace]/20 transition-all duration-150 hover:bg-[#087f8c] active:scale-95"
                                 >
-                                    <span>{t('Donasi Sekarang', 'Donate Now')}</span>
+                                    <span>
+                                        {t('Donasi Sekarang', 'Donate Now')}
+                                    </span>
                                     <ArrowRight className="size-4" />
                                 </Link>
 
@@ -67,7 +64,12 @@ export default function Welcome({
                                     prefetch={false}
                                     className="rounded-xl border border-[#e4eaec] bg-white px-6 py-3.5 font-poppins text-base font-medium text-[#1d2b2d] shadow-sm transition-colors duration-150 hover:bg-gray-50"
                                 >
-                                    <span>{t('Lihat Profil Kami', 'View Our Profile')}</span>
+                                    <span>
+                                        {t(
+                                            'Lihat Profil Kami',
+                                            'View Our Profile',
+                                        )}
+                                    </span>
                                 </Link>
                             </div>
 
@@ -78,7 +80,10 @@ export default function Welcome({
                                         4
                                     </p>
                                     <p className="mt-0.5 font-sans text-xs text-gray-500">
-                                        {t('Bidang Program Utama', 'Core Program Divisions')}
+                                        {t(
+                                            'Bidang Program Utama',
+                                            'Core Program Divisions',
+                                        )}
                                     </p>
                                 </div>
                                 <div>
@@ -86,7 +91,10 @@ export default function Welcome({
                                         {t('Amanah', 'Trustworthy')}
                                     </p>
                                     <p className="mt-0.5 font-sans text-xs text-gray-500">
-                                        {t('Profesional & Berkelanjutan', 'Professional & Sustainable')}
+                                        {t(
+                                            'Profesional & Berkelanjutan',
+                                            'Professional & Sustainable',
+                                        )}
                                     </p>
                                 </div>
                                 <div>
@@ -94,7 +102,10 @@ export default function Welcome({
                                         Bandung
                                     </p>
                                     <p className="mt-0.5 font-sans text-xs text-gray-500">
-                                        {t('Kec. Ujungberung', 'Ujungberung District')}
+                                        {t(
+                                            'Kec. Ujungberung',
+                                            'Ujungberung District',
+                                        )}
                                     </p>
                                 </div>
                             </div>
@@ -116,7 +127,10 @@ export default function Welcome({
                                             </div>
                                             <div className="p-6">
                                                 <p className="font-poppins text-xs font-semibold tracking-wider text-[#186972] uppercase">
-                                                    {t('Kegiatan Terbaru', 'Latest Activity')}
+                                                    {t(
+                                                        'Kegiatan Terbaru',
+                                                        'Latest Activity',
+                                                    )}
                                                 </p>
                                                 <h3 className="mt-1.5 font-poppins text-lg leading-snug font-bold text-[#1d2b2d]">
                                                     {latestActivity.judul}
@@ -124,12 +138,16 @@ export default function Welcome({
                                                 <div className="mt-2.5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-gray-500">
                                                     <span className="inline-flex items-center gap-1.5">
                                                         <Calendar className="size-3.5 text-[#14bace]" />
-                                                        {latestActivity.tanggal_kegiatan}
+                                                        {
+                                                            latestActivity.tanggal_kegiatan
+                                                        }
                                                     </span>
                                                     {latestActivity.lokasi && (
                                                         <span className="inline-flex items-center gap-1.5">
                                                             <MapPin className="size-3.5 text-[#14bace]" />
-                                                            {latestActivity.lokasi}
+                                                            {
+                                                                latestActivity.lokasi
+                                                            }
                                                         </span>
                                                     )}
                                                 </div>
@@ -143,7 +161,10 @@ export default function Welcome({
                                                     className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-[#14bace] py-3 font-poppins text-sm font-semibold text-white transition hover:bg-[#087f8c]"
                                                 >
                                                     <span>
-                                                        {t('Lihat Selengkapnya', 'Read More')}
+                                                        {t(
+                                                            'Lihat Selengkapnya',
+                                                            'Read More',
+                                                        )}
                                                     </span>
                                                     <ArrowRight className="size-4" />
                                                 </Link>
@@ -155,7 +176,10 @@ export default function Welcome({
                                                 <Newspaper className="size-7" />
                                             </div>
                                             <p className="font-poppins text-xs font-semibold tracking-wider text-[#186972] uppercase">
-                                                {t('Kegiatan Terbaru', 'Latest Activity')}
+                                                {t(
+                                                    'Kegiatan Terbaru',
+                                                    'Latest Activity',
+                                                )}
                                             </p>
                                             <h3 className="mt-2 font-poppins text-lg font-bold text-[#1d2b2d]">
                                                 {t(
@@ -175,7 +199,10 @@ export default function Welcome({
                                                 className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-[#14bace] bg-white py-2.5 font-poppins text-sm font-semibold text-[#186972] transition hover:bg-[#e8f8fa]"
                                             >
                                                 <span>
-                                                    {t('Lihat Arsip Kegiatan', 'View Activity Archive')}
+                                                    {t(
+                                                        'Lihat Arsip Kegiatan',
+                                                        'View Activity Archive',
+                                                    )}
                                                 </span>
                                                 <ArrowRight className="size-4" />
                                             </Link>
@@ -193,7 +220,10 @@ export default function Welcome({
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="mx-auto max-w-2xl text-center">
                         <h2 className="font-poppins text-3xl font-bold text-[#1d2b2d]">
-                            {t('Empat Bidang di Geliyat', 'Four Divisions at Geliyat')}
+                            {t(
+                                'Empat Bidang di Geliyat',
+                                'Four Divisions at Geliyat',
+                            )}
                         </h2>
                         <p className="mt-3 font-sans text-sm text-gray-600">
                             {t(
@@ -226,7 +256,12 @@ export default function Welcome({
                                         </p>
                                     </div>
                                     <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-[#14bace] group-hover:text-[#087f8c]">
-                                        <span>{t('Lihat Selengkapnya', 'Learn More')}</span>
+                                        <span>
+                                            {t(
+                                                'Lihat Selengkapnya',
+                                                'Learn More',
+                                            )}
+                                        </span>
                                         <ArrowRight className="size-3" />
                                     </span>
                                 </Link>
@@ -250,7 +285,12 @@ export default function Welcome({
                             prefetch={false}
                             className="inline-flex items-center gap-2 text-sm font-semibold text-[#14bace] transition-colors hover:text-[#087f8c]"
                         >
-                            <span>{t('Lihat Semua Kegiatan', 'View All Activities')}</span>
+                            <span>
+                                {t(
+                                    'Lihat Semua Kegiatan',
+                                    'View All Activities',
+                                )}
+                            </span>
                             <ArrowRight className="size-4" />
                         </Link>
                     </div>
@@ -293,8 +333,7 @@ export default function Welcome({
                                                 {act.judul}
                                             </h3>
                                             <p className="mt-2 line-clamp-3 font-sans text-xs leading-relaxed text-gray-600">
-                                                {act.ringkasan ||
-                                                    act.deskripsi}
+                                                {act.ringkasan || act.deskripsi}
                                             </p>
                                         </div>
                                         <div className="mt-4 flex items-center gap-1.5 border-t border-gray-100 pt-3 text-xs text-gray-500">

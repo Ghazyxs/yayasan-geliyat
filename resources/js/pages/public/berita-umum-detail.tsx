@@ -11,7 +11,7 @@ interface BeritaUmumDetailProps {
 
 export default function BeritaUmumDetail({
     berita,
-    beritaLainnya = [],
+    beritaLainnya,
 }: BeritaUmumDetailProps) {
     const { t, translateCategory } = useLanguage();
     const paragraphs = (berita.isi || '')
@@ -104,7 +104,10 @@ export default function BeritaUmumDetail({
                                     className="inline-flex items-center gap-2 font-poppins text-sm font-semibold text-[#186972] transition-colors hover:text-[#14bace]"
                                 >
                                     <ArrowLeft className="size-4" />
-                                    {t('Kembali ke Berita Umum', 'Back to General News')}
+                                    {t(
+                                        'Kembali ke Berita Umum',
+                                        'Back to General News',
+                                    )}
                                 </Link>
                             </div>
                         </article>
@@ -113,7 +116,10 @@ export default function BeritaUmumDetail({
                         <aside className="lg:col-span-4">
                             <div className="rounded-2xl border border-[#e4eaec] bg-[#f7fcfd] p-6">
                                 <h2 className="font-poppins text-lg font-bold text-[#1d2b2d]">
-                                    {t('Berita Umum Lainnya', 'Other General News')}
+                                    {t(
+                                        'Berita Umum Lainnya',
+                                        'Other General News',
+                                    )}
                                 </h2>
                                 <div className="mt-1 h-0.5 w-12 bg-[#14bace]" />
 
@@ -134,7 +140,10 @@ export default function BeritaUmumDetail({
                                                 className="group block py-3.5 first:pt-0 last:pb-0"
                                             >
                                                 <span className="text-xs font-medium text-[#186972]">
-                                                    {translateCategory(item.kategori)} •{' '}
+                                                    {translateCategory(
+                                                        item.kategori,
+                                                    )}{' '}
+                                                    •{' '}
                                                     {
                                                         item.tanggal_publikasi_formatted
                                                     }

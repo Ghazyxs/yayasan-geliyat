@@ -87,7 +87,7 @@ class DashboardController extends Controller
             'donasiMenungguNominal' => 0,
             'rekeningAktifCount' => 0,
             'distribusiPendidikan' => $distribusiPendidikan,
-            'namaBidang' => $bidang?->nama ?? 'Unit Kerja',
+            'namaBidang' => $bidang->nama ?? 'Unit Kerja',
             'appEnv' => config('app.env'),
         ]);
     }
@@ -128,4 +128,3 @@ class DashboardController extends Controller
         }, $jenjangConfigs);
     }
 }
-

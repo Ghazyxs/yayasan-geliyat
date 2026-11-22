@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BeritaUmum;
+use Carbon\CarbonInterface;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -63,13 +64,16 @@ class PublicBeritaUmumController extends Controller
         ]);
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function transform(BeritaUmum $berita, bool $includeBody = false): array
     {
         $gambarUrl = null;
         if ($berita->gambar) {
             $gambarUrl = (str_starts_with($berita->gambar, 'http') || str_starts_with($berita->gambar, '/storage/'))
                 ? $berita->gambar
-                : asset('storage/' . ltrim($berita->gambar, '/'));
+                : asset('storage/'.ltrim($berita->gambar, '/'));
         }
 
         $ringkasan = $berita->ringkasan ?: Str::limit(strip_tags($berita->isi), 160);
@@ -93,7 +97,7 @@ class PublicBeritaUmumController extends Controller
         return $data;
     }
 
-    private static function formatTanggal(?\Carbon\CarbonInterface $tanggal): string
+    private static function formatTanggal(?CarbonInterface $tanggal): string
     {
         if (! $tanggal) {
             return '-';
@@ -101,7 +105,6 @@ class PublicBeritaUmumController extends Controller
 
         $bulan = self::BULAN_INDONESIA[(int) $tanggal->month] ?? $tanggal->translatedFormat('F');
 
-        return $tanggal->day . ' ' . $bulan . ' ' . $tanggal->year;
+        return $tanggal->day.' '.$bulan.' '.$tanggal->year;
     }
 }
-

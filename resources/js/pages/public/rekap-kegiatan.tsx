@@ -5,20 +5,13 @@ import {
     ChevronRight,
     MapPin,
     ArrowRight,
-    Layers,
     Image as ImageIcon,
     Building2,
     TrendingUp,
-    Filter,
-    FileSpreadsheet,
     Printer,
-    ExternalLink,
     Sparkles,
-    CheckCircle2,
     Eye,
     X,
-    Award,
-    Clock,
 } from 'lucide-react';
 import PublicLayout from '@/layouts/public-layout';
 
@@ -91,7 +84,10 @@ interface RekapKegiatanPageProps {
     stats: RekapStats;
 }
 
-const BIDANG_COLORS: Record<string, { bg: string; text: string; border: string; bar: string }> = {
+const BIDANG_COLORS: Record<
+    string,
+    { bg: string; text: string; border: string; bar: string }
+> = {
     pendidikan: {
         bg: 'bg-blue-50',
         text: 'text-blue-700',
@@ -126,13 +122,18 @@ const BIDANG_COLORS: Record<string, { bg: string; text: string; border: string; 
 
 export default function RekapKegiatanPage({
     selectedYear,
-    availableYears = [],
-    kegiatanList = [],
+    availableYears,
+    kegiatanList,
     stats,
 }: RekapKegiatanPageProps) {
-    const [selectedBidangFilter, setSelectedBidangFilter] = useState<string>('all');
-    const [selectedQuarterFilter, setSelectedQuarterFilter] = useState<string>('all');
-    const [previewPhoto, setPreviewPhoto] = useState<{ url: string; caption?: string } | null>(null);
+    const [selectedBidangFilter, setSelectedBidangFilter] =
+        useState<string>('all');
+    const [selectedQuarterFilter, setSelectedQuarterFilter] =
+        useState<string>('all');
+    const [previewPhoto, setPreviewPhoto] = useState<{
+        url: string;
+        caption?: string;
+    } | null>(null);
 
     // Ganti tahun laporan
     const handleYearChange = (year: number) => {
@@ -143,7 +144,7 @@ export default function RekapKegiatanPage({
             {
                 preserveState: true,
                 preserveScroll: true,
-            }
+            },
         );
     };
 
@@ -156,7 +157,8 @@ export default function RekapKegiatanPage({
                 (item.bidang && item.bidang.kode === selectedBidangFilter);
 
             const matchesQuarter =
-                selectedQuarterFilter === 'all' || item.kuartal === selectedQuarterFilter;
+                selectedQuarterFilter === 'all' ||
+                item.kuartal === selectedQuarterFilter;
 
             return matchesBidang && matchesQuarter;
         });
@@ -174,7 +176,9 @@ export default function RekapKegiatanPage({
 
     return (
         <PublicLayout>
-            <Head title={`Rekap Kegiatan Tahunan ${selectedYear} - Yayasan Geliyat`} />
+            <Head
+                title={`Rekap Kegiatan Tahunan ${selectedYear} - Yayasan Geliyat`}
+            />
 
             {/* Header Hero Laporan Tahunan */}
             <div className="border-b border-[#e4eaec] bg-gradient-to-r from-[#d1f6fa]/70 via-[#e8f8fa] to-[#f4fbfc] py-10 sm:py-16">
@@ -213,7 +217,10 @@ export default function RekapKegiatanPage({
                                 </span>
                             </nav>
                             <p className="mt-3 max-w-3xl font-sans text-sm leading-relaxed text-slate-600 sm:text-base">
-                                Dokumentasi resmi, rekapitulasi data riil, dan transparansi pelaksanaan program pembinaan serta santunan bagi 420 anak binaan yatim Yayasan Geliyat sepanjang tahun {selectedYear}.
+                                Dokumentasi resmi, rekapitulasi data riil, dan
+                                transparansi pelaksanaan program pembinaan serta
+                                santunan bagi 420 anak binaan yatim Yayasan
+                                Geliyat sepanjang tahun {selectedYear}.
                             </p>
                         </div>
 
@@ -243,7 +250,7 @@ export default function RekapKegiatanPage({
                         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                             <div className="flex items-center gap-2">
                                 <Calendar className="size-4 text-[#087f8c]" />
-                                <span className="font-poppins text-xs font-bold uppercase tracking-wider text-slate-700">
+                                <span className="font-poppins text-xs font-bold tracking-wider text-slate-700 uppercase">
                                     Pilih Tahun Laporan:
                                 </span>
                             </div>
@@ -254,10 +261,12 @@ export default function RekapKegiatanPage({
                                         <button
                                             key={year}
                                             type="button"
-                                            onClick={() => handleYearChange(year)}
+                                            onClick={() =>
+                                                handleYearChange(year)
+                                            }
                                             className={`rounded-xl px-4 py-2 font-poppins text-xs font-bold transition-all sm:text-sm ${
                                                 isCurrent
-                                                    ? 'bg-[#087f8c] text-white shadow-md shadow-[#087f8c]/20 ring-2 ring-[#087f8c]/30'
+                                                    ? 'bg-[#087f8c] text-white shadow-md ring-2 shadow-[#087f8c]/20 ring-[#087f8c]/30'
                                                     : 'border border-[#e4eaec] bg-white text-slate-600 hover:border-[#14bace] hover:bg-[#f7fcfd] hover:text-[#087f8c]'
                                             }`}
                                         >
@@ -296,7 +305,8 @@ export default function RekapKegiatanPage({
                                     </span>
                                 </div>
                                 <p className="mt-2 text-xs text-slate-400">
-                                    Seluruhnya tercatat aktif di tahun {selectedYear}
+                                    Seluruhnya tercatat aktif di tahun{' '}
+                                    {selectedYear}
                                 </p>
                             </div>
 
@@ -319,7 +329,8 @@ export default function RekapKegiatanPage({
                                     </span>
                                 </div>
                                 <p className="mt-2 text-xs text-slate-400">
-                                    Pendidikan, Kemanusiaan, Keagamaan, & Ekonomi
+                                    Pendidikan, Kemanusiaan, Keagamaan, &
+                                    Ekonomi
                                 </p>
                             </div>
 
@@ -358,7 +369,9 @@ export default function RekapKegiatanPage({
                                 </div>
                                 <div className="mt-3">
                                     <span className="font-poppins text-2xl font-extrabold text-slate-800 sm:text-3xl">
-                                        {stats.bulanTeraktif ? stats.bulanTeraktif.nama_bulan : '-'}
+                                        {stats.bulanTeraktif
+                                            ? stats.bulanTeraktif.nama_bulan
+                                            : '-'}
                                     </span>
                                 </div>
                                 <p className="mt-2 text-xs text-slate-400">
@@ -376,11 +389,12 @@ export default function RekapKegiatanPage({
                         <div className="rounded-3xl border border-[#e4eaec] bg-white p-6 shadow-xs sm:p-8 lg:col-span-7">
                             <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
                                 <div>
-                                    <span className="font-poppins text-xs font-bold uppercase tracking-wider text-[#14bace]">
+                                    <span className="font-poppins text-xs font-bold tracking-wider text-[#14bace] uppercase">
                                         Ritme Pelaksanaan
                                     </span>
                                     <h3 className="font-poppins text-lg font-bold text-slate-800 sm:text-xl">
-                                        Distribusi Kegiatan per Bulan ({selectedYear})
+                                        Distribusi Kegiatan per Bulan (
+                                        {selectedYear})
                                     </h3>
                                 </div>
                                 <span className="rounded-full bg-[#e8f8fa] px-3 py-1 font-poppins text-xs font-bold text-[#087f8c]">
@@ -388,7 +402,9 @@ export default function RekapKegiatanPage({
                                 </span>
                             </div>
                             <p className="mt-1 font-sans text-xs text-slate-500">
-                                Visualisasi frekuensi kegiatan yayasan yang terlaksana sepanjang bulan Januari hingga Desember.
+                                Visualisasi frekuensi kegiatan yayasan yang
+                                terlaksana sepanjang bulan Januari hingga
+                                Desember.
                             </p>
 
                             {/* Bar Chart Bulanan */}
@@ -396,7 +412,14 @@ export default function RekapKegiatanPage({
                                 {stats.monthlyDistribution.map((item) => {
                                     const heightPct =
                                         item.total > 0
-                                            ? Math.max(18, Math.round((item.total / maxMonthlyCount) * 100))
+                                            ? Math.max(
+                                                  18,
+                                                  Math.round(
+                                                      (item.total /
+                                                          maxMonthlyCount) *
+                                                          100,
+                                                  ),
+                                              )
                                             : 6;
                                     const hasActivity = item.total > 0;
 
@@ -416,7 +439,9 @@ export default function RekapKegiatanPage({
                                             </span>
                                             <div className="relative flex h-28 w-full items-end justify-center rounded-xl bg-slate-50 p-1 transition group-hover:bg-[#e8f8fa]/60">
                                                 <div
-                                                    style={{ height: `${heightPct}%` }}
+                                                    style={{
+                                                        height: `${heightPct}%`,
+                                                    }}
                                                     className={`w-full rounded-lg transition-all duration-300 ${
                                                         hasActivity
                                                             ? 'bg-gradient-to-t from-[#087f8c] to-[#14bace] shadow-xs'
@@ -440,43 +465,47 @@ export default function RekapKegiatanPage({
 
                             {/* Ringkasan Kuartal */}
                             <div className="mt-6 grid grid-cols-2 gap-3 border-t border-slate-100 pt-5 sm:grid-cols-4">
-                                {Object.entries(stats.quarterDistribution).map(([qKey, qVal]) => (
-                                    <div
-                                        key={qKey}
-                                        className="rounded-2xl border border-slate-100 bg-[#fbfdfd] p-3 text-center"
-                                    >
-                                        <span className="font-poppins text-[11px] font-bold text-slate-400 uppercase">
-                                            {qKey}
-                                        </span>
-                                        <div className="font-poppins text-lg font-bold text-slate-800">
-                                            {qVal.total}
+                                {Object.entries(stats.quarterDistribution).map(
+                                    ([qKey, qVal]) => (
+                                        <div
+                                            key={qKey}
+                                            className="rounded-2xl border border-slate-100 bg-[#fbfdfd] p-3 text-center"
+                                        >
+                                            <span className="font-poppins text-[11px] font-bold text-slate-400 uppercase">
+                                                {qKey}
+                                            </span>
+                                            <div className="font-poppins text-lg font-bold text-slate-800">
+                                                {qVal.total}
+                                            </div>
+                                            <span className="block text-[10px] text-slate-500">
+                                                {qVal.periode}
+                                            </span>
                                         </div>
-                                        <span className="block text-[10px] text-slate-500">
-                                            {qVal.periode}
-                                        </span>
-                                    </div>
-                                ))}
+                                    ),
+                                )}
                             </div>
                         </div>
 
                         {/* Visual 2: Kontribusi per Bidang */}
                         <div className="flex flex-col justify-between rounded-3xl border border-[#e4eaec] bg-white p-6 shadow-xs sm:p-8 lg:col-span-5">
                             <div>
-                                <span className="font-poppins text-xs font-bold uppercase tracking-wider text-[#14bace]">
+                                <span className="font-poppins text-xs font-bold tracking-wider text-[#14bace] uppercase">
                                     Sinergi Program
                                 </span>
                                 <h3 className="font-poppins text-lg font-bold text-slate-800 sm:text-xl">
                                     Kontribusi per Bidang
                                 </h3>
                                 <p className="mt-1 font-sans text-xs text-slate-500">
-                                    Persentase kontribusi pelaksanaan kegiatan berdasarkan bidang kerja yayasan:
+                                    Persentase kontribusi pelaksanaan kegiatan
+                                    berdasarkan bidang kerja yayasan:
                                 </p>
 
                                 <div className="mt-6 space-y-4">
                                     {stats.bidangStats.map((item) => {
                                         const theme =
-                                            BIDANG_COLORS[item.kode.toLowerCase()] ??
-                                            BIDANG_COLORS.umum;
+                                            BIDANG_COLORS[
+                                                item.kode.toLowerCase()
+                                            ] ?? BIDANG_COLORS.umum;
 
                                         return (
                                             <div
@@ -489,7 +518,8 @@ export default function RekapKegiatanPage({
                                                     </span>
                                                     <div className="flex items-center gap-1.5 font-poppins">
                                                         <span className="font-bold text-slate-800">
-                                                            {item.total} kegiatan
+                                                            {item.total}{' '}
+                                                            kegiatan
                                                         </span>
                                                         <span className="text-[11px] text-slate-400">
                                                             ({item.persentase}%)
@@ -498,7 +528,9 @@ export default function RekapKegiatanPage({
                                                 </div>
                                                 <div className="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-slate-100">
                                                     <div
-                                                        style={{ width: `${item.persentase}%` }}
+                                                        style={{
+                                                            width: `${item.persentase}%`,
+                                                        }}
                                                         className={`h-full rounded-full transition-all duration-500 ${theme.bar}`}
                                                     />
                                                 </div>
@@ -512,7 +544,8 @@ export default function RekapKegiatanPage({
                                 <span className="font-poppins font-bold text-[#087f8c]">
                                     Prinsip Transparansi:
                                 </span>{' '}
-                                Seluruh data kegiatan sinkron secara langsung dengan sistem data admin tanpa manipulasi angka.
+                                Seluruh data kegiatan sinkron secara langsung
+                                dengan sistem data admin tanpa manipulasi angka.
                             </div>
                         </div>
                     </section>
@@ -522,10 +555,13 @@ export default function RekapKegiatanPage({
                         <div className="flex flex-col gap-4 rounded-3xl border border-[#e4eaec] bg-white p-5 shadow-xs sm:flex-row sm:items-center sm:justify-between sm:p-6 print:hidden">
                             <div>
                                 <h3 className="font-poppins text-base font-bold text-slate-800 sm:text-lg">
-                                    Daftar Laporan Kegiatan ({filteredKegiatan.length} dari {stats.totalKegiatan})
+                                    Daftar Laporan Kegiatan (
+                                    {filteredKegiatan.length} dari{' '}
+                                    {stats.totalKegiatan})
                                 </h3>
                                 <p className="font-sans text-xs text-slate-500">
-                                    Rincian kegiatan, tanggal pelaksanaan, bidang, dan dokumentasi visual:
+                                    Rincian kegiatan, tanggal pelaksanaan,
+                                    bidang, dan dokumentasi visual:
                                 </p>
                             </div>
 
@@ -533,28 +569,50 @@ export default function RekapKegiatanPage({
                                 {/* Filter Kuartal */}
                                 <select
                                     value={selectedQuarterFilter}
-                                    onChange={(e) => setSelectedQuarterFilter(e.target.value)}
+                                    onChange={(e) =>
+                                        setSelectedQuarterFilter(e.target.value)
+                                    }
                                     className="rounded-xl border border-[#e4eaec] bg-[#fbfdfd] px-3.5 py-2 font-poppins text-xs font-semibold text-slate-700 outline-hidden transition focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20"
                                 >
                                     <option value="all">Semua Kuartal</option>
-                                    <option value="Q1">Kuartal 1 (Jan - Mar)</option>
-                                    <option value="Q2">Kuartal 2 (Apr - Jun)</option>
-                                    <option value="Q3">Kuartal 3 (Jul - Sep)</option>
-                                    <option value="Q4">Kuartal 4 (Okt - Des)</option>
+                                    <option value="Q1">
+                                        Kuartal 1 (Jan - Mar)
+                                    </option>
+                                    <option value="Q2">
+                                        Kuartal 2 (Apr - Jun)
+                                    </option>
+                                    <option value="Q3">
+                                        Kuartal 3 (Jul - Sep)
+                                    </option>
+                                    <option value="Q4">
+                                        Kuartal 4 (Okt - Des)
+                                    </option>
                                 </select>
 
                                 {/* Filter Bidang */}
                                 <select
                                     value={selectedBidangFilter}
-                                    onChange={(e) => setSelectedBidangFilter(e.target.value)}
+                                    onChange={(e) =>
+                                        setSelectedBidangFilter(e.target.value)
+                                    }
                                     className="rounded-xl border border-[#e4eaec] bg-[#fbfdfd] px-3.5 py-2 font-poppins text-xs font-semibold text-slate-700 outline-hidden transition focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20"
                                 >
                                     <option value="all">Semua Bidang</option>
-                                    <option value="pendidikan">Bidang Pendidikan</option>
-                                    <option value="kemanusiaan">Bidang Kemanusiaan</option>
-                                    <option value="keagamaan">Bidang Keagamaan</option>
-                                    <option value="ekonomi">Bidang Ekonomi</option>
-                                    <option value="umum">Umum / Lintas Bidang</option>
+                                    <option value="pendidikan">
+                                        Bidang Pendidikan
+                                    </option>
+                                    <option value="kemanusiaan">
+                                        Bidang Kemanusiaan
+                                    </option>
+                                    <option value="keagamaan">
+                                        Bidang Keagamaan
+                                    </option>
+                                    <option value="ekonomi">
+                                        Bidang Ekonomi
+                                    </option>
+                                    <option value="umum">
+                                        Umum / Lintas Bidang
+                                    </option>
                                 </select>
                             </div>
                         </div>
@@ -570,13 +628,16 @@ export default function RekapKegiatanPage({
                                 Belum Ada Kegiatan Tercatat
                             </h3>
                             <p className="mx-auto mt-2 max-w-md font-sans text-xs leading-relaxed text-slate-500 sm:text-sm">
-                                Tidak ditemukan data kegiatan pada tahun {selectedYear}{' '}
-                                {selectedBidangFilter !== 'all' || selectedQuarterFilter !== 'all'
+                                Tidak ditemukan data kegiatan pada tahun{' '}
+                                {selectedYear}{' '}
+                                {selectedBidangFilter !== 'all' ||
+                                selectedQuarterFilter !== 'all'
                                     ? 'dengan filter yang Anda pilih. Coba sesuaikan filter pencarian.'
                                     : 'dalam database yayasan.'}
                             </p>
                             <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-                                {(selectedBidangFilter !== 'all' || selectedQuarterFilter !== 'all') && (
+                                {(selectedBidangFilter !== 'all' ||
+                                    selectedQuarterFilter !== 'all') && (
                                     <button
                                         type="button"
                                         onClick={() => {
@@ -591,7 +652,9 @@ export default function RekapKegiatanPage({
                                 {availableYears.length > 1 && (
                                     <button
                                         type="button"
-                                        onClick={() => handleYearChange(availableYears[0])}
+                                        onClick={() =>
+                                            handleYearChange(availableYears[0])
+                                        }
                                         className="rounded-xl bg-[#087f8c] px-4 py-2 font-poppins text-xs font-bold text-white transition hover:bg-[#066570]"
                                     >
                                         Buka Laporan Tahun {availableYears[0]}
@@ -605,8 +668,11 @@ export default function RekapKegiatanPage({
                     {filteredKegiatan.length > 0 && (
                         <div className="space-y-6">
                             {filteredKegiatan.map((item, index) => {
-                                const bidangKode = item.bidang?.kode?.toLowerCase() ?? 'umum';
-                                const theme = BIDANG_COLORS[bidangKode] ?? BIDANG_COLORS.umum;
+                                const bidangKode =
+                                    item.bidang?.kode?.toLowerCase() ?? 'umum';
+                                const theme =
+                                    BIDANG_COLORS[bidangKode] ??
+                                    BIDANG_COLORS.umum;
 
                                 return (
                                     <article
@@ -625,9 +691,12 @@ export default function RekapKegiatanPage({
                                                     />
                                                     <div className="absolute top-3 left-3 flex flex-wrap items-center gap-1.5">
                                                         <span
-                                                            className={`inline-flex items-center rounded-full border px-2.5 py-1 font-poppins text-[10px] font-bold uppercase tracking-wider backdrop-blur-md ${theme.bg} ${theme.text} ${theme.border}`}
+                                                            className={`inline-flex items-center rounded-full border px-2.5 py-1 font-poppins text-[10px] font-bold tracking-wider uppercase backdrop-blur-md ${theme.bg} ${theme.text} ${theme.border}`}
                                                         >
-                                                            {item.bidang ? item.bidang.nama : 'Umum'}
+                                                            {item.bidang
+                                                                ? item.bidang
+                                                                      .nama
+                                                                : 'Umum'}
                                                         </span>
                                                         <span className="inline-flex items-center rounded-full bg-black/60 px-2 py-0.5 font-poppins text-[10px] font-semibold text-white backdrop-blur-md">
                                                             {item.kuartal}
@@ -640,7 +709,8 @@ export default function RekapKegiatanPage({
                                                         onClick={() =>
                                                             setPreviewPhoto({
                                                                 url: item.gambar,
-                                                                caption: item.judul,
+                                                                caption:
+                                                                    item.judul,
                                                             })
                                                         }
                                                         className="absolute right-3 bottom-3 flex size-8 items-center justify-center rounded-full bg-white/90 text-slate-700 opacity-0 shadow-sm transition group-hover:opacity-100 hover:bg-white hover:text-[#087f8c]"
@@ -658,14 +728,23 @@ export default function RekapKegiatanPage({
                                                     <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500">
                                                         <div className="flex items-center gap-1.5 font-medium text-[#087f8c]">
                                                             <Calendar className="size-4 text-[#14bace]" />
-                                                            <span>{item.tanggal_kegiatan}</span>
+                                                            <span>
+                                                                {
+                                                                    item.tanggal_kegiatan
+                                                                }
+                                                            </span>
                                                         </div>
                                                         <div className="flex items-center gap-1.5 text-slate-500">
                                                             <MapPin className="size-3.5 text-slate-400" />
-                                                            <span>{item.lokasi}</span>
+                                                            <span>
+                                                                {item.lokasi}
+                                                            </span>
                                                         </div>
                                                         <div className="ml-auto font-mono text-[11px] text-slate-400">
-                                                            #{String(index + 1).padStart(2, '0')}
+                                                            #
+                                                            {String(
+                                                                index + 1,
+                                                            ).padStart(2, '0')}
                                                         </div>
                                                     </div>
 
@@ -681,43 +760,72 @@ export default function RekapKegiatanPage({
 
                                                     {/* Ringkasan Eksekutif Kegiatan */}
                                                     <p className="mt-2 font-sans text-xs leading-relaxed text-slate-600 sm:text-sm">
-                                                        {item.ringkasan || item.deskripsi}
+                                                        {item.ringkasan ||
+                                                            item.deskripsi}
                                                     </p>
 
                                                     {/* Strip Dokumentasi Visual Kegiatan */}
-                                                    {item.dokumentasi && item.dokumentasi.length > 0 && (
-                                                        <div className="mt-4 border-t border-slate-100 pt-3">
-                                                            <div className="mb-2 flex items-center justify-between">
-                                                                <span className="flex items-center gap-1.5 font-poppins text-[11px] font-bold text-slate-500 uppercase tracking-wider">
-                                                                    <ImageIcon className="size-3.5 text-[#14bace]" />
-                                                                    Galeri Dokumentasi ({item.dokumentasi.length} Foto)
-                                                                </span>
+                                                    {item.dokumentasi &&
+                                                        item.dokumentasi
+                                                            .length > 0 && (
+                                                            <div className="mt-4 border-t border-slate-100 pt-3">
+                                                                <div className="mb-2 flex items-center justify-between">
+                                                                    <span className="flex items-center gap-1.5 font-poppins text-[11px] font-bold tracking-wider text-slate-500 uppercase">
+                                                                        <ImageIcon className="size-3.5 text-[#14bace]" />
+                                                                        Galeri
+                                                                        Dokumentasi
+                                                                        (
+                                                                        {
+                                                                            item
+                                                                                .dokumentasi
+                                                                                .length
+                                                                        }{' '}
+                                                                        Foto)
+                                                                    </span>
+                                                                </div>
+                                                                <div className="flex scrollbar-none items-center gap-2 overflow-x-auto pb-1">
+                                                                    {item.dokumentasi.map(
+                                                                        (
+                                                                            doc,
+                                                                            docIdx,
+                                                                        ) => (
+                                                                            <button
+                                                                                key={
+                                                                                    docIdx
+                                                                                }
+                                                                                type="button"
+                                                                                onClick={() =>
+                                                                                    setPreviewPhoto(
+                                                                                        {
+                                                                                            url: doc.url,
+                                                                                            caption:
+                                                                                                doc.caption ||
+                                                                                                item.judul,
+                                                                                        },
+                                                                                    )
+                                                                                }
+                                                                                className="group/thumb relative size-14 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 transition hover:border-[#14bace] hover:opacity-90 sm:size-16"
+                                                                                title={
+                                                                                    doc.caption ||
+                                                                                    'Klik untuk perbesar'
+                                                                                }
+                                                                            >
+                                                                                <img
+                                                                                    src={
+                                                                                        doc.url
+                                                                                    }
+                                                                                    alt={
+                                                                                        doc.caption
+                                                                                    }
+                                                                                    className="size-full object-cover transition duration-300 group-hover/thumb:scale-110"
+                                                                                    loading="lazy"
+                                                                                />
+                                                                            </button>
+                                                                        ),
+                                                                    )}
+                                                                </div>
                                                             </div>
-                                                            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-                                                                {item.dokumentasi.map((doc, docIdx) => (
-                                                                    <button
-                                                                        key={docIdx}
-                                                                        type="button"
-                                                                        onClick={() =>
-                                                                            setPreviewPhoto({
-                                                                                url: doc.url,
-                                                                                caption: doc.caption || item.judul,
-                                                                            })
-                                                                        }
-                                                                        className="group/thumb relative size-14 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 transition hover:border-[#14bace] hover:opacity-90 sm:size-16"
-                                                                        title={doc.caption || 'Klik untuk perbesar'}
-                                                                    >
-                                                                        <img
-                                                                            src={doc.url}
-                                                                            alt={doc.caption}
-                                                                            className="size-full object-cover transition duration-300 group-hover/thumb:scale-110"
-                                                                            loading="lazy"
-                                                                        />
-                                                                    </button>
-                                                                ))}
-                                                            </div>
-                                                        </div>
-                                                    )}
+                                                        )}
                                                 </div>
 
                                                 {/* Footer Kartu Kegiatan */}
@@ -732,7 +840,9 @@ export default function RekapKegiatanPage({
                                                         href={`/kegiatan/${item.id}`}
                                                         className="inline-flex items-center gap-1.5 font-poppins text-xs font-bold text-[#087f8c] transition hover:text-[#14bace] print:hidden"
                                                     >
-                                                        <span>Baca Laporan Lengkap</span>
+                                                        <span>
+                                                            Baca Laporan Lengkap
+                                                        </span>
                                                         <ArrowRight className="size-3.5" />
                                                     </Link>
                                                 </div>
@@ -755,7 +865,11 @@ export default function RekapKegiatanPage({
                                     Dukung Keberlanjutan Program Tahun Depan
                                 </h3>
                                 <p className="mt-2 font-sans text-xs leading-relaxed text-slate-600 sm:text-sm">
-                                    Setiap rupiah donasi dan dukungan yang Anda titipkan telah menjadi senyum serta masa depan cerah bagi adik-adik yatim di Ujungberung, Kota Bandung. Mari bersama merajut lebih banyak kebaikan.
+                                    Setiap rupiah donasi dan dukungan yang Anda
+                                    titipkan telah menjadi senyum serta masa
+                                    depan cerah bagi adik-adik yatim di
+                                    Ujungberung, Kota Bandung. Mari bersama
+                                    merajut lebih banyak kebaikan.
                                 </p>
                             </div>
                             <div className="shrink-0">
@@ -775,7 +889,7 @@ export default function RekapKegiatanPage({
             {/* Lightbox Modal Pratinjau Foto Dokumentasi */}
             {previewPhoto && (
                 <div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-xs animate-in fade-in duration-200"
+                    className="fixed inset-0 z-50 flex animate-in items-center justify-center bg-black/80 p-4 backdrop-blur-xs duration-200 fade-in"
                     onClick={() => setPreviewPhoto(null)}
                 >
                     <div
@@ -806,4 +920,3 @@ export default function RekapKegiatanPage({
         </PublicLayout>
     );
 }
-

@@ -32,8 +32,8 @@ interface LaporanTahunanPageProps {
 }
 
 export default function LaporanTahunanPage({
-    availableYears = [],
-    laporanList = [],
+    availableYears,
+    laporanList,
 }: LaporanTahunanPageProps) {
     const { t } = useLanguage();
     const [filterYear, setFilterYear] = useState<number | 'all'>('all');
@@ -94,7 +94,10 @@ export default function LaporanTahunanPage({
                         <div className="flex items-center gap-2 text-xs font-semibold text-slate-600 sm:text-sm">
                             <Calendar className="size-4 text-[#087f8c]" />
                             <span>
-                                {t('Pilih Tahun Laporan:', 'Select Report Year:')}
+                                {t(
+                                    'Pilih Tahun Laporan:',
+                                    'Select Report Year:',
+                                )}
                             </span>
                         </div>
 
@@ -108,7 +111,8 @@ export default function LaporanTahunanPage({
                                         : 'border border-[#e4eaec] bg-slate-50 text-slate-600 hover:bg-white hover:text-[#087f8c]'
                                 }`}
                             >
-                                {t('Semua Tahun', 'All Years')} ({laporanList.length})
+                                {t('Semua Tahun', 'All Years')} (
+                                {laporanList.length})
                             </button>
                             {availableYears.map((year) => (
                                 <button
@@ -145,14 +149,21 @@ export default function LaporanTahunanPage({
                                             <div className="space-y-2">
                                                 <div className="flex flex-wrap items-center gap-2">
                                                     <span className="rounded-full bg-[#e8f8fa] px-2.5 py-0.5 font-poppins text-[11px] font-bold text-[#087f8c]">
-                                                        {t(`Tahun ${doc.tahun}`, `Year ${doc.tahun}`)}
+                                                        {t(
+                                                            `Tahun ${doc.tahun}`,
+                                                            `Year ${doc.tahun}`,
+                                                        )}
                                                     </span>
                                                     <span className="rounded-full bg-slate-100 px-2.5 py-0.5 font-poppins text-[11px] font-medium text-slate-600">
-                                                        {t('Dokumen Resmi A4', 'Official A4 Document')}
+                                                        {t(
+                                                            'Dokumen Resmi A4',
+                                                            'Official A4 Document',
+                                                        )}
                                                     </span>
                                                     {doc.nomor_dokumen && (
                                                         <span className="font-mono text-[11px] text-slate-400">
-                                                            No: {doc.nomor_dokumen}
+                                                            No:{' '}
+                                                            {doc.nomor_dokumen}
                                                         </span>
                                                     )}
                                                 </div>
@@ -165,14 +176,21 @@ export default function LaporanTahunanPage({
                                                     <div className="flex items-center gap-1.5">
                                                         <Calendar className="size-3.5 text-slate-400" />
                                                         <span>
-                                                            {t('Penerbitan:', 'Published:')}{' '}
-                                                            {doc.tanggal_penerbitan}
+                                                            {t(
+                                                                'Penerbitan:',
+                                                                'Published:',
+                                                            )}{' '}
+                                                            {
+                                                                doc.tanggal_penerbitan
+                                                            }
                                                         </span>
                                                     </div>
                                                     <div className="flex items-center gap-1.5">
                                                         <Building2 className="size-3.5 text-slate-400" />
                                                         <span>
-                                                            {doc.jumlah_kegiatan}{' '}
+                                                            {
+                                                                doc.jumlah_kegiatan
+                                                            }{' '}
                                                             {t(
                                                                 'Kegiatan Terlampir',
                                                                 'Activities Attached',
@@ -198,7 +216,9 @@ export default function LaporanTahunanPage({
                                                 className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[#087f8c] bg-white px-4 py-2.5 font-poppins text-xs font-bold text-[#087f8c] shadow-xs transition hover:bg-[#e8f8fa] active:scale-95 sm:w-36"
                                             >
                                                 <Eye className="size-4" />
-                                                <span>{t('Lihat PDF', 'View PDF')}</span>
+                                                <span>
+                                                    {t('Lihat PDF', 'View PDF')}
+                                                </span>
                                             </a>
 
                                             <a
@@ -206,7 +226,12 @@ export default function LaporanTahunanPage({
                                                 className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#087f8c] px-4 py-2.5 font-poppins text-xs font-bold text-white shadow-xs transition hover:bg-[#066570] active:scale-95 sm:w-36"
                                             >
                                                 <Download className="size-4" />
-                                                <span>{t('Unduh PDF', 'Download PDF')}</span>
+                                                <span>
+                                                    {t(
+                                                        'Unduh PDF',
+                                                        'Download PDF',
+                                                    )}
+                                                </span>
                                             </a>
                                         </div>
                                     </div>

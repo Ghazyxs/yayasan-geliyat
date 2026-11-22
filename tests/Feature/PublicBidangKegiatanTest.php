@@ -122,4 +122,3 @@ test('halaman detail berita kegiatan menampilkan data spesifik sesuai identitas 
     // Kegiatan tidak ditemukan harus 404
     $this->get('/kegiatan/999999')->assertNotFound();
 });
-

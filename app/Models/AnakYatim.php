@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Attributes\Scope;
@@ -26,7 +27,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $jenis_kelamin
  * @property string $status_santunan
  * @property string|null $tempat_lahir
- * @property \Carbon\CarbonInterface $tanggal_lahir
+ * @property CarbonInterface $tanggal_lahir
  * @property string $jenjang
  * @property string $kelurahan
  * @property string|null $alamat_detail
@@ -96,7 +97,7 @@ class AnakYatim extends Model
     /**
      * Atribut yang disembunyikan dari serialisasi JSON/Array (UU PDP).
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $hidden = [
         'nik',
