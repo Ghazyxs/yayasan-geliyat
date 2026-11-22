@@ -21,7 +21,7 @@ interface KegiatanDetailProps {
 
 export default function KegiatanDetailPage({
     kegiatan,
-    kegiatanLainnya = [],
+    kegiatanLainnya,
 }: KegiatanDetailProps) {
     const { t, translateCategory } = useLanguage();
     const paragrafList =
@@ -156,11 +156,14 @@ export default function KegiatanDetailPage({
                             </figure>
 
                             {/* Ringkasan Kegiatan */}
-                            <div className="rounded-2xl border border-[#14bace]/30 border-l-4 border-l-[#14bace] bg-[#e8f8fa]/50 p-5 sm:p-6">
+                            <div className="rounded-2xl border border-l-4 border-[#14bace]/30 border-l-[#14bace] bg-[#e8f8fa]/50 p-5 sm:p-6">
                                 <div className="mb-2 flex items-center gap-2 font-poppins text-xs font-bold tracking-wider text-[#087f8c] uppercase">
                                     <FileText className="size-4 text-[#14bace]" />
                                     <span>
-                                        {t('Ringkasan Kegiatan', 'Activity Summary')}
+                                        {t(
+                                            'Ringkasan Kegiatan',
+                                            'Activity Summary',
+                                        )}
                                     </span>
                                 </div>
                                 <p className="font-sans text-sm leading-relaxed font-medium text-[#1d2b2d] sm:text-base">
@@ -259,7 +262,8 @@ export default function KegiatanDetailPage({
                                         className="inline-flex items-center gap-1.5 font-poppins text-xs font-semibold text-[#1d2b2d] transition hover:text-[#14bace] sm:text-sm"
                                     >
                                         <span>
-                                            {t('Lihat', 'View')} {kegiatan.bidang.nama}
+                                            {t('Lihat', 'View')}{' '}
+                                            {kegiatan.bidang.nama}
                                         </span>
                                         <ArrowRight className="size-4" />
                                     </Link>
@@ -273,22 +277,33 @@ export default function KegiatanDetailPage({
                                 {/* Detail Pelaksanaan Box */}
                                 <div className="rounded-2xl border border-[#e4eaec] bg-white p-6 shadow-xs">
                                     <h3 className="border-b border-gray-100 pb-3 font-poppins text-base font-bold text-[#1d2b2d]">
-                                        {t('Informasi Kegiatan', 'Activity Details')}
+                                        {t(
+                                            'Informasi Kegiatan',
+                                            'Activity Details',
+                                        )}
                                     </h3>
 
                                     <dl className="mt-4 space-y-4">
                                         <div>
                                             <dt className="font-poppins text-xs font-semibold text-gray-400 uppercase">
-                                                {t('Kategori Bidang', 'Division Category')}
+                                                {t(
+                                                    'Kategori Bidang',
+                                                    'Division Category',
+                                                )}
                                             </dt>
                                             <dd className="mt-1 font-poppins text-sm font-bold text-[#087f8c]">
-                                                {translateCategory(kegiatan.kategori)}
+                                                {translateCategory(
+                                                    kegiatan.kategori,
+                                                )}
                                             </dd>
                                         </div>
 
                                         <div>
                                             <dt className="font-poppins text-xs font-semibold text-gray-400 uppercase">
-                                                {t('Tanggal Pelaksanaan', 'Date')}
+                                                {t(
+                                                    'Tanggal Pelaksanaan',
+                                                    'Date',
+                                                )}
                                             </dt>
                                             <dd className="mt-1 font-sans text-sm font-medium text-[#1d2b2d]">
                                                 {kegiatan.tanggal_kegiatan}
@@ -297,7 +312,10 @@ export default function KegiatanDetailPage({
 
                                         <div>
                                             <dt className="font-poppins text-xs font-semibold text-gray-400 uppercase">
-                                                {t('Lokasi Kegiatan', 'Location')}
+                                                {t(
+                                                    'Lokasi Kegiatan',
+                                                    'Location',
+                                                )}
                                             </dt>
                                             <dd className="mt-1 font-sans text-sm font-medium text-[#1d2b2d]">
                                                 {kegiatan.lokasi}
@@ -307,7 +325,10 @@ export default function KegiatanDetailPage({
                                         {kegiatan.bidang && (
                                             <div>
                                                 <dt className="font-poppins text-xs font-semibold text-gray-400 uppercase">
-                                                    {t('Unit Pelaksana', 'Executing Unit')}
+                                                    {t(
+                                                        'Unit Pelaksana',
+                                                        'Executing Unit',
+                                                    )}
                                                 </dt>
                                                 <dd className="mt-1">
                                                     <Link
@@ -342,7 +363,9 @@ export default function KegiatanDetailPage({
                                         prefetch={false}
                                         className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-white py-2.5 font-poppins text-xs font-bold text-[#087f8c] shadow-xs transition hover:bg-[#e8f8fa]"
                                     >
-                                        <span>{t('Donasi Sekarang', 'Donate Now')}</span>
+                                        <span>
+                                            {t('Donasi Sekarang', 'Donate Now')}
+                                        </span>
                                         <ArrowRight className="size-3.5" />
                                     </Link>
                                 </div>
@@ -373,7 +396,9 @@ export default function KegiatanDetailPage({
                                 prefetch={false}
                                 className="inline-flex items-center gap-1.5 font-poppins text-xs font-semibold text-[#14bace] hover:text-[#087f8c] sm:text-sm"
                             >
-                                <span>{t('Semua Kegiatan', 'All Activities')}</span>
+                                <span>
+                                    {t('Semua Kegiatan', 'All Activities')}
+                                </span>
                                 <ArrowRight className="size-4" />
                             </Link>
                         </div>
@@ -394,7 +419,9 @@ export default function KegiatanDetailPage({
                                                 className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
                                             />
                                             <span className="absolute top-3 left-3 rounded-md bg-white/95 px-2.5 py-1 text-[10px] font-bold tracking-wider text-[#087f8c] uppercase shadow-xs">
-                                                {translateCategory(item.kategori)}
+                                                {translateCategory(
+                                                    item.kategori,
+                                                )}
                                             </span>
                                         </div>
                                         <div className="p-5">

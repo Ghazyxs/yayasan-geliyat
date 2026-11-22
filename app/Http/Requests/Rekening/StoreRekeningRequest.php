@@ -41,4 +41,3 @@ class StoreRekeningRequest extends FormRequest
         ];
     }
 }
-

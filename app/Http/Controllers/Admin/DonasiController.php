@@ -38,6 +38,7 @@ class DonasiController extends Controller
 
         $search = trim((string) $request->input('search', ''));
         $statusVerifikasi = (string) $request->input('status_verifikasi', '');
+        $metodePembayaran = (string) $request->input('metode_pembayaran', '');
         $jenisDonasi = (string) $request->input('jenis_donasi', '');
         $tanggalDari = (string) $request->input('tanggal_dari', '');
         $tanggalSampai = (string) $request->input('tanggal_sampai', '');
@@ -51,7 +52,6 @@ class DonasiController extends Controller
             'total' => (clone $baseQuery)->count(),
             'menunggu' => (clone $baseQuery)->where('status_verifikasi', Donasi::STATUS_MENUNGGU)->count(),
             'terverifikasi' => (clone $baseQuery)->where('status_verifikasi', Donasi::STATUS_TERVERIFIKASI)->count(),
-            'ditolak' => (clone $baseQuery)->where('status_verifikasi', Donasi::STATUS_DITOLAK)->count(),
             'dibatalkan' => (clone $baseQuery)->where('status_verifikasi', Donasi::STATUS_DIBATALKAN)->count(),
             'total_nominal_terverifikasi' => Donasi::totalTerverifikasi($user),
             'nominal_menunggu' => (int) (clone $baseQuery)->where('status_verifikasi', Donasi::STATUS_MENUNGGU)->sum('nominal'),
@@ -67,17 +67,21 @@ class DonasiController extends Controller
                     ->orWhere('email_donatur', 'like', $like)
                     ->orWhere('no_whatsapp', 'like', $like)
                     ->orWhere('rekening_tujuan', 'like', $like)
+                    ->orWhere('midtrans_payment_type', 'like', $like)
                     ->orWhere('pesan_doa', 'like', $like)
                     ->orWhere('catatan_verifikasi', 'like', $like)
                     ->orWhereHas('anakYatim', function (Builder $sub) use ($like) {
-                        $sub->where('nama_lengkap', 'like', $like)
-                            ->orWhere('alias', 'like', $like);
+                        $sub->where('nama_lengkap', 'like', $like);
                     });
             });
         }
 
         if ($statusVerifikasi !== '' && in_array($statusVerifikasi, Donasi::STATUS_LIST, true)) {
             $query->where('status_verifikasi', $statusVerifikasi);
+        }
+
+        if ($metodePembayaran !== '' && in_array($metodePembayaran, [Donasi::METODE_MIDTRANS, Donasi::METODE_MANUAL], true)) {
+            $query->where('metode_pembayaran', $metodePembayaran);
         }
 
         if ($jenisDonasi !== '' && in_array($jenisDonasi, Donasi::JENIS_DONASI_LIST, true)) {
@@ -98,7 +102,7 @@ class DonasiController extends Controller
 
         $donasi = $query
             ->with([
-                'anakYatim:id,nama_lengkap,alias,jenjang,kelas,kelurahan,status_asuh',
+                'anakYatim:id,nama_lengkap,jenjang,kelurahan',
                 'anakYatim.bidang:id,kode,nama',
                 'verifikator:id,name',
                 'transaksi:id,donasi_id,kode_transaksi,tipe,kategori,nominal,status_transaksi,tanggal_transaksi,keterangan',
@@ -112,7 +116,7 @@ class DonasiController extends Controller
             ->visibleTo($user)
             ->where('status_binaan', 'aktif')
             ->orderBy('nama_lengkap')
-            ->get(['id', 'nama_lengkap', 'alias', 'jenjang', 'kelas', 'kelurahan', 'status_asuh']);
+            ->get(['id', 'nama_lengkap', 'jenjang', 'kelurahan']);
 
         return Inertia::render('admin/donasi/index', [
             'donasi' => $donasi,
@@ -120,13 +124,11 @@ class DonasiController extends Controller
             'filters' => [
                 'search' => $search,
                 'status_verifikasi' => $statusVerifikasi,
-                'jenis_donasi' => $jenisDonasi,
+                'metode_pembayaran' => $metodePembayaran,
                 'tanggal_dari' => $tanggalDari,
                 'tanggal_sampai' => $tanggalSampai,
                 'tanggal' => $tanggal,
             ],
-            'jenisDonasiList' => Donasi::JENIS_DONASI_LIST,
-            'rekeningList' => Donasi::daftarRekeningAktif(),
             'anakYatimList' => $anakYatimList,
             'permissions' => [
                 'is_super_admin' => $user->isSuperAdmin(),
@@ -141,7 +143,7 @@ class DonasiController extends Controller
     }
 
     /**
-     * Catat pengajuan donasi baru melalui dashboard admin dengan status menunggu.
+     * Catat pengajuan donasi manual baru melalui dashboard admin dengan status menunggu.
      */
     public function store(StoreAdminDonasiRequest $request): RedirectResponse
     {
@@ -149,31 +151,36 @@ class DonasiController extends Controller
 
         $validated = $request->validated();
 
-        $jenisTargetAnak = [
-            Donasi::JENIS_ORANG_TUA_ASUH,
-            Donasi::JENIS_SANTUNAN_RUTIN,
-            Donasi::JENIS_BIMBEL_SINAR,
-        ];
-
         $anakYatimId = null;
-        if (! empty($validated['anak_yatim_id']) && in_array($validated['jenis_donasi'], $jenisTargetAnak, true)) {
+        if (! empty($validated['anak_yatim_id'])) {
             $anak = AnakYatim::query()->findOrFail((int) $validated['anak_yatim_id']);
             Gate::authorize('view', $anak);
             $anakYatimId = $anak->id;
         }
 
-        $file = $request->file('bukti_transfer');
-        $ext = strtolower((string) ($file->guessExtension() ?: $file->getClientOriginalExtension()));
-        if (! in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'pdf'], true)) {
-            $ext = 'jpg';
+        $buktiPath = null;
+        if ($request->hasFile('bukti_transfer')) {
+            $file = $request->file('bukti_transfer');
+            $ext = strtolower((string) ($file->guessExtension() ?: $file->getClientOriginalExtension()));
+            if (! in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'pdf'], true)) {
+                $ext = 'jpg';
+            }
+
+            $filename = Str::uuid()->toString().'.'.$ext;
+            $buktiPath = $file->storeAs('bukti-transfer/'.now()->format('Y/m'), $filename, 'local');
         }
 
-        $filename = Str::uuid()->toString().'.'.$ext;
-        $buktiPath = $file->storeAs('bukti-transfer/'.now()->format('Y/m'), $filename, 'local');
+        $jenisDonasi = ! empty($validated['jenis_donasi'])
+            ? $validated['jenis_donasi']
+            : Donasi::JENIS_DONASI_UMUM;
+
+        $rekeningTujuan = ! empty($validated['rekening_tujuan'])
+            ? trim($validated['rekening_tujuan'])
+            : 'Donasi Manual';
 
         $rekening = null;
         if (! empty($validated['rekening_id'])) {
-            $rekening = RekeningYayasan::find($validated['rekening_id']);
+            $rekening = RekeningYayasan::query()->find((int) $validated['rekening_id']);
         } elseif (! empty($validated['rekening_tujuan'])) {
             $rekening = RekeningYayasan::where(function ($query) use ($validated) {
                 $query->whereRaw("CONCAT(nama_bank, ' - ', nomor_rekening) = ?", [trim($validated['rekening_tujuan'])])
@@ -181,17 +188,19 @@ class DonasiController extends Controller
             })->first();
         }
 
-        $donasi = DB::transaction(function () use ($validated, $anakYatimId, $buktiPath, $rekening) {
+        $donasi = DB::transaction(function () use ($validated, $anakYatimId, $buktiPath, $jenisDonasi, $rekeningTujuan, $rekening) {
             $attributes = [
                 'kode_donasi' => Donasi::generateKodeDonasi(),
                 'nama_donatur' => trim($validated['nama_donatur']),
-                'no_whatsapp' => trim($validated['no_whatsapp']),
-                'jenis_donasi' => $validated['jenis_donasi'],
+                'no_whatsapp' => ! empty($validated['no_whatsapp']) ? trim($validated['no_whatsapp']) : null,
+                'email_donatur' => ! empty($validated['email']) ? trim($validated['email']) : null,
+                'jenis_donasi' => $jenisDonasi,
                 'anak_yatim_id' => $anakYatimId,
-                'rekening_tujuan' => trim($validated['rekening_tujuan']),
+                'rekening_tujuan' => $rekeningTujuan,
                 'nominal' => (int) $validated['nominal'],
                 'pesan_doa' => ! empty($validated['pesan_doa']) ? trim($validated['pesan_doa']) : null,
                 'bukti_transfer' => $buktiPath,
+                'metode_pembayaran' => Donasi::METODE_MANUAL,
                 'status_verifikasi' => Donasi::STATUS_MENUNGGU,
             ];
 
@@ -213,7 +222,7 @@ class DonasiController extends Controller
         Gate::authorize('view', $donasi);
 
         $donasi->load([
-            'anakYatim:id,nama_lengkap,alias,jenjang,kelas,kelurahan,status_asuh',
+            'anakYatim:id,nama_lengkap,jenjang,kelurahan',
             'anakYatim.bidang:id,kode,nama',
             'verifikator:id,name',
             'transaksi:id,donasi_id,kode_transaksi,tipe,kategori,nominal,status_transaksi,tanggal_transaksi,keterangan',
@@ -354,6 +363,8 @@ class DonasiController extends Controller
             'nominal' => (int) $donasi->nominal,
             'pesan_doa' => $donasi->pesan_doa,
             'metode_pembayaran' => $donasi->metode_pembayaran,
+            'metode_label' => $donasi->formatPaymentMethodLabel(),
+            'midtrans_transaction_id' => $donasi->midtrans_transaction_id,
             'midtrans_payment_type' => $donasi->midtrans_payment_type,
             'midtrans_transaction_status' => $donasi->midtrans_transaction_status,
             'email_donatur' => $donasi->email_donatur,
@@ -372,11 +383,8 @@ class DonasiController extends Controller
             'anak_yatim' => $donasi->relationLoaded('anakYatim') && $donasi->anakYatim ? [
                 'id' => $donasi->anakYatim->id,
                 'nama_lengkap' => $donasi->anakYatim->nama_lengkap,
-                'alias' => $donasi->anakYatim->alias,
                 'jenjang' => $donasi->anakYatim->jenjang,
-                'kelas' => $donasi->anakYatim->kelas,
                 'kelurahan' => $donasi->anakYatim->kelurahan,
-                'status_asuh' => $donasi->anakYatim->status_asuh,
                 'bidang' => $donasi->anakYatim->relationLoaded('bidang')
                     ? $donasi->anakYatim->bidang->map(fn ($b) => [
                         'id' => $b->id,
@@ -396,11 +404,10 @@ class DonasiController extends Controller
                 'kategori' => $donasi->transaksi->kategori,
                 'nominal' => (int) $donasi->transaksi->nominal,
                 'status_transaksi' => $donasi->transaksi->status_transaksi,
-                'tanggal_transaksi' => $donasi->transaksi->tanggal_transaksi?->format('Y-m-d'),
+                'tanggal_transaksi' => $donasi->transaksi->tanggal_transaksi->format('Y-m-d'),
                 'keterangan' => $donasi->transaksi->keterangan,
             ] : null,
             'can_verify' => $donasi->status_verifikasi === Donasi::STATUS_MENUNGGU && Gate::forUser($user)->allows('verify', $donasi),
-            'can_reject' => $donasi->status_verifikasi === Donasi::STATUS_MENUNGGU && Gate::forUser($user)->allows('reject', $donasi),
             'can_cancel' => $donasi->status_verifikasi === Donasi::STATUS_TERVERIFIKASI && Gate::forUser($user)->allows('cancel', $donasi),
         ];
     }

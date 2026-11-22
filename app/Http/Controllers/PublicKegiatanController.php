@@ -88,22 +88,27 @@ class PublicKegiatanController extends Controller
      */
     public static function transformKegiatan(Kegiatan $kegiatan): array
     {
-        $gambarUtama = $kegiatan->gambar
-            ?: (self::DEFAULT_CATEGORY_IMAGES[$kegiatan->kategori] ?? self::DEFAULT_CATEGORY_IMAGES['Kemanusiaan']);
+        $rawGambar = is_string($kegiatan->gambar) ? trim($kegiatan->gambar) : '';
+        if ($rawGambar !== '' && ! str_starts_with($rawGambar, 'http') && ! str_starts_with($rawGambar, '/')) {
+            $rawGambar = '/storage/'.ltrim($rawGambar, '/');
+        }
+
+        $gambarUtama = $rawGambar !== ''
+            ? $rawGambar
+            : (self::DEFAULT_CATEGORY_IMAGES[$kegiatan->kategori] ?? self::DEFAULT_CATEGORY_IMAGES['Kemanusiaan']);
 
         $rawDokumentasi = is_array($kegiatan->dokumentasi) ? $kegiatan->dokumentasi : [];
         $dokumentasi = [];
 
-        foreach ($rawDokumentasi as $idx => $item) {
-            if (is_string($item) && trim($item) !== '') {
+        foreach ($rawDokumentasi as $item) {
+            if (! empty($item['url'])) {
+                $docUrl = trim((string) $item['url']);
+                if (! str_starts_with($docUrl, 'http') && ! str_starts_with($docUrl, '/')) {
+                    $docUrl = '/storage/'.ltrim($docUrl, '/');
+                }
                 $dokumentasi[] = [
-                    'url' => trim($item),
-                    'caption' => 'Dokumentasi kegiatan ' . $kegiatan->judul . ' (' . ($idx + 1) . ')',
-                ];
-            } elseif (is_array($item) && ! empty($item['url'])) {
-                $dokumentasi[] = [
-                    'url' => (string) $item['url'],
-                    'caption' => (string) ($item['caption'] ?? ('Dokumentasi kegiatan ' . $kegiatan->judul)),
+                    'url' => $docUrl,
+                    'caption' => (string) ($item['caption'] ?? ('Dokumentasi kegiatan '.$kegiatan->judul)),
                 ];
             }
         }
@@ -124,7 +129,7 @@ class PublicKegiatanController extends Controller
             'paragraf_berita' => $paragrafBerita,
             'lokasi' => $kegiatan->lokasi,
             'tanggal_kegiatan' => self::formatTanggal($kegiatan->tanggal_kegiatan),
-            'tanggal_iso' => $kegiatan->tanggal_kegiatan?->format('Y-m-d'),
+            'tanggal_iso' => $kegiatan->tanggal_kegiatan->format('Y-m-d'),
             'gambar' => $gambarUtama,
             'dokumentasi' => $dokumentasi,
             'bidang' => $kegiatan->bidang ? [

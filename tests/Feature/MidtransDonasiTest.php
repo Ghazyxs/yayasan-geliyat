@@ -37,7 +37,7 @@ beforeEach(function () {
 
 function generateMidtransSignature(string $orderId, string $statusCode, string $grossAmount, string $serverKey): string
 {
-    return hash('sha512', $orderId . $statusCode . $grossAmount . $serverKey);
+    return hash('sha512', $orderId.$statusCode.$grossAmount.$serverKey);
 }
 
 test('public donation submission requires valid email, allows null whatsapp, requests Snap Token, and sends pending email once', function () {
@@ -326,22 +326,23 @@ test('midtrans webhook rejects forged signature with 401 unauthorized', function
     expect($donasi->refresh()->status_verifikasi)->toBe(Donasi::STATUS_MENUNGGU);
 });
 
-test('midtrans settlement for orang tua asuh activates child sponsorship status', function () {
+test('midtrans settlement for orang tua asuh verifies donation and records cash transaction', function () {
     $admin = User::where('email', 'admin.midtrans@geliyat.or.id')->firstOrFail();
 
     $anak = AnakYatim::create([
         'nik' => '3273111122229999',
         'nama_lengkap' => 'Bintang Al-Fatih',
-        'alias' => 'Bintang (B.A.)',
+        'anak_ke' => 1,
         'jenis_kelamin' => 'L',
+        'status_santunan' => AnakYatim::STATUS_SANTUNAN_MENUNGGU,
+        'tempat_lahir' => 'Bandung',
         'tanggal_lahir' => '2016-01-01',
         'jenjang' => 'SD',
-        'kelas' => 'Kelas 3 SD',
         'kelurahan' => 'Cigending',
         'alamat_detail' => 'Jl. Cigending No. 10',
+        'nama_ibu_kandung' => 'Ibu Aminah',
         'nama_wali' => 'Ibu Aminah',
         'status_binaan' => 'aktif',
-        'status_asuh' => AnakYatim::STATUS_ASUH_BELUM,
         'created_by' => $admin->id,
     ]);
 
@@ -373,7 +374,7 @@ test('midtrans settlement for orang tua asuh activates child sponsorship status'
     ])->assertOk();
 
     expect($donasi->refresh()->status_verifikasi)->toBe(Donasi::STATUS_TERVERIFIKASI);
-    expect($anak->refresh()->status_asuh)->toBe(AnakYatim::STATUS_ASUH_AKTIF);
+    expect($donasi->transaksi)->not->toBeNull();
 });
 
 test('public donation invoice page supports resuming pending payment, masks donor email, hides expired or settled snap tokens, and returns 404 for unknown codes', function () {

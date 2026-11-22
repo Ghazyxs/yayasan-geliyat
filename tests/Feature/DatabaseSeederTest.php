@@ -56,18 +56,28 @@ test('user seeder throws exception when password environment variables are missi
 
     $originalSuperPass = env('SEED_SUPER_ADMIN_PASSWORD');
     $originalAdminPass = env('SEED_ADMIN_PASSWORD');
+    $originalConfigSuperPass = config('seed.super_admin.password');
+    $originalConfigAdminPass = config('seed.admin.password');
 
     unset($_ENV['SEED_SUPER_ADMIN_PASSWORD'], $_SERVER['SEED_SUPER_ADMIN_PASSWORD']);
     unset($_ENV['SEED_ADMIN_PASSWORD'], $_SERVER['SEED_ADMIN_PASSWORD']);
     putenv('SEED_SUPER_ADMIN_PASSWORD');
     putenv('SEED_ADMIN_PASSWORD');
+    config([
+        'seed.super_admin.password' => null,
+        'seed.admin.password' => null,
+    ]);
 
     try {
-        expect(fn () => (new UserSeeder())->run())->toThrow(
+        expect(fn () => (new UserSeeder)->run())->toThrow(
             RuntimeException::class,
             'Password seeder belum dikonfigurasi di environment'
         );
     } finally {
+        config([
+            'seed.super_admin.password' => $originalConfigSuperPass,
+            'seed.admin.password' => $originalConfigAdminPass,
+        ]);
         if ($originalSuperPass) {
             putenv("SEED_SUPER_ADMIN_PASSWORD={$originalSuperPass}");
             $_ENV['SEED_SUPER_ADMIN_PASSWORD'] = $originalSuperPass;

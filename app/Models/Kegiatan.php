@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * Kegiatan yayasan. `bidang_id` NULL = kegiatan umum/lintas bidang.
@@ -20,7 +21,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $deskripsi
  * @property string|null $isi_berita
  * @property string $lokasi
- * @property \Illuminate\Support\Carbon $tanggal_kegiatan
+ * @property Carbon $tanggal_kegiatan
  * @property string|null $gambar
  * @property array<int, array{url: string, caption?: string}>|null $dokumentasi
  * @property int $created_by

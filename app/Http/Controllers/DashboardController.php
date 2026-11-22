@@ -87,7 +87,7 @@ class DashboardController extends Controller
             'donasiMenungguNominal' => 0,
             'rekeningAktifCount' => 0,
             'distribusiPendidikan' => $distribusiPendidikan,
-            'namaBidang' => $bidang?->nama ?? 'Unit Kerja',
+            'namaBidang' => $bidang->nama ?? 'Unit Kerja',
             'appEnv' => config('app.env'),
         ]);
     }
@@ -108,10 +108,11 @@ class DashboardController extends Controller
         $total = (clone $query)->count();
 
         $jenjangConfigs = [
-            ['key' => 'SD', 'label' => 'Sekolah Dasar (SD)', 'color' => 'bg-[#14bace]'],
-            ['key' => 'SMP', 'label' => 'Sekolah Menengah Pertama (SMP)', 'color' => 'bg-[#087f8c]'],
-            ['key' => 'SMA', 'label' => 'Sekolah Menengah Atas (SMA)', 'color' => 'bg-amber-400'],
-            ['key' => 'Kuliah', 'label' => 'Perguruan Tinggi / Kuliah', 'color' => 'bg-purple-500'],
+            ['key' => 'SD', 'label' => 'Anak SD', 'color' => 'bg-[#14bace]'],
+            ['key' => 'SMP', 'label' => 'Anak SMP', 'color' => 'bg-[#087f8c]'],
+            ['key' => 'SMA/SMK', 'label' => 'Anak SMA/SMK', 'color' => 'bg-amber-400'],
+            ['key' => 'Perguruan Tinggi', 'label' => 'Perguruan Tinggi', 'color' => 'bg-purple-500'],
+            ['key' => 'Lainnya', 'label' => 'Lainnya', 'color' => 'bg-slate-400'],
         ];
 
         return array_map(function ($item) use ($query, $total) {
@@ -127,4 +128,3 @@ class DashboardController extends Controller
         }, $jenjangConfigs);
     }
 }
-

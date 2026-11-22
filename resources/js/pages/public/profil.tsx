@@ -94,7 +94,10 @@ export default function ProfilPage() {
                         {/* Narasi Latar Belakang */}
                         <div className="flex flex-col items-start lg:col-span-7">
                             <h2 className="font-poppins text-2xl leading-snug font-bold text-[#1d2b2d] sm:text-3xl">
-                                {t('Latar Belakang Yayasan', 'Foundation Background')}
+                                {t(
+                                    'Latar Belakang Yayasan',
+                                    'Foundation Background',
+                                )}
                             </h2>
                             <div className="mt-2 h-1 w-16 rounded-full bg-[#14bace]"></div>
 

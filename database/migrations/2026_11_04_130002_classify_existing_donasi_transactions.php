@@ -25,4 +25,3 @@ return new class extends Migration
         // Tidak perlu revert untuk menjaga integritas data klasifikasi
     }
 };
-

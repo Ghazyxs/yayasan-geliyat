@@ -112,7 +112,8 @@ const BIDANG_EN_MAP: Record<
             },
         ],
         informasi_tambahan: {
-            sasaran_utama: 'Early childhood, elementary school children, and all mentored children',
+            sasaran_utama:
+                'Early childhood, elementary school children, and all mentored children',
             lokasi_pelaksanaan: 'Ujungberung District, Bandung City',
             frekuensi_kegiatan: 'Regularly Scheduled',
             koordinator_unit: 'Education Division Committee',
@@ -246,10 +247,14 @@ const CATEGORY_EN_MAP: Record<string, string> = {
 };
 
 export function useLanguage() {
-    const lang = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+    const lang = useSyncExternalStore(
+        subscribe,
+        getSnapshot,
+        getServerSnapshot,
+    );
 
     const t = useCallback(
-        <T,>(idVal: T, enVal: T): T => {
+        <T>(idVal: T, enVal: T): T => {
             return lang === 'en' ? enVal : idVal;
         },
         [lang],

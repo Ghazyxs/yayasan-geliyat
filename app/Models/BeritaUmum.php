@@ -4,10 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Table;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
+/**
+ * @property int $id
+ * @property string $judul
+ * @property string $slug
+ * @property string|null $kategori
+ * @property string|null $ringkasan
+ * @property string $isi
+ * @property string|null $gambar
+ * @property Carbon|null $tanggal_publikasi
+ * @property bool $is_published
+ * @property int|null $created_by
+ */
 #[Table('berita_umum')]
 #[Fillable([
     'judul',
@@ -22,6 +36,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 ])]
 class BeritaUmum extends Model
 {
+    /** @use HasFactory<Factory<self>> */
     use HasFactory;
 
     protected function casts(): array
@@ -32,9 +47,9 @@ class BeritaUmum extends Model
         ];
     }
 
+    /** @return BelongsTo<User, $this> */
     public function pembuat(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 }
-

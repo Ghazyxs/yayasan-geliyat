@@ -45,13 +45,15 @@ beforeEach(function () {
     $this->anakKemanusiaan = AnakYatim::create([
         'nik' => '3273111122220099',
         'nama_lengkap' => 'Budi Santoso',
-        'alias' => 'Budi (B.S.)',
+        'anak_ke' => 1,
         'jenis_kelamin' => 'L',
+        'status_santunan' => AnakYatim::STATUS_SANTUNAN_MENERIMA,
+        'tempat_lahir' => 'Bandung',
         'tanggal_lahir' => '2014-05-15',
         'jenjang' => 'SD',
-        'kelas' => 'Kelas 5 SD',
         'kelurahan' => 'Cigending',
         'alamat_detail' => 'Jl. Pasir',
+        'nama_ibu_kandung' => 'Ibu Aminah',
         'nama_wali' => 'Ibu Aminah',
         'status_binaan' => 'aktif',
         'created_by' => $this->adminKemanusiaan->id,
@@ -301,12 +303,10 @@ test('verified donation does not show verify or reject action flags in admin pan
 
     $verifiedItem = $donasiItems->firstWhere('id', $donasi->id);
     expect($verifiedItem['can_verify'])->toBeFalse()
-        ->and($verifiedItem['can_reject'])->toBeFalse()
         ->and($verifiedItem['can_cancel'])->toBeTrue();
 
     $menungguItem = $donasiItems->firstWhere('id', $donasiMenunggu->id);
     expect($menungguItem['can_verify'])->toBeTrue()
-        ->and($menungguItem['can_reject'])->toBeTrue()
         ->and($menungguItem['can_cancel'])->toBeFalse();
 });
 
@@ -341,4 +341,3 @@ test('transactions linked to donation are intrinsically classified as donation a
         // Dan TIDAK terhitung ke total belum terklasifikasi
         ->and(TransaksiKeuangan::totalBelumTerklasifikasi())->toBe(0);
 });
-

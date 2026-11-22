@@ -62,7 +62,7 @@ class PublicDonasiController extends Controller
 
         $rekening = null;
         if (! empty($validated['rekening_id'])) {
-            $rekening = RekeningYayasan::find($validated['rekening_id']);
+            $rekening = RekeningYayasan::query()->find((int) $validated['rekening_id']);
         } elseif (! empty($validated['rekening_tujuan'])) {
             $rekening = RekeningYayasan::where(function ($query) use ($validated) {
                 $query->whereRaw("CONCAT(nama_bank, ' - ', nomor_rekening) = ?", [trim($validated['rekening_tujuan'])])

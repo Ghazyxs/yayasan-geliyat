@@ -164,7 +164,9 @@ export default function BaganOrganisasi() {
             ketuaW: 210,
             leftX: 370,
             rightX: 542,
-            ketuaRole: [t('Ketua Bidang Keagamaan', 'Head of Religious Affairs')],
+            ketuaRole: [
+                t('Ketua Bidang Keagamaan', 'Head of Religious Affairs'),
+            ],
             ketuaName: 'Siti Solihah',
             bendaharaRole: [
                 t('Bendahara Bidang', 'Treasurer of'),
@@ -254,9 +256,27 @@ export default function BaganOrganisasi() {
 
                     {/* Ketua Pengawas -> Symmetric T-fork to 2 Anggota Pengawas */}
                     <line x1={1206} y1={90} x2={1206} y2={110} {...lineProps} />
-                    <line x1={1106} y1={110} x2={1306} y2={110} {...lineProps} />
-                    <line x1={1106} y1={110} x2={1106} y2={128} {...lineProps} />
-                    <line x1={1306} y1={110} x2={1306} y2={128} {...lineProps} />
+                    <line
+                        x1={1106}
+                        y1={110}
+                        x2={1306}
+                        y2={110}
+                        {...lineProps}
+                    />
+                    <line
+                        x1={1106}
+                        y1={110}
+                        x2={1106}
+                        y2={128}
+                        {...lineProps}
+                    />
+                    <line
+                        x1={1306}
+                        y1={110}
+                        x2={1306}
+                        y2={128}
+                        {...lineProps}
+                    />
 
                     {/* Ketua Pembina -> Ketua Yayasan (Straight central vertical axis x=710) */}
                     <line x1={710} y1={90} x2={710} y2={136} {...lineProps} />
@@ -319,7 +339,9 @@ export default function BaganOrganisasi() {
                         y={24}
                         w={246}
                         h={66}
-                        roleLines={[t('Anggota Pembina', 'Board of Trustees Member')]}
+                        roleLines={[
+                            t('Anggota Pembina', 'Board of Trustees Member'),
+                        ]}
                         name="Fahmi Ayatullah Assidqie, M.Sos."
                         {...palette.anggotaPembina}
                     />
@@ -406,7 +428,9 @@ export default function BaganOrganisasi() {
                         y={250}
                         w={196}
                         h={64}
-                        roleLines={[t('Sekretaris Yayasan', 'Foundation Secretary')]}
+                        roleLines={[
+                            t('Sekretaris Yayasan', 'Foundation Secretary'),
+                        ]}
                         name="Juaningsih"
                         {...palette.pengurusIntiSub}
                     />
@@ -415,7 +439,9 @@ export default function BaganOrganisasi() {
                         y={250}
                         w={196}
                         h={64}
-                        roleLines={[t('Bendahara Yayasan', 'Foundation Treasurer')]}
+                        roleLines={[
+                            t('Bendahara Yayasan', 'Foundation Treasurer'),
+                        ]}
                         name="Dewi Yulia"
                         {...palette.pengurusIntiSub}
                     />

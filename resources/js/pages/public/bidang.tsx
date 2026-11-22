@@ -72,7 +72,7 @@ export function getBidangImagePosition(kode: string): string {
     }
 }
 
-export default function BidangPage({ bidangList = [] }: BidangPageProps) {
+export default function BidangPage({ bidangList }: BidangPageProps) {
     const { t, translateBidang } = useLanguage();
 
     return (
@@ -140,7 +140,12 @@ export default function BidangPage({ bidangList = [] }: BidangPageProps) {
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-[#1d2b2d]/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                                         <div className="absolute right-4 bottom-4 inline-flex items-center gap-1.5 rounded-full bg-white/95 px-3.5 py-1.5 font-poppins text-xs font-semibold text-[#1d2b2d] opacity-0 shadow-sm transition-all duration-300 group-hover:opacity-100">
-                                            <span>{t('Lihat Detail', 'View Details')}</span>
+                                            <span>
+                                                {t(
+                                                    'Lihat Detail',
+                                                    'View Details',
+                                                )}
+                                            </span>
                                             <ArrowRight className="size-3.5 text-[#14bace]" />
                                         </div>
                                     </Link>
@@ -172,7 +177,10 @@ export default function BidangPage({ bidangList = [] }: BidangPageProps) {
                                     {bidang.program_kerja.length > 0 && (
                                         <div className="mt-6 w-full border-t border-gray-100 pt-4">
                                             <p className="font-poppins text-xs font-bold tracking-wider text-gray-400 uppercase">
-                                                {t('Program Kerja Utama:', 'Key Work Programs:')}
+                                                {t(
+                                                    'Program Kerja Utama:',
+                                                    'Key Work Programs:',
+                                                )}
                                             </p>
                                             <ol className="mt-2.5 list-decimal space-y-1.5 pl-4 font-sans text-xs text-gray-700 sm:text-sm">
                                                 {bidang.program_kerja.map(
@@ -192,7 +200,12 @@ export default function BidangPage({ bidangList = [] }: BidangPageProps) {
                                             prefetch={false}
                                             className="inline-flex items-center gap-2 rounded-xl bg-[#14bace] px-5 py-2.5 font-poppins text-xs font-semibold text-white shadow-sm transition hover:bg-[#087f8c] sm:text-sm"
                                         >
-                                            <span>{t('Lihat Detail Bidang', 'View Division Details')}</span>
+                                            <span>
+                                                {t(
+                                                    'Lihat Detail Bidang',
+                                                    'View Division Details',
+                                                )}
+                                            </span>
                                             <ArrowRight className="size-3.5" />
                                         </Link>
                                     </div>

@@ -35,9 +35,7 @@ const categories = [
     'Berita Lainnya',
 ];
 
-export default function BeritaUmumPage({
-    beritaList = [],
-}: BeritaUmumPageProps) {
+export default function BeritaUmumPage({ beritaList }: BeritaUmumPageProps) {
     const { t, translateCategory } = useLanguage();
     const [selectedCategory, setSelectedCategory] = useState('Semua');
     const [searchQuery, setSearchQuery] = useState('');
@@ -143,8 +141,14 @@ export default function BeritaUmumPage({
                             </div>
                             <h2 className="font-poppins text-lg font-semibold text-[#1d2b2d]">
                                 {beritaList.length === 0
-                                    ? t('Belum Ada Berita Umum', 'No General News Yet')
-                                    : t('Berita Tidak Ditemukan', 'No News Found')}
+                                    ? t(
+                                          'Belum Ada Berita Umum',
+                                          'No General News Yet',
+                                      )
+                                    : t(
+                                          'Berita Tidak Ditemukan',
+                                          'No News Found',
+                                      )}
                             </h2>
                             <p className="mx-auto mt-2 max-w-md text-sm text-gray-600">
                                 {beritaList.length === 0
@@ -182,7 +186,9 @@ export default function BeritaUmumPage({
                                     <div className="flex flex-1 flex-col p-6">
                                         <div className="mb-2 flex items-center justify-between gap-2 text-xs text-gray-500">
                                             <span className="font-semibold text-[#186972]">
-                                                {translateCategory(item.kategori)}
+                                                {translateCategory(
+                                                    item.kategori,
+                                                )}
                                             </span>
                                             <span className="inline-flex items-center gap-1.5">
                                                 <Calendar className="size-3.5 text-[#14bace]" />
@@ -211,7 +217,10 @@ export default function BeritaUmumPage({
                                                 prefetch={false}
                                                 className="inline-flex items-center gap-1.5 font-poppins text-sm font-semibold text-[#186972] transition-colors hover:text-[#14bace]"
                                             >
-                                                {t('Baca Selengkapnya', 'Read More')}
+                                                {t(
+                                                    'Baca Selengkapnya',
+                                                    'Read More',
+                                                )}
                                                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
                                             </Link>
                                         </div>

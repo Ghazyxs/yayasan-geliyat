@@ -36,8 +36,8 @@ interface BidangDetailProps {
 
 export default function BidangDetailPage({
     bidang: rawBidang,
-    kegiatanTerkait = [],
-    bidangLainnya = [],
+    kegiatanTerkait,
+    bidangLainnya,
 }: BidangDetailProps) {
     const { t, translateBidang, translateCategory } = useLanguage();
     const bidang = translateBidang(rawBidang);
@@ -83,7 +83,10 @@ export default function BidangDetailPage({
                         >
                             <ArrowLeft className="size-3.5" />
                             <span>
-                                {t('Kembali ke Daftar Bidang', 'Back to Divisions List')}
+                                {t(
+                                    'Kembali ke Daftar Bidang',
+                                    'Back to Divisions List',
+                                )}
                             </span>
                         </Link>
                     </div>
@@ -109,7 +112,10 @@ export default function BidangDetailPage({
                                     className="inline-flex items-center gap-2 rounded-xl bg-[#14bace] px-5 py-3 font-poppins text-xs font-semibold text-white shadow-sm transition hover:bg-[#087f8c] sm:text-sm"
                                 >
                                     <span>
-                                        {t('Lihat Program Kerja', 'View Work Programs')}
+                                        {t(
+                                            'Lihat Program Kerja',
+                                            'View Work Programs',
+                                        )}
                                     </span>
                                     <ArrowRight className="size-4" />
                                 </a>
@@ -140,7 +146,10 @@ export default function BidangDetailPage({
                             <div className="rounded-2xl border border-[#e4eaec] bg-white p-6 shadow-xs sm:p-8">
                                 <div className="mb-4">
                                     <h2 className="font-poppins text-lg font-bold text-[#1d2b2d] sm:text-xl">
-                                        {t(`Tentang ${bidang.nama}`, `About ${bidang.nama}`)}
+                                        {t(
+                                            `Tentang ${bidang.nama}`,
+                                            `About ${bidang.nama}`,
+                                        )}
                                     </h2>
                                 </div>
                                 <p className="font-sans text-sm leading-relaxed text-gray-700 sm:text-base sm:leading-loose">
@@ -154,7 +163,10 @@ export default function BidangDetailPage({
                                 <div className="rounded-2xl border border-[#e4eaec] bg-white p-6 shadow-xs sm:p-8">
                                     <div className="mb-5">
                                         <h2 className="font-poppins text-lg font-bold text-[#1d2b2d] sm:text-xl">
-                                            {t('Tujuan Bidang', 'Division Objectives')}
+                                            {t(
+                                                'Tujuan Bidang',
+                                                'Division Objectives',
+                                            )}
                                         </h2>
                                         <p className="font-sans text-xs text-gray-500">
                                             {t(
@@ -166,7 +178,10 @@ export default function BidangDetailPage({
 
                                     <ol className="list-decimal space-y-3 pl-5 font-sans text-sm leading-relaxed text-gray-700 sm:text-base">
                                         {bidang.tujuan.map((item, index) => (
-                                            <li key={index} className="leading-relaxed">
+                                            <li
+                                                key={index}
+                                                className="leading-relaxed"
+                                            >
                                                 {item}
                                             </li>
                                         ))}
@@ -181,7 +196,10 @@ export default function BidangDetailPage({
                             >
                                 <div className="mb-6">
                                     <h2 className="font-poppins text-lg font-bold text-[#1d2b2d] sm:text-xl">
-                                        {t('Program Kerja Utama', 'Key Work Programs')}
+                                        {t(
+                                            'Program Kerja Utama',
+                                            'Key Work Programs',
+                                        )}
                                     </h2>
                                     <p className="font-sans text-xs text-gray-500">
                                         {t(
@@ -322,7 +340,10 @@ export default function BidangDetailPage({
                                                 {bidang.program_kerja.length}
                                             </p>
                                             <p className="font-sans text-[11px] text-gray-500">
-                                                {t('Program Kerja', 'Work Programs')}
+                                                {t(
+                                                    'Program Kerja',
+                                                    'Work Programs',
+                                                )}
                                             </p>
                                         </div>
                                         <div className="rounded-xl bg-[#f7fcfd] p-3 text-center">
@@ -330,7 +351,10 @@ export default function BidangDetailPage({
                                                 5
                                             </p>
                                             <p className="font-sans text-[11px] text-gray-500">
-                                                {t('Kelurahan Binaan', 'Mentored Subdistricts')}
+                                                {t(
+                                                    'Kelurahan Binaan',
+                                                    'Mentored Subdistricts',
+                                                )}
                                             </p>
                                         </div>
                                     </div>
@@ -366,7 +390,10 @@ export default function BidangDetailPage({
                                 className="inline-flex items-center gap-1.5 font-poppins text-xs font-semibold text-[#14bace] hover:text-[#087f8c] sm:text-sm"
                             >
                                 <span>
-                                    {t('Lihat Semua Kegiatan', 'View All Activities')}
+                                    {t(
+                                        'Lihat Semua Kegiatan',
+                                        'View All Activities',
+                                    )}
                                 </span>
                                 <ArrowRight className="size-4" />
                             </Link>
@@ -388,7 +415,9 @@ export default function BidangDetailPage({
                                                 className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
                                             />
                                             <span className="absolute top-3 left-3 rounded-md bg-white/95 px-2.5 py-1 text-[10px] font-bold tracking-wider text-[#087f8c] uppercase shadow-xs">
-                                                {translateCategory(act.kategori)}
+                                                {translateCategory(
+                                                    act.kategori,
+                                                )}
                                             </span>
                                         </div>
 
@@ -447,7 +476,9 @@ export default function BidangDetailPage({
                                 prefetch={false}
                                 className="hidden items-center gap-1.5 font-poppins text-xs font-semibold text-[#087f8c] hover:text-[#14bace] sm:inline-flex"
                             >
-                                <span>{t('Semua Bidang', 'All Divisions')}</span>
+                                <span>
+                                    {t('Semua Bidang', 'All Divisions')}
+                                </span>
                                 <ArrowRight className="size-3.5" />
                             </Link>
                         </div>

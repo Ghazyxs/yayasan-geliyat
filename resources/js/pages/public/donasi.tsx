@@ -22,7 +22,7 @@ declare global {
                     onPending?: (result: any) => void;
                     onError?: (result: any) => void;
                     onClose?: () => void;
-                }
+                },
             ) => void;
         };
     }
@@ -47,13 +47,7 @@ interface DonasiPageProps {
 }
 
 const DEFAULT_NOMINAL_OPTIONS: number[] = [
-    5000,
-    10000,
-    15000,
-    20000,
-    25000,
-    50000,
-    100000,
+    5000, 10000, 15000, 20000, 25000, 50000, 100000,
 ];
 
 const ALUR_BERDONASI_ID = [
@@ -104,7 +98,6 @@ const ALUR_BERDONASI_EN = [
 
 export default function DonasiPage({
     nominalOptions = DEFAULT_NOMINAL_OPTIONS,
-    donasiSubmitted = null,
     midtransClientKey = null,
     midtransSnapJsUrl = 'https://app.sandbox.midtrans.com/snap/snap.js',
 }: DonasiPageProps) {
@@ -115,7 +108,9 @@ export default function DonasiPage({
     }>().props;
 
     const daftarNominal =
-        nominalOptions && nominalOptions.length > 0 ? nominalOptions : DEFAULT_NOMINAL_OPTIONS;
+        nominalOptions && nominalOptions.length > 0
+            ? nominalOptions
+            : DEFAULT_NOMINAL_OPTIONS;
 
     const alurBerdonasi = t(ALUR_BERDONASI_ID, ALUR_BERDONASI_EN);
 
@@ -178,7 +173,9 @@ export default function DonasiPage({
         }
     };
 
-    const handleCustomNominalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleCustomNominalChange = (
+        e: React.ChangeEvent<HTMLInputElement>,
+    ) => {
         const rawValue = e.target.value.replace(/[^0-9]/g, '');
         if (!rawValue) {
             setCustomNominalInput('');
@@ -246,18 +243,21 @@ export default function DonasiPage({
 
         try {
             const csrfMeta = document.querySelector('meta[name="csrf-token"]');
-            const token = csrfMeta?.getAttribute('content') || pageProps.csrf_token || '';
+            const token =
+                csrfMeta?.getAttribute('content') || pageProps.csrf_token || '';
 
             const response = await fetch('/donasi', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json',
+                    Accept: 'application/json',
                     'X-CSRF-TOKEN': token,
                     'X-Requested-With': 'XMLHttpRequest',
                 },
                 body: JSON.stringify({
-                    nama_donatur: isHambaAllah ? 'Hamba Allah' : namaDonatur.trim(),
+                    nama_donatur: isHambaAllah
+                        ? 'Hamba Allah'
+                        : namaDonatur.trim(),
                     email: email.trim(),
                     nominal: nominal,
                     pesan_doa: pesanDoa.trim() || undefined,
@@ -418,7 +418,10 @@ export default function DonasiPage({
             <div className="border-b border-[#e4eaec] bg-gradient-to-r from-[#d1f6fa]/60 via-[#e8f8fa] to-[#f7fcfd] py-10 sm:py-14">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <h1 className="font-poppins text-3xl font-bold text-slate-800 sm:text-4xl">
-                        {t('Donasi & Sedekah Digital', 'Digital Donation & Charity')}
+                        {t(
+                            'Donasi & Sedekah Digital',
+                            'Digital Donation & Charity',
+                        )}
                     </h1>
                     <nav className="mt-2 flex items-center gap-2 font-poppins text-sm text-slate-500">
                         <Link
@@ -465,9 +468,15 @@ export default function DonasiPage({
                                               : 'bg-rose-100 text-rose-700'
                                     }`}
                                 >
-                                    {globalAlert.type === 'success' && <CheckCircle2 className="size-5" />}
-                                    {globalAlert.type === 'pending' && <Clock className="size-5" />}
-                                    {globalAlert.type === 'error' && <AlertCircle className="size-5" />}
+                                    {globalAlert.type === 'success' && (
+                                        <CheckCircle2 className="size-5" />
+                                    )}
+                                    {globalAlert.type === 'pending' && (
+                                        <Clock className="size-5" />
+                                    )}
+                                    {globalAlert.type === 'error' && (
+                                        <AlertCircle className="size-5" />
+                                    )}
                                 </div>
                                 <div className="w-full">
                                     <h4 className="font-poppins text-sm font-bold sm:text-base">
@@ -494,7 +503,10 @@ export default function DonasiPage({
                                         <div className="mt-3 flex flex-wrap items-center gap-4 rounded-xl border border-current/15 bg-white/80 p-3 text-xs sm:text-sm">
                                             <div>
                                                 <span className="block text-[11px] text-slate-500">
-                                                    {t('Kode Donasi', 'Donation Code')}
+                                                    {t(
+                                                        'Kode Donasi',
+                                                        'Donation Code',
+                                                    )}
                                                 </span>
                                                 <span className="font-mono font-bold text-slate-800">
                                                     {globalAlert.kode_donasi}
@@ -506,23 +518,31 @@ export default function DonasiPage({
                                                         {t('Nominal', 'Amount')}
                                                     </span>
                                                     <span className="font-semibold text-[#087f8c]">
-                                                        {formatRupiah(globalAlert.nominal)}
+                                                        {formatRupiah(
+                                                            globalAlert.nominal,
+                                                        )}
                                                     </span>
                                                 </div>
                                             )}
                                             <div className="ml-auto flex flex-wrap items-center gap-2">
                                                 <span className="inline-flex items-center gap-1 rounded-full bg-[#e8f8fa] px-2.5 py-0.5 text-[11px] font-bold text-[#087f8c]">
                                                     <ShieldCheck className="size-3" />
-                                                    {t('Tercatat Resmi', 'Officially Recorded')}
+                                                    {t(
+                                                        'Tercatat Resmi',
+                                                        'Officially Recorded',
+                                                    )}
                                                 </span>
                                                 {globalAlert.invoice_url && (
                                                     <Link
-                                                        href={globalAlert.invoice_url}
+                                                        href={
+                                                            globalAlert.invoice_url
+                                                        }
                                                         prefetch={false}
                                                         className="inline-flex items-center gap-1.5 rounded-lg bg-[#14bace] px-3 py-1.5 font-poppins text-xs font-semibold text-white transition hover:bg-[#087f8c]"
                                                     >
                                                         <span>
-                                                            {globalAlert.type === 'success'
+                                                            {globalAlert.type ===
+                                                            'success'
                                                                 ? t(
                                                                       'Lihat & Cetak Invoice',
                                                                       'View & Print Invoice',
@@ -570,7 +590,10 @@ export default function DonasiPage({
                         <div className="flex flex-col justify-between rounded-3xl border border-[#e4eaec] bg-white p-6 shadow-xs sm:p-8 lg:col-span-5">
                             <div>
                                 <h2 className="font-poppins text-xl font-bold text-slate-800 sm:text-2xl">
-                                    {t('Alur Berdonasi Online', 'Online Donation Flow')}
+                                    {t(
+                                        'Alur Berdonasi Online',
+                                        'Online Donation Flow',
+                                    )}
                                 </h2>
 
                                 <div className="mt-6 space-y-3.5">
@@ -620,7 +643,10 @@ export default function DonasiPage({
                                 <div>
                                     <div className="border-b border-slate-100 pb-4">
                                         <h2 className="font-poppins text-xl font-bold text-slate-800 sm:text-2xl">
-                                            {t('Formulir Donasi', 'Donation Form')}
+                                            {t(
+                                                'Formulir Donasi',
+                                                'Donation Form',
+                                            )}
                                         </h2>
                                         <p className="mt-1 font-sans text-xs text-slate-500 sm:text-sm">
                                             {t(
@@ -641,7 +667,10 @@ export default function DonasiPage({
                                                     htmlFor="nama_donatur"
                                                     className="mb-1.5 block font-poppins text-xs font-semibold text-slate-700"
                                                 >
-                                                    {t('Nama Lengkap', 'Full Name')}{' '}
+                                                    {t(
+                                                        'Nama Lengkap',
+                                                        'Full Name',
+                                                    )}{' '}
                                                     <span className="text-rose-500">
                                                         *
                                                     </span>
@@ -659,15 +688,28 @@ export default function DonasiPage({
                                                                   'e.g. Ahmad Fauzan',
                                                               )
                                                     }
-                                                    value={isHambaAllah ? 'Hamba Allah' : namaDonatur}
+                                                    value={
+                                                        isHambaAllah
+                                                            ? 'Hamba Allah'
+                                                            : namaDonatur
+                                                    }
                                                     onChange={(e) => {
-                                                        setNamaDonatur(e.target.value);
-                                                        if (fieldErrors.nama_donatur) {
-                                                            setFieldErrors((prev) => {
-                                                                const next = { ...prev };
-                                                                delete next.nama_donatur;
-                                                                return next;
-                                                            });
+                                                        setNamaDonatur(
+                                                            e.target.value,
+                                                        );
+                                                        if (
+                                                            fieldErrors.nama_donatur
+                                                        ) {
+                                                            setFieldErrors(
+                                                                (prev) => {
+                                                                    const next =
+                                                                        {
+                                                                            ...prev,
+                                                                        };
+                                                                    delete next.nama_donatur;
+                                                                    return next;
+                                                                },
+                                                            );
                                                         }
                                                     }}
                                                     className={`w-full rounded-xl border border-[#e4eaec] px-3.5 py-2.5 font-sans text-sm outline-hidden transition ${
@@ -681,34 +723,64 @@ export default function DonasiPage({
                                                         <input
                                                             type="radio"
                                                             name="donor_identity"
-                                                            checked={!isHambaAllah}
+                                                            checked={
+                                                                !isHambaAllah
+                                                            }
                                                             onChange={() => {
-                                                                setIsHambaAllah(false);
-                                                                setNamaDonatur(savedNama);
+                                                                setIsHambaAllah(
+                                                                    false,
+                                                                );
+                                                                setNamaDonatur(
+                                                                    savedNama,
+                                                                );
                                                             }}
                                                             className="size-3.5 accent-[#14bace]"
                                                         />
                                                         <span>
-                                                            {t('Nama Sendiri', 'Own Name')}
+                                                            {t(
+                                                                'Nama Sendiri',
+                                                                'Own Name',
+                                                            )}
                                                         </span>
                                                     </label>
                                                     <label className="inline-flex cursor-pointer items-center gap-1 font-poppins text-[11px] text-slate-600 hover:text-[#087f8c]">
                                                         <input
                                                             type="radio"
                                                             name="donor_identity"
-                                                            checked={isHambaAllah}
+                                                            checked={
+                                                                isHambaAllah
+                                                            }
                                                             onChange={() => {
-                                                                if (!isHambaAllah && namaDonatur !== 'Hamba Allah') {
-                                                                    setSavedNama(namaDonatur);
+                                                                if (
+                                                                    !isHambaAllah &&
+                                                                    namaDonatur !==
+                                                                        'Hamba Allah'
+                                                                ) {
+                                                                    setSavedNama(
+                                                                        namaDonatur,
+                                                                    );
                                                                 }
-                                                                setIsHambaAllah(true);
-                                                                setNamaDonatur('Hamba Allah');
-                                                                if (fieldErrors.nama_donatur) {
-                                                                    setFieldErrors((prev) => {
-                                                                        const next = { ...prev };
-                                                                        delete next.nama_donatur;
-                                                                        return next;
-                                                                    });
+                                                                setIsHambaAllah(
+                                                                    true,
+                                                                );
+                                                                setNamaDonatur(
+                                                                    'Hamba Allah',
+                                                                );
+                                                                if (
+                                                                    fieldErrors.nama_donatur
+                                                                ) {
+                                                                    setFieldErrors(
+                                                                        (
+                                                                            prev,
+                                                                        ) => {
+                                                                            const next =
+                                                                                {
+                                                                                    ...prev,
+                                                                                };
+                                                                            delete next.nama_donatur;
+                                                                            return next;
+                                                                        },
+                                                                    );
                                                                 }
                                                             }}
                                                             className="size-3.5 accent-[#14bace]"
@@ -716,11 +788,14 @@ export default function DonasiPage({
                                                         <span>Hamba Allah</span>
                                                     </label>
                                                 </div>
-                                                {fieldErrors.nama_donatur && !isHambaAllah && (
-                                                    <p className="mt-1 text-xs text-rose-600">
-                                                        {fieldErrors.nama_donatur}
-                                                    </p>
-                                                )}
+                                                {fieldErrors.nama_donatur &&
+                                                    !isHambaAllah && (
+                                                        <p className="mt-1 text-xs text-rose-600">
+                                                            {
+                                                                fieldErrors.nama_donatur
+                                                            }
+                                                        </p>
+                                                    )}
                                             </div>
 
                                             <div>
@@ -728,7 +803,10 @@ export default function DonasiPage({
                                                     htmlFor="email"
                                                     className="mb-1.5 block font-poppins text-xs font-semibold text-slate-700"
                                                 >
-                                                    {t('Alamat Email', 'Email Address')}{' '}
+                                                    {t(
+                                                        'Alamat Email',
+                                                        'Email Address',
+                                                    )}{' '}
                                                     <span className="text-rose-500">
                                                         *
                                                     </span>
@@ -743,13 +821,20 @@ export default function DonasiPage({
                                                     )}
                                                     value={email}
                                                     onChange={(e) => {
-                                                        setEmail(e.target.value);
+                                                        setEmail(
+                                                            e.target.value,
+                                                        );
                                                         if (fieldErrors.email) {
-                                                            setFieldErrors((prev) => {
-                                                                const next = { ...prev };
-                                                                delete next.email;
-                                                                return next;
-                                                            });
+                                                            setFieldErrors(
+                                                                (prev) => {
+                                                                    const next =
+                                                                        {
+                                                                            ...prev,
+                                                                        };
+                                                                    delete next.email;
+                                                                    return next;
+                                                                },
+                                                            );
                                                         }
                                                     }}
                                                     className="w-full rounded-xl border border-[#e4eaec] bg-white px-3.5 py-2.5 font-sans text-sm text-slate-800 outline-hidden transition focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20"
@@ -783,7 +868,10 @@ export default function DonasiPage({
                                                 {nominal !== null && (
                                                     <span className="inline-flex items-center gap-1 rounded-full bg-[#e8f8fa] px-2.5 py-0.5 font-poppins text-xs font-bold text-[#087f8c]">
                                                         <CheckCircle2 className="size-3.5 text-[#14bace]" />
-                                                        {t('Dipilih:', 'Selected:')}{' '}
+                                                        {t(
+                                                            'Dipilih:',
+                                                            'Selected:',
+                                                        )}{' '}
                                                         {formatRupiah(nominal)}
                                                     </span>
                                                 )}
@@ -798,21 +886,33 @@ export default function DonasiPage({
                                                 className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:grid-cols-4"
                                             >
                                                 {daftarNominal.map((nom) => {
-                                                    const isSelected = nominal === nom && !customNominalInput;
+                                                    const isSelected =
+                                                        nominal === nom &&
+                                                        !customNominalInput;
                                                     return (
                                                         <button
                                                             key={nom}
                                                             type="button"
                                                             role="radio"
-                                                            aria-checked={isSelected}
-                                                            onClick={() => handleSelectNominal(nom)}
+                                                            aria-checked={
+                                                                isSelected
+                                                            }
+                                                            onClick={() =>
+                                                                handleSelectNominal(
+                                                                    nom,
+                                                                )
+                                                            }
                                                             className={`group relative flex items-center justify-between rounded-xl border px-3.5 py-3 text-left font-poppins text-xs font-semibold transition sm:text-sm ${
                                                                 isSelected
                                                                     ? 'border-[#14bace] bg-[#e8f8fa] font-bold text-[#087f8c] shadow-xs ring-2 ring-[#14bace]/25'
                                                                     : 'border-[#e4eaec] bg-white text-slate-700 hover:border-[#14bace]/60 hover:bg-[#f7fcfd] hover:text-[#087f8c]'
                                                             }`}
                                                         >
-                                                            <span>{formatRupiah(nom)}</span>
+                                                            <span>
+                                                                {formatRupiah(
+                                                                    nom,
+                                                                )}
+                                                            </span>
                                                             <span
                                                                 className={`flex size-4 shrink-0 items-center justify-center rounded-full border transition ${
                                                                     isSelected
@@ -852,8 +952,12 @@ export default function DonasiPage({
                                                             'Contoh: 150.000',
                                                             'e.g. 150.000',
                                                         )}
-                                                        value={customNominalInput}
-                                                        onChange={handleCustomNominalChange}
+                                                        value={
+                                                            customNominalInput
+                                                        }
+                                                        onChange={
+                                                            handleCustomNominalChange
+                                                        }
                                                         className="w-full rounded-xl border border-[#e4eaec] bg-white py-2.5 pr-3.5 pl-10 font-sans text-sm font-semibold text-slate-800 outline-hidden transition focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20"
                                                     />
                                                 </div>
@@ -885,7 +989,9 @@ export default function DonasiPage({
                                                     'Write a prayer or message of hope for the mentored orphans...',
                                                 )}
                                                 value={pesanDoa}
-                                                onChange={(e) => setPesanDoa(e.target.value)}
+                                                onChange={(e) =>
+                                                    setPesanDoa(e.target.value)
+                                                }
                                                 className="w-full rounded-xl border border-[#e4eaec] bg-white px-3.5 py-2.5 font-sans text-sm text-slate-800 outline-hidden transition focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20"
                                             />
                                         </div>

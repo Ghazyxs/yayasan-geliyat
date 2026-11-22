@@ -144,7 +144,7 @@ class StorePublicDonasiRequest extends FormRequest
             $rekeningTujuan = trim((string) $this->input('rekening_tujuan'));
 
             if ($rekeningId) {
-                $rekening = RekeningYayasan::find($rekeningId);
+                $rekening = RekeningYayasan::query()->find((int) $rekeningId);
                 if ($rekening && ! $rekening->is_active) {
                     $v->errors()->add('rekening_id', 'Rekening tujuan transfer sedang nonaktif dan tidak dapat menerima donasi baru.');
                 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\PublicLaporanTahunanController;
 use App\Models\Kegiatan;
 use App\Models\LaporanTahunan;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -113,4 +114,3 @@ class LaporanTahunanAdminController extends Controller
         return app(PublicLaporanTahunanController::class)->download($tahun);
     }
 }
-

@@ -59,8 +59,8 @@ class FortifyServiceProvider extends ServiceProvider
             'canResetPassword' => Features::enabled(Features::resetPasswords()),
             'status' => $request->session()->get('status'),
             'demoPasswords' => app()->isLocal() ? [
-                (string) env('SEED_SUPER_ADMIN_EMAIL', 'ketua@geliyat.or.id') => (string) (env('SEED_SUPER_ADMIN_PASSWORD') ?: 'password'),
-                (string) env('SEED_ADMIN_EMAIL', 'admin@geliyat.or.id') => (string) (env('SEED_ADMIN_PASSWORD') ?: 'password'),
+                (string) config('seed.super_admin.email', 'ketua@geliyat.or.id') => (string) (config('seed.super_admin.password') ?: 'password'),
+                (string) config('seed.admin.email', 'admin@geliyat.or.id') => (string) (config('seed.admin.password') ?: 'password'),
             ] : null,
         ]));
 

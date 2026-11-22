@@ -66,4 +66,3 @@ class StoreTransaksiRequest extends FormRequest
         ];
     }
 }
-

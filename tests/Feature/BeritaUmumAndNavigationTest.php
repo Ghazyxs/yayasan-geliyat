@@ -96,4 +96,3 @@ test('beranda menampilkan kegiatan terbaru dari database untuk banner hero', fun
             ->where('kegiatanTerbaru.0.judul', 'Bimbingan Belajar SINAR Pekan Ini')
         );
 });
-

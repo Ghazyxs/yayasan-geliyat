@@ -69,8 +69,8 @@ class PublicRekapKegiatanController extends Controller
         $kegiatanList = $kegiatanRaw->map(function (Kegiatan $k) {
             $base = PublicKegiatanController::transformKegiatan($k);
             $tgl = $k->tanggal_kegiatan;
-            $bulan = $tgl ? (int) $tgl->month : 1;
-            $quarter = $tgl ? (int) ceil($bulan / 3) : 1;
+            $bulan = (int) $tgl->month;
+            $quarter = (int) ceil($bulan / 3);
 
             return array_merge($base, [
                 'bulan_angka' => $bulan,
@@ -113,7 +113,7 @@ class PublicRekapKegiatanController extends Controller
         // Distribusi per Bulan (1 - 12)
         $monthlyDistribution = [];
         for ($m = 1; $m <= 12; $m++) {
-            $count = $kegiatanRaw->filter(fn ($k) => $k->tanggal_kegiatan && (int) $k->tanggal_kegiatan->month === $m)->count();
+            $count = $kegiatanRaw->filter(fn (Kegiatan $k) => (int) $k->tanggal_kegiatan->month === $m)->count();
             $monthlyDistribution[] = [
                 'bulan' => $m,
                 'nama_bulan' => self::BULAN_NAMES[$m],
@@ -131,7 +131,7 @@ class PublicRekapKegiatanController extends Controller
         ];
 
         foreach ($monthlyDistribution as $item) {
-            $q = 'Q' . ceil($item['bulan'] / 3);
+            $q = 'Q'.ceil($item['bulan'] / 3);
             if (isset($quarterDistribution[$q])) {
                 $quarterDistribution[$q]['total'] += $item['total'];
             }
@@ -140,6 +140,7 @@ class PublicRekapKegiatanController extends Controller
         // Hitung total dokumentasi visual yang tersimpan
         $totalDokumentasi = $kegiatanRaw->reduce(function ($carry, Kegiatan $k) {
             $photos = is_array($k->dokumentasi) ? count($k->dokumentasi) : 0;
+
             return $carry + ($k->gambar ? 1 : 0) + $photos;
         }, 0);
 

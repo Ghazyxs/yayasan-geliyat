@@ -76,7 +76,7 @@ class PublicBidangController extends Controller
                 'deskripsi' => $kegiatan->deskripsi,
                 'lokasi' => $kegiatan->lokasi,
                 'tanggal_kegiatan' => PublicKegiatanController::formatTanggal($kegiatan->tanggal_kegiatan),
-                'tanggal_iso' => $kegiatan->tanggal_kegiatan?->format('Y-m-d'),
+                'tanggal_iso' => $kegiatan->tanggal_kegiatan->format('Y-m-d'),
                 'gambar' => $kegiatan->gambar ?: (self::DEFAULT_IMAGES[$bidang->kode] ?? self::DEFAULT_IMAGES[Bidang::PENDIDIKAN]),
             ]);
 
@@ -138,7 +138,7 @@ class PublicBidangController extends Controller
                 'sasaran_utama' => (string) ($info['sasaran_utama'] ?? 'Anak yatim & ibu yatim binaan'),
                 'lokasi_pelaksanaan' => (string) ($info['lokasi_pelaksanaan'] ?? 'Kecamatan Ujungberung, Kota Bandung'),
                 'frekuensi_kegiatan' => (string) ($info['frekuensi_kegiatan'] ?? 'Rutin Terjadwal'),
-                'koordinator_unit' => (string) ($info['koordinator_unit'] ?? 'Pengurus ' . $bidang->nama),
+                'koordinator_unit' => (string) ($info['koordinator_unit'] ?? 'Pengurus '.$bidang->nama),
             ],
             'kegiatan_count' => (int) ($bidang->kegiatan_count ?? 0),
             'anak_yatim_count' => (int) ($bidang->anak_yatim_count ?? 0),

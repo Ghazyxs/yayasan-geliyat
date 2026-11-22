@@ -1,11 +1,5 @@
 import { Link } from '@inertiajs/react';
-import {
-    Instagram,
-    MapPin,
-    Mail,
-    Phone,
-    Heart,
-} from 'lucide-react';
+import { Instagram, MapPin, Mail, Phone, Heart } from 'lucide-react';
 import { useLanguage } from '@/hooks/use-language';
 
 export default function PublicFooter() {
@@ -57,7 +51,10 @@ export default function PublicFooter() {
                                     prefetch={false}
                                     className="transition-colors hover:text-white hover:underline"
                                 >
-                                    {t('BINAYA (Pendidikan)', 'BINAYA (Education)')}
+                                    {t(
+                                        'BINAYA (Pendidikan)',
+                                        'BINAYA (Education)',
+                                    )}
                                 </Link>
                             </li>
                             <li>
@@ -66,7 +63,10 @@ export default function PublicFooter() {
                                     prefetch={false}
                                     className="transition-colors hover:text-white hover:underline"
                                 >
-                                    {t('BINATUYA (Keagamaan)', 'BINATUYA (Religious)')}
+                                    {t(
+                                        'BINATUYA (Keagamaan)',
+                                        'BINATUYA (Religious)',
+                                    )}
                                 </Link>
                             </li>
                             <li>
@@ -75,7 +75,10 @@ export default function PublicFooter() {
                                     prefetch={false}
                                     className="transition-colors hover:text-white hover:underline"
                                 >
-                                    {t('SATIN & UBAY (Kemanusiaan)', 'SATIN & UBAY (Humanitarian)')}
+                                    {t(
+                                        'SATIN & UBAY (Kemanusiaan)',
+                                        'SATIN & UBAY (Humanitarian)',
+                                    )}
                                 </Link>
                             </li>
                             <li>
@@ -84,7 +87,10 @@ export default function PublicFooter() {
                                     prefetch={false}
                                     className="transition-colors hover:text-white hover:underline"
                                 >
-                                    {t('Pengembangan Ekonomi', 'Economic Development')}
+                                    {t(
+                                        'Pengembangan Ekonomi',
+                                        'Economic Development',
+                                    )}
                                 </Link>
                             </li>
                         </ul>
@@ -101,7 +107,10 @@ export default function PublicFooter() {
                                     href="/profil"
                                     className="transition-colors hover:text-white hover:underline"
                                 >
-                                    {t('Profil, Visi & Misi', 'Profile, Vision & Mission')}
+                                    {t(
+                                        'Profil, Visi & Misi',
+                                        'Profile, Vision & Mission',
+                                    )}
                                 </Link>
                             </li>
                             <li>
@@ -117,7 +126,10 @@ export default function PublicFooter() {
                                     href="/kegiatan"
                                     className="transition-colors hover:text-white hover:underline"
                                 >
-                                    {t('Kegiatan Yayasan', 'Foundation Activities')}
+                                    {t(
+                                        'Kegiatan Yayasan',
+                                        'Foundation Activities',
+                                    )}
                                 </Link>
                             </li>
                             <li>
@@ -199,7 +211,10 @@ export default function PublicFooter() {
                         )}
                     </p>
                     <p className="font-poppins font-semibold tracking-wider text-[#14bace]">
-                        {t('BERSAMA PEDULI YATIM', 'TOGETHER CARING FOR ORPHANS')}
+                        {t(
+                            'BERSAMA PEDULI YATIM',
+                            'TOGETHER CARING FOR ORPHANS',
+                        )}
                     </p>
                 </div>
             </div>
