@@ -457,19 +457,19 @@ class KegiatanController extends Controller
     }
 
     /**
-     * Tentukan bidang yang sah untuk kegiatan sesuai peran user (cegah parameter tampering).
+     * Tentukan bidang yang sah untuk kegiatan.
      */
     private function resolveAuthorizedBidang(User $user, ?int $requestedBidangId): Bidang
     {
-        if (! $user->isSuperAdmin()) {
-            if ($requestedBidangId !== null && $requestedBidangId !== $user->bidang_id) {
-                abort(403, 'Anda hanya dapat mengelola kegiatan untuk bidang Anda sendiri.');
-            }
+        if ($requestedBidangId !== null) {
+            return Bidang::findOrFail((int) $requestedBidangId);
+        }
 
+        if ($user->bidang_id !== null) {
             return Bidang::findOrFail((int) $user->bidang_id);
         }
 
-        return Bidang::findOrFail((int) $requestedBidangId);
+        return Bidang::firstOrFail();
     }
 
     /**
