@@ -4,7 +4,6 @@ import {
     ArrowRight,
     Menu,
     X,
-    LayoutDashboard,
     ChevronDown,
     Globe,
 } from 'lucide-react';
@@ -47,9 +46,6 @@ const navItems: NavItem[] = [
 
 export default function PublicNavbar() {
     const { url } = usePage();
-    const { auth } = usePage().props as unknown as {
-        auth?: { user?: { name: string; role?: string } };
-    };
     const { lang, setLang, t } = useLanguage();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [kegiatanDropdownOpen, setKegiatanDropdownOpen] = useState(false);
@@ -391,27 +387,6 @@ export default function PublicNavbar() {
                             </button>
                         </div>
 
-                        {auth?.user && (
-                            <div className="flex items-center gap-1.5">
-                                <Link
-                                    href="/dashboard"
-                                    className="flex items-center gap-1.5 rounded-lg bg-[#e8f8fa] px-3 py-2 text-xs font-semibold text-[#186972] transition-colors hover:bg-[#d5f3f7]"
-                                >
-                                    <LayoutDashboard className="size-4" />
-                                    <span>{t('Panel', 'Dashboard')}</span>
-                                </Link>
-                                <Link
-                                    href="/logout"
-                                    method="post"
-                                    as="button"
-                                    className="rounded-lg px-2.5 py-2 text-xs font-medium text-rose-600 transition-colors hover:bg-rose-50 hover:text-rose-700"
-                                    title={t('Keluar Akun', 'Log Out')}
-                                >
-                                    {t('Keluar', 'Logout')}
-                                </Link>
-                            </div>
-                        )}
-
                         <Link
                             href="/donasi"
                             prefetch={false}
@@ -665,35 +640,6 @@ export default function PublicNavbar() {
                             </Link>
                         );
                     })}
-
-                    {auth?.user && (
-                        <div className="flex flex-col gap-2 border-t border-gray-100 pt-3">
-                            <Link
-                                href="/dashboard"
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#e8f8fa] py-2.5 text-sm font-semibold text-[#087f8c]"
-                            >
-                                <LayoutDashboard className="size-4" />
-                                <span>
-                                    {t(
-                                        'Dashboard Pengurus',
-                                        'Admin Dashboard',
-                                    )}
-                                </span>
-                            </Link>
-                            <Link
-                                href="/logout"
-                                method="post"
-                                as="button"
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="flex w-full items-center justify-center gap-2 rounded-lg py-2 text-xs font-medium text-rose-600 hover:bg-rose-50"
-                            >
-                                <span>
-                                    {t('Keluar Akun (Logout)', 'Log Out')}
-                                </span>
-                            </Link>
-                        </div>
-                    )}
                 </div>
             )}
         </header>
