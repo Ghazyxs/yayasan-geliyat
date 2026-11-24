@@ -4,7 +4,6 @@ import {
     ArrowRight,
     Menu,
     X,
-    LogIn,
     LayoutDashboard,
     ChevronDown,
     Globe,
@@ -392,7 +391,7 @@ export default function PublicNavbar() {
                             </button>
                         </div>
 
-                        {auth?.user ? (
+                        {auth?.user && (
                             <div className="flex items-center gap-1.5">
                                 <Link
                                     href="/dashboard"
@@ -411,16 +410,6 @@ export default function PublicNavbar() {
                                     {t('Keluar', 'Logout')}
                                 </Link>
                             </div>
-                        ) : (
-                            <Link
-                                href="/login"
-                                prefetch={false}
-                                className="flex items-center gap-1.5 px-2.5 py-2 text-xs font-medium text-[#718083] transition-colors hover:text-[#1d2b2d]"
-                                title={t('Login Pengurus', 'Admin Login')}
-                            >
-                                <LogIn className="size-4" />
-                                <span>{t('Masuk', 'Login')}</span>
-                            </Link>
                         )}
 
                         <Link
@@ -677,47 +666,34 @@ export default function PublicNavbar() {
                         );
                     })}
 
-                    <div className="flex flex-col gap-2 border-t border-gray-100 pt-3">
-                        {auth?.user ? (
-                            <>
-                                <Link
-                                    href="/dashboard"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#e8f8fa] py-2.5 text-sm font-semibold text-[#087f8c]"
-                                >
-                                    <LayoutDashboard className="size-4" />
-                                    <span>
-                                        {t(
-                                            'Dashboard Pengurus',
-                                            'Admin Dashboard',
-                                        )}
-                                    </span>
-                                </Link>
-                                <Link
-                                    href="/logout"
-                                    method="post"
-                                    as="button"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className="flex w-full items-center justify-center gap-2 rounded-lg py-2 text-xs font-medium text-rose-600 hover:bg-rose-50"
-                                >
-                                    <span>
-                                        {t('Keluar Akun (Logout)', 'Log Out')}
-                                    </span>
-                                </Link>
-                            </>
-                        ) : (
+                    {auth?.user && (
+                        <div className="flex flex-col gap-2 border-t border-gray-100 pt-3">
                             <Link
-                                href="/login"
+                                href="/dashboard"
                                 onClick={() => setMobileMenuOpen(false)}
-                                className="flex w-full items-center justify-center gap-2 rounded-lg bg-gray-50 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100"
+                                className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#e8f8fa] py-2.5 text-sm font-semibold text-[#087f8c]"
                             >
-                                <LogIn className="size-4" />
+                                <LayoutDashboard className="size-4" />
                                 <span>
-                                    {t('Masuk Pengurus', 'Admin Login')}
+                                    {t(
+                                        'Dashboard Pengurus',
+                                        'Admin Dashboard',
+                                    )}
                                 </span>
                             </Link>
-                        )}
-                    </div>
+                            <Link
+                                href="/logout"
+                                method="post"
+                                as="button"
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="flex w-full items-center justify-center gap-2 rounded-lg py-2 text-xs font-medium text-rose-600 hover:bg-rose-50"
+                            >
+                                <span>
+                                    {t('Keluar Akun (Logout)', 'Log Out')}
+                                </span>
+                            </Link>
+                        </div>
+                    )}
                 </div>
             )}
         </header>
