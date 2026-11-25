@@ -397,96 +397,79 @@ export default function KeuanganAdmin({
                         </p>
                     </div>
 
-                    {/* Filter & Search Bar */}
+                    {/* Filter Bar */}
                     <div className="rounded-xl border border-[#e4eaec] bg-white p-4 shadow-2xs">
-                        <form
-                            onSubmit={handleSearchSubmit}
-                            className="grid grid-cols-1 gap-3 md:grid-cols-12"
-                        >
-                            <div className="flex gap-2 md:col-span-5">
-                                <input
-                                    type="text"
-                                    value={searchInput}
-                                    onChange={(e) =>
-                                        setSearchInput(e.target.value)
-                                    }
-                                    placeholder="Cari kode transaksi, keperluan, keterangan, atau donatur..."
-                                    className="h-9 w-full rounded-lg border border-[#cbebf0] bg-white px-3 text-xs text-slate-800 placeholder:text-slate-400 focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-hidden"
-                                />
+                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <div className="flex flex-col flex-wrap gap-3 sm:flex-row sm:items-center">
+                                {/* Filter Jenis Transaksi */}
+                                <div className="w-full sm:w-60">
+                                    <BrandSelect
+                                        ariaLabel="Filter Jenis Transaksi"
+                                        value={tipeFilter}
+                                        onValueChange={(val) => {
+                                            setTipeFilter(val);
+                                            applyFilters({ tipe: val });
+                                        }}
+                                        options={[
+                                            {
+                                                value: '',
+                                                label: 'Semua Jenis Transaksi',
+                                            },
+                                            {
+                                                value: 'pemasukan',
+                                                label: 'Pemasukan',
+                                            },
+                                            {
+                                                value: 'pengeluaran',
+                                                label: 'Pengeluaran',
+                                            },
+                                        ]}
+                                    />
+                                </div>
+
+                                {/* Penanggalan dengan Pemisah */}
+                                <div className="flex items-center gap-2">
+                                    <input
+                                        type="date"
+                                        value={tanggalDari}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            setTanggalDari(val);
+                                            applyFilters({ tanggal_dari: val });
+                                        }}
+                                        title="Dari Tanggal"
+                                        aria-label="Filter Dari Tanggal"
+                                        className="h-9 w-36 rounded-lg border border-[#cbebf0] bg-[#f7fcfd] px-2.5 text-xs text-[#087f8c] focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-hidden"
+                                    />
+                                    <span className="text-xs font-semibold text-slate-400">
+                                        s/d
+                                    </span>
+                                    <input
+                                        type="date"
+                                        value={tanggalSampai}
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            setTanggalSampai(val);
+                                            applyFilters({ tanggal_sampai: val });
+                                        }}
+                                        title="Sampai Tanggal"
+                                        aria-label="Filter Sampai Tanggal"
+                                        className="h-9 w-36 rounded-lg border border-[#cbebf0] bg-[#f7fcfd] px-2.5 text-xs text-[#087f8c] focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-hidden"
+                                    />
+                                </div>
+                            </div>
+
+                            {hasActiveFilters && (
                                 <Button
-                                    type="submit"
-                                    className="h-9 shrink-0 bg-[#087f8c] px-4 text-xs font-semibold text-white shadow-none hover:bg-[#066570]"
+                                    type="button"
+                                    variant="outline"
+                                    onClick={handleResetFilters}
+                                    className="h-9 shrink-0 border-[#cbebf0] bg-[#f7fcfd] px-3 text-xs font-medium text-[#087f8c] shadow-none hover:bg-[#e8f8fa]"
                                 >
-                                    Cari
+                                    Reset Filter
                                 </Button>
-                            </div>
-
-                            <div className="md:col-span-3">
-                                <BrandSelect
-                                    ariaLabel="Filter Jenis Transaksi"
-                                    value={tipeFilter}
-                                    onValueChange={(val) => {
-                                        setTipeFilter(val);
-                                        applyFilters({ tipe: val });
-                                    }}
-                                    options={[
-                                        {
-                                            value: '',
-                                            label: 'Semua Jenis Transaksi',
-                                        },
-                                        {
-                                            value: 'pemasukan',
-                                            label: 'Pemasukan',
-                                        },
-                                        {
-                                            value: 'pengeluaran',
-                                            label: 'Pengeluaran',
-                                        },
-                                    ]}
-                                />
-                            </div>
-
-                            <div className="md:col-span-2">
-                                <input
-                                    type="date"
-                                    value={tanggalDari}
-                                    onChange={(e) => {
-                                        const val = e.target.value;
-                                        setTanggalDari(val);
-                                        applyFilters({ tanggal_dari: val });
-                                    }}
-                                    title="Dari Tanggal"
-                                    aria-label="Filter Dari Tanggal"
-                                    className="h-9 w-full rounded-lg border border-[#cbebf0] bg-[#f7fcfd] px-2.5 text-xs text-[#087f8c] focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-hidden"
-                                />
-                            </div>
-
-                            <div className="flex items-center gap-2 md:col-span-2">
-                                <input
-                                    type="date"
-                                    value={tanggalSampai}
-                                    onChange={(e) => {
-                                        const val = e.target.value;
-                                        setTanggalSampai(val);
-                                        applyFilters({ tanggal_sampai: val });
-                                    }}
-                                    title="Sampai Tanggal"
-                                    aria-label="Filter Sampai Tanggal"
-                                    className="h-9 w-full rounded-lg border border-[#cbebf0] bg-[#f7fcfd] px-2.5 text-xs text-[#087f8c] focus:border-[#14bace] focus:ring-2 focus:ring-[#14bace]/20 focus:outline-hidden"
-                                />
-
-                                {hasActiveFilters && (
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        onClick={handleResetFilters}
-                                        className="h-9 shrink-0 border-[#cbebf0] bg-[#f7fcfd] px-2.5 text-xs font-medium text-[#087f8c] shadow-none hover:bg-[#e8f8fa]"
-                                    >
-                                        Reset
-                                    </Button>
-                                )}
-                            </div>
-                        </form>
+                            )}
+                        </div>
                     </div>
 
                     {/* Data Table */}

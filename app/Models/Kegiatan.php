@@ -64,28 +64,18 @@ class Kegiatan extends Model
 
     /**
      * Batasi query kegiatan berdasarkan hak akses:
-     * - Super Admin: seluruh kegiatan.
-     * - Admin: kegiatan bidangnya + kegiatan umum yayasan (bidang_id NULL).
-     * - Admin tanpa bidang_id / peran lain: kosong (fail-safe).
+     * - Super Admin & Admin: seluruh kegiatan (seluruh bidang).
+     * - Peran lain: kosong (fail-safe).
      *
      * @param  Builder<Kegiatan>  $query
      */
     #[Scope]
     protected function visibleTo(Builder $query, User $user): void
     {
-        if ($user->isSuperAdmin()) {
+        if ($user->isSuperAdmin() || $user->role === 'admin') {
             return;
         }
 
-        if ($user->role !== 'admin' || $user->bidang_id === null) {
-            $query->whereRaw('1 = 0');
-
-            return;
-        }
-
-        $query->where(function (Builder $q) use ($user) {
-            $q->where('bidang_id', $user->bidang_id)
-                ->orWhereNull('bidang_id');
-        });
+        $query->whereRaw('1 = 0');
     }
 }

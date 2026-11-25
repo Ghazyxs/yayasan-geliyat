@@ -384,13 +384,6 @@ export default function DonasiAdmin({
                 {/* Header Section */}
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <span className="mb-2 inline-block rounded-md bg-[#e8f8fa] px-2.5 py-1 text-xs font-semibold text-[#087f8c]">
-                            {permissions.is_super_admin
-                                ? 'Akses Lintas Bidang (Super Admin)'
-                                : permissions.user_bidang
-                                  ? `Cakupan: ${permissions.user_bidang.nama}`
-                                  : 'Amanah Donatur'}
-                        </span>
                         <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
                             Pengelolaan & Verifikasi Donasi
                         </h1>
@@ -1458,34 +1451,6 @@ export default function DonasiAdmin({
                                 {createForm.errors.nominal && (
                                     <p className="mt-1 text-rose-600">
                                         {createForm.errors.nominal}
-                                    </p>
-                                )}
-                            </div>
-
-                            <div>
-                                <label className="mb-1 block font-medium text-slate-700">
-                                    Anak Binaan Tujuan (Opsional)
-                                </label>
-                                <BrandSelect
-                                    ariaLabel="Anak Binaan Tujuan"
-                                    value={createForm.data.anak_yatim_id}
-                                    onValueChange={(val) =>
-                                        createForm.setData('anak_yatim_id', val)
-                                    }
-                                    options={[
-                                        {
-                                            value: '',
-                                            label: '-- Alokasi Umum Yayasan --',
-                                        },
-                                        ...anakYatimList.map((anak) => ({
-                                            value: String(anak.id),
-                                            label: `${anak.nama_lengkap} — ${anak.jenjang} • Kel. ${anak.kelurahan}`,
-                                        })),
-                                    ]}
-                                />
-                                {createForm.errors.anak_yatim_id && (
-                                    <p className="mt-1 text-rose-600">
-                                        {createForm.errors.anak_yatim_id}
                                     </p>
                                 )}
                             </div>

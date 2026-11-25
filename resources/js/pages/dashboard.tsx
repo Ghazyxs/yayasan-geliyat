@@ -7,7 +7,6 @@ import {
     CalendarPlus,
     UserPlus,
     LogOut,
-    CreditCard,
     Clock,
     AlertTriangle,
     Plus,
@@ -246,7 +245,7 @@ export default function Dashboard({
             {isSuperAdmin && ringkasanKeuangan ? (
                 <>
                     {/* Top KPI Cards */}
-                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                         <Link
                             href="/admin/anak-yatim"
                             className="group flex flex-col justify-between rounded-2xl border border-[#e4eaec] bg-white p-6 shadow-xs transition-colors hover:border-[#14bace]"
@@ -283,24 +282,6 @@ export default function Dashboard({
                                     masuk kas
                                 </span>
                                 <Clock className="size-4 text-amber-600 transition-transform group-hover:scale-110" />
-                            </div>
-                        </Link>
-
-                        <Link
-                            href="/admin/rekening"
-                            className="group flex flex-col justify-between rounded-2xl border border-[#e4eaec] bg-white p-6 shadow-xs transition-colors hover:border-[#14bace]"
-                        >
-                            <div className="space-y-1">
-                                <span className="block text-[11px] font-medium tracking-wider text-[#718083] uppercase">
-                                    Rekening Yayasan Aktif
-                                </span>
-                                <div className="text-3xl font-bold text-[#1b2929]">
-                                    {rekeningAktifCount}
-                                </div>
-                            </div>
-                            <div className="mt-4 flex items-center justify-between border-t border-[#f0f4f5] pt-3 text-xs font-medium text-[#087f8c]">
-                                <span>Penampung resmi publik</span>
-                                <CreditCard className="size-4 text-[#14bace] transition-transform group-hover:scale-110" />
                             </div>
                         </Link>
 
@@ -509,15 +490,6 @@ export default function Dashboard({
                             >
                                 <Wallet className="size-4 text-[#087f8c]" />{' '}
                                 Buku Kas Yayasan
-                            </Button>
-                        </Link>
-                        <Link href="/admin/rekening">
-                            <Button
-                                variant="outline"
-                                className="flex h-10 items-center gap-2 rounded-lg border-[#e4eaec] bg-white px-4 text-xs font-semibold text-[#1b2929] hover:border-[#14bace]"
-                            >
-                                <CreditCard className="size-4 text-[#087f8c]" />{' '}
-                                Rekening Yayasan
                             </Button>
                         </Link>
                     </div>

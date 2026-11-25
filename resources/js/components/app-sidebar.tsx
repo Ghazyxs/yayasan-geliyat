@@ -4,7 +4,6 @@ import {
     UsersRound,
     HeartHandshake,
     CalendarDays,
-    CreditCard,
     Wallet,
     ChartNoAxesCombined,
     ShieldCheck,
@@ -57,11 +56,6 @@ export function AppSidebar() {
         },
         ...(isSuperAdmin
             ? [
-                  {
-                      title: 'Rekening Yayasan',
-                      href: '/admin/rekening',
-                      icon: CreditCard,
-                  },
                   {
                       title: 'Keuangan',
                       href: '/admin/keuangan',
@@ -121,20 +115,6 @@ export function AppSidebar() {
 
             <SidebarContent className="gap-4 bg-white pt-3">
                 <NavMain items={mainNavItems} label="RUANG KERJA" />
-
-                {/* Security Reminder Box (From Figma) */}
-                {state !== 'collapsed' && (
-                    <div className="mx-3 mt-auto rounded-xl border border-[#e4eaec] bg-[#f7f9fa] p-3 text-left">
-                        <div className="flex items-center gap-2 font-poppins text-xs font-semibold text-[#087f8c]">
-                            <ShieldCheck className="size-4 shrink-0 text-[#14bace]" />
-                            <span>Ruang aman untuk peduli</span>
-                        </div>
-                        <p className="mt-1.5 font-poppins text-[11px] leading-relaxed text-[#718083]">
-                            Data anak bersifat rahasia. Gunakan hanya untuk
-                            tujuan pendampingan dan amanah donasi.
-                        </p>
-                    </div>
-                )}
             </SidebarContent>
 
             <SidebarFooter className="border-t border-[#f0f4f5] bg-white pt-2">

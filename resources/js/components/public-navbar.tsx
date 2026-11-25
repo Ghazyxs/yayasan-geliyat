@@ -4,8 +4,6 @@ import {
     ArrowRight,
     Menu,
     X,
-    LogIn,
-    LayoutDashboard,
     ChevronDown,
     Globe,
 } from 'lucide-react';
@@ -48,9 +46,6 @@ const navItems: NavItem[] = [
 
 export default function PublicNavbar() {
     const { url } = usePage();
-    const { auth } = usePage().props as unknown as {
-        auth?: { user?: { name: string; role?: string } };
-    };
     const { lang, setLang, t } = useLanguage();
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [kegiatanDropdownOpen, setKegiatanDropdownOpen] = useState(false);
@@ -392,37 +387,6 @@ export default function PublicNavbar() {
                             </button>
                         </div>
 
-                        {auth?.user ? (
-                            <div className="flex items-center gap-1.5">
-                                <Link
-                                    href="/dashboard"
-                                    className="flex items-center gap-1.5 rounded-lg bg-[#e8f8fa] px-3 py-2 text-xs font-semibold text-[#186972] transition-colors hover:bg-[#d5f3f7]"
-                                >
-                                    <LayoutDashboard className="size-4" />
-                                    <span>{t('Panel', 'Dashboard')}</span>
-                                </Link>
-                                <Link
-                                    href="/logout"
-                                    method="post"
-                                    as="button"
-                                    className="rounded-lg px-2.5 py-2 text-xs font-medium text-rose-600 transition-colors hover:bg-rose-50 hover:text-rose-700"
-                                    title={t('Keluar Akun', 'Log Out')}
-                                >
-                                    {t('Keluar', 'Logout')}
-                                </Link>
-                            </div>
-                        ) : (
-                            <Link
-                                href="/login"
-                                prefetch={false}
-                                className="flex items-center gap-1.5 px-2.5 py-2 text-xs font-medium text-[#718083] transition-colors hover:text-[#1d2b2d]"
-                                title={t('Login Pengurus', 'Admin Login')}
-                            >
-                                <LogIn className="size-4" />
-                                <span>{t('Masuk', 'Login')}</span>
-                            </Link>
-                        )}
-
                         <Link
                             href="/donasi"
                             prefetch={false}
@@ -676,48 +640,6 @@ export default function PublicNavbar() {
                             </Link>
                         );
                     })}
-
-                    <div className="flex flex-col gap-2 border-t border-gray-100 pt-3">
-                        {auth?.user ? (
-                            <>
-                                <Link
-                                    href="/dashboard"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#e8f8fa] py-2.5 text-sm font-semibold text-[#087f8c]"
-                                >
-                                    <LayoutDashboard className="size-4" />
-                                    <span>
-                                        {t(
-                                            'Dashboard Pengurus',
-                                            'Admin Dashboard',
-                                        )}
-                                    </span>
-                                </Link>
-                                <Link
-                                    href="/logout"
-                                    method="post"
-                                    as="button"
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className="flex w-full items-center justify-center gap-2 rounded-lg py-2 text-xs font-medium text-rose-600 hover:bg-rose-50"
-                                >
-                                    <span>
-                                        {t('Keluar Akun (Logout)', 'Log Out')}
-                                    </span>
-                                </Link>
-                            </>
-                        ) : (
-                            <Link
-                                href="/login"
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="flex w-full items-center justify-center gap-2 rounded-lg bg-gray-50 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100"
-                            >
-                                <LogIn className="size-4" />
-                                <span>
-                                    {t('Masuk Pengurus', 'Admin Login')}
-                                </span>
-                            </Link>
-                        )}
-                    </div>
                 </div>
             )}
         </header>

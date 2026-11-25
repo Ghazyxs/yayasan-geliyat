@@ -502,13 +502,6 @@ export default function KegiatanAdmin({
                 {/* Header Section */}
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
-                        <span className="mb-2 inline-block rounded-md bg-[#e8f8fa] px-2.5 py-1 text-xs font-semibold text-[#087f8c]">
-                            {permissions.is_super_admin
-                                ? 'Publikasi Lintas Bidang (Super Admin)'
-                                : permissions.user_bidang
-                                  ? `Unit Kerja: ${permissions.user_bidang.nama}`
-                                  : 'Aktivitas & Publikasi'}
-                        </span>
                         <h1 className="text-2xl font-bold tracking-tight text-slate-800 sm:text-3xl">
                             Pengelolaan Kegiatan & Berita
                         </h1>
@@ -1072,9 +1065,6 @@ export default function KegiatanAdmin({
                                         </Label>
                                         <BrandSelect
                                             id="bidang_id"
-                                            disabled={
-                                                !permissions.is_super_admin
-                                            }
                                             value={form.data.bidang_id}
                                             onValueChange={(val) =>
                                                 form.setData('bidang_id', val)

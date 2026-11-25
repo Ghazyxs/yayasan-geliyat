@@ -58,9 +58,7 @@ class UpdateKegiatanRequest extends FormRequest
         }
 
         return array_merge($base, [
-            'bidang_id' => $isSuperAdmin
-                ? ['required', 'integer', 'exists:bidang,id']
-                : ['nullable', 'integer', 'exists:bidang,id'],
+            'bidang_id' => ['required', 'integer', 'exists:bidang,id'],
             'tanggal_kegiatan' => ['required', 'date'],
             'lokasi' => ['required', 'string', 'max:255'],
             'isi_berita' => ['required', 'string'],
