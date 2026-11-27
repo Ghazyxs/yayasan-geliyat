@@ -1,3 +1,4 @@
+import { TooltipProvider } from '@/components/ui/tooltip';
 import AppLayoutTemplate from '@/layouts/app/app-sidebar-layout';
 import type { BreadcrumbItem } from '@/types';
 
@@ -18,8 +19,10 @@ export default function AppLayout({
               )?.type?.layout?.breadcrumbs ?? []);
 
     return (
-        <AppLayoutTemplate breadcrumbs={pageBreadcrumbs}>
-            {children}
-        </AppLayoutTemplate>
+        <TooltipProvider delayDuration={0}>
+            <AppLayoutTemplate breadcrumbs={pageBreadcrumbs}>
+                {children}
+            </AppLayoutTemplate>
+        </TooltipProvider>
     );
 }

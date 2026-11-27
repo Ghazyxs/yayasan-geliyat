@@ -11,11 +11,8 @@ import {
 } from 'lucide-react';
 import PublicLayout from '@/layouts/public-layout';
 import { useLanguage } from '@/hooks/use-language';
-import {
-    type BidangItem,
-    getBidangIcon,
-    getBidangImagePosition,
-} from './bidang';
+import { BidangIconBadge } from '@/components/bidang-icon';
+import { type BidangItem, getBidangImagePosition } from './bidang';
 
 interface KegiatanRingkas {
     id: number;
@@ -437,13 +434,7 @@ export default function BidangDetailPage({
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center justify-between border-t border-gray-100 px-5 py-3 text-xs text-gray-500">
-                                        <div className="flex items-center gap-1.5 truncate">
-                                            <MapPin className="size-3.5 shrink-0 text-[#14bace]" />
-                                            <span className="truncate">
-                                                {act.lokasi}
-                                            </span>
-                                        </div>
+                                    <div className="flex items-center justify-end border-t border-gray-100 px-5 py-3 text-xs">
                                         <span className="shrink-0 font-poppins font-semibold text-[#14bace]">
                                             {t('Baca Berita →', 'Read News →')}
                                         </span>
@@ -486,7 +477,6 @@ export default function BidangDetailPage({
                         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                             {bidangLainnya.map((rawOther) => {
                                 const other = translateBidang(rawOther);
-                                const OtherIcon = getBidangIcon(other.kode);
                                 return (
                                     <Link
                                         key={other.id}
@@ -495,9 +485,10 @@ export default function BidangDetailPage({
                                         className="group flex flex-col justify-between rounded-2xl border border-[#e4eaec] bg-white p-6 shadow-xs transition-all duration-200 hover:border-[#14bace] hover:shadow-md"
                                     >
                                         <div>
-                                            <div className="flex size-11 items-center justify-center rounded-xl bg-[#e8f8fa] text-[#14bace] transition-transform group-hover:scale-110">
-                                                <OtherIcon className="size-5" />
-                                            </div>
+                                            <BidangIconBadge
+                                                kode={other.kode}
+                                                size="sm"
+                                            />
                                             <h3 className="mt-4 font-poppins text-base font-bold text-[#1d2b2d] transition-colors group-hover:text-[#14bace]">
                                                 {other.nama}
                                             </h3>

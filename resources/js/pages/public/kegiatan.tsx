@@ -1,12 +1,6 @@
 import { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
-import {
-    Search,
-    MapPin,
-    Calendar,
-    ChevronRight,
-    ArrowRight,
-} from 'lucide-react';
+import { Search, Calendar, ChevronRight, ArrowRight } from 'lucide-react';
 import PublicLayout from '@/layouts/public-layout';
 import { useLanguage } from '@/hooks/use-language';
 
@@ -218,13 +212,7 @@ export default function KegiatanPage({ kegiatanList }: KegiatanPageProps) {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center justify-between gap-2 border-t border-gray-100 px-6 pt-3 pb-5 text-xs text-gray-500">
-                                        <div className="flex items-center gap-1.5 truncate">
-                                            <MapPin className="size-4 shrink-0 text-[#14bace]" />
-                                            <span className="truncate">
-                                                {act.lokasi}
-                                            </span>
-                                        </div>
+                                    <div className="flex items-center justify-end border-t border-gray-100 px-6 pt-3 pb-5 text-xs">
                                         <span className="inline-flex shrink-0 items-center gap-1 font-poppins font-semibold text-[#14bace] transition-transform group-hover:translate-x-0.5">
                                             <span>
                                                 {t('Baca Berita', 'Read News')}

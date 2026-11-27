@@ -1,18 +1,68 @@
 import { Head, Link } from '@inertiajs/react';
-import {
-    ArrowLeft,
-    ArrowRight,
-    Calendar,
-    Camera,
-    ChevronRight,
-    FileText,
-    Layers,
-    MapPin,
-    User,
-} from 'lucide-react';
+import { ArrowLeft, ArrowRight, Calendar, ChevronRight } from 'lucide-react';
 import PublicLayout from '@/layouts/public-layout';
 import { useLanguage } from '@/hooks/use-language';
 import { type KegiatanData } from './kegiatan';
+
+function DokumentasiIconBadge() {
+    return (
+        <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#e0f7fa] via-[#ecfeff] to-[#cffafe] shadow-xs ring-1 ring-[#14bace]/20">
+            <svg
+                viewBox="0 0 32 32"
+                fill="none"
+                aria-hidden="true"
+                className="size-6"
+            >
+                {/* Back stacked photo card */}
+                <path
+                    d="M9.5 8H21.5C22.6 8 23.5 8.9 23.5 10V19.8C23.5 20.9 22.6 21.8 21.5 21.8H21"
+                    fill="#14bace"
+                    fillOpacity="0.14"
+                    stroke="#0891b2"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                />
+                {/* Front photo frame */}
+                <rect
+                    x="5"
+                    y="10.5"
+                    width="16.5"
+                    height="14.5"
+                    rx="2.8"
+                    fill="#14bace"
+                    fillOpacity="0.12"
+                    stroke="#0891b2"
+                    strokeWidth="1.75"
+                />
+                {/* Sun circle */}
+                <circle
+                    cx="10"
+                    cy="15.2"
+                    r="1.6"
+                    fill="#14bace"
+                    fillOpacity="0.4"
+                    stroke="#0891b2"
+                    strokeWidth="1.3"
+                />
+                {/* Layered mountain silhouette */}
+                <path
+                    d="M5.6 22.6L10.3 18.5C10.9 18 11.7 18 12.2 18.5L14.5 20.7L16.4 19C16.9 18.5 17.7 18.5 18.2 19L20.9 21.7V22.4C20.9 23.5 20 24.4 18.9 24.4H7.6C6.5 24.4 5.6 23.6 5.6 22.6Z"
+                    fill="#14bace"
+                    fillOpacity="0.28"
+                    stroke="#0e7490"
+                    strokeWidth="1.4"
+                    strokeLinejoin="round"
+                />
+                {/* Editorial sparkle accent */}
+                <path
+                    d="M26.5 3.8L27.1 5.2L28.5 5.8L27.1 6.4L26.5 7.8L25.9 6.4L24.5 5.8L25.9 5.2L26.5 3.8Z"
+                    fill="#14bace"
+                />
+            </svg>
+        </div>
+    );
+}
 
 interface KegiatanDetailProps {
     kegiatan: KegiatanData;
@@ -78,55 +128,10 @@ export default function KegiatanDetailPage({
                         </Link>
                     </div>
 
-                    {/* Category & Bidang Badge */}
-                    <div className="mt-6 flex flex-wrap items-center gap-2.5">
-                        <span className="inline-flex items-center rounded-full bg-[#14bace] px-3.5 py-1 font-poppins text-xs font-bold tracking-wider text-white uppercase shadow-2xs">
-                            {translateCategory(kegiatan.kategori)}
-                        </span>
-                        {kegiatan.bidang && (
-                            <Link
-                                href={`/bidang/${kegiatan.bidang.kode}`}
-                                prefetch={false}
-                                className="inline-flex items-center gap-1.5 rounded-full border border-[#14bace]/30 bg-white px-3.5 py-1 font-poppins text-xs font-semibold text-[#087f8c] transition hover:bg-[#e8f8fa]"
-                            >
-                                <Layers className="size-3.5" />
-                                <span>{kegiatan.bidang.nama}</span>
-                            </Link>
-                        )}
-                    </div>
-
                     {/* Judul Berita / Kegiatan */}
-                    <h1 className="mt-4 font-poppins text-2xl leading-tight font-bold text-[#1d2b2d] sm:text-4xl lg:leading-[1.2]">
+                    <h1 className="mt-6 font-poppins text-2xl leading-tight font-bold text-[#1d2b2d] sm:text-4xl lg:leading-[1.2]">
                         {kegiatan.judul}
                     </h1>
-
-                    {/* Metadata Bar: Tanggal, Lokasi, Penulis */}
-                    <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2.5 border-t border-[#e4eaec]/80 pt-4 font-sans text-xs text-gray-600 sm:text-sm">
-                        <div className="flex items-center gap-2">
-                            <Calendar className="size-4 shrink-0 text-[#14bace]" />
-                            <span>
-                                <strong className="font-semibold text-[#1d2b2d]">
-                                    {t('Tanggal Pelaksanaan:', 'Date:')}
-                                </strong>{' '}
-                                {kegiatan.tanggal_kegiatan}
-                            </span>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                            <MapPin className="size-4 shrink-0 text-[#14bace]" />
-                            <span>
-                                <strong className="font-semibold text-[#1d2b2d]">
-                                    {t('Lokasi:', 'Location:')}
-                                </strong>{' '}
-                                {kegiatan.lokasi}
-                            </span>
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                            <User className="size-4 shrink-0 text-[#14bace]" />
-                            <span>{kegiatan.penulis}</span>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -141,35 +146,11 @@ export default function KegiatanDetailPage({
                                 <img
                                     src={kegiatan.gambar}
                                     alt={kegiatan.judul}
+                                    fetchPriority="high"
+                                    decoding="async"
                                     className="max-h-[460px] w-full object-cover"
                                 />
-                                <figcaption className="border-t border-gray-100 bg-white px-5 py-3 font-sans text-xs text-gray-500">
-                                    {t(
-                                        'Dokumentasi utama kegiatan:',
-                                        'Main activity documentation:',
-                                    )}{' '}
-                                    <span className="font-medium text-gray-700">
-                                        {kegiatan.judul}
-                                    </span>{' '}
-                                    — {kegiatan.lokasi}
-                                </figcaption>
                             </figure>
-
-                            {/* Ringkasan Kegiatan */}
-                            <div className="rounded-2xl border border-l-4 border-[#14bace]/30 border-l-[#14bace] bg-[#e8f8fa]/50 p-5 sm:p-6">
-                                <div className="mb-2 flex items-center gap-2 font-poppins text-xs font-bold tracking-wider text-[#087f8c] uppercase">
-                                    <FileText className="size-4 text-[#14bace]" />
-                                    <span>
-                                        {t(
-                                            'Ringkasan Kegiatan',
-                                            'Activity Summary',
-                                        )}
-                                    </span>
-                                </div>
-                                <p className="font-sans text-sm leading-relaxed font-medium text-[#1d2b2d] sm:text-base">
-                                    {kegiatan.ringkasan || kegiatan.deskripsi}
-                                </p>
-                            </div>
 
                             {/* Isi Berita / Deskripsi Lengkap */}
                             <div className="rounded-2xl border border-[#e4eaec] bg-white p-6 shadow-xs sm:p-8">
@@ -190,10 +171,8 @@ export default function KegiatanDetailPage({
                             {kegiatan.dokumentasi &&
                                 kegiatan.dokumentasi.length > 0 && (
                                     <div className="rounded-2xl border border-[#e4eaec] bg-white p-6 shadow-xs sm:p-8">
-                                        <div className="mb-6 flex items-center gap-2.5">
-                                            <div className="flex size-9 items-center justify-center rounded-xl bg-[#e8f8fa] text-[#087f8c]">
-                                                <Camera className="size-5" />
-                                            </div>
+                                        <div className="mb-6 flex items-center gap-3">
+                                            <DokumentasiIconBadge />
                                             <div>
                                                 <h2 className="font-poppins text-lg font-bold text-[#1d2b2d] sm:text-xl">
                                                     {t(
@@ -224,14 +203,11 @@ export default function KegiatanDetailPage({
                                                                     dok.caption ||
                                                                     `Dokumentasi ${idx + 1}`
                                                                 }
+                                                                loading="lazy"
+                                                                decoding="async"
                                                                 className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
                                                             />
                                                         </div>
-                                                        {dok.caption && (
-                                                            <figcaption className="p-3.5 font-sans text-xs leading-relaxed text-gray-600">
-                                                                {dok.caption}
-                                                            </figcaption>
-                                                        )}
                                                     </figure>
                                                 ),
                                             )}
@@ -321,53 +297,7 @@ export default function KegiatanDetailPage({
                                                 {kegiatan.lokasi}
                                             </dd>
                                         </div>
-
-                                        {kegiatan.bidang && (
-                                            <div>
-                                                <dt className="font-poppins text-xs font-semibold text-gray-400 uppercase">
-                                                    {t(
-                                                        'Unit Pelaksana',
-                                                        'Executing Unit',
-                                                    )}
-                                                </dt>
-                                                <dd className="mt-1">
-                                                    <Link
-                                                        href={`/bidang/${kegiatan.bidang.kode}`}
-                                                        prefetch={false}
-                                                        className="font-poppins text-sm font-semibold text-[#14bace] hover:underline"
-                                                    >
-                                                        {kegiatan.bidang.nama}
-                                                    </Link>
-                                                </dd>
-                                            </div>
-                                        )}
                                     </dl>
-                                </div>
-
-                                {/* CTA Donasi */}
-                                <div className="rounded-2xl bg-gradient-to-br from-[#186972] to-[#087f8c] p-6 text-white shadow-md">
-                                    <h3 className="font-poppins text-base font-bold">
-                                        {t(
-                                            'Dukung Kegiatan Yayasan',
-                                            'Support Foundation Activities',
-                                        )}
-                                    </h3>
-                                    <p className="mt-2 font-sans text-xs leading-relaxed text-white/90">
-                                        {t(
-                                            'Mari ambil bagian dalam mendukung kegiatan pendampingan dan santunan anak yatim binaan Yayasan Geliyat.',
-                                            'Take part in supporting mentoring and charity programs for orphans mentored by Yayasan Geliyat.',
-                                        )}
-                                    </p>
-                                    <Link
-                                        href="/donasi"
-                                        prefetch={false}
-                                        className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-white py-2.5 font-poppins text-xs font-bold text-[#087f8c] shadow-xs transition hover:bg-[#e8f8fa]"
-                                    >
-                                        <span>
-                                            {t('Donasi Sekarang', 'Donate Now')}
-                                        </span>
-                                        <ArrowRight className="size-3.5" />
-                                    </Link>
                                 </div>
                             </div>
                         </aside>
@@ -416,6 +346,8 @@ export default function KegiatanDetailPage({
                                             <img
                                                 src={item.gambar}
                                                 alt={item.judul}
+                                                loading="lazy"
+                                                decoding="async"
                                                 className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
                                             />
                                             <span className="absolute top-3 left-3 rounded-md bg-white/95 px-2.5 py-1 text-[10px] font-bold tracking-wider text-[#087f8c] uppercase shadow-xs">
@@ -439,12 +371,6 @@ export default function KegiatanDetailPage({
                                                     item.deskripsi}
                                             </p>
                                         </div>
-                                    </div>
-                                    <div className="flex items-center gap-1.5 border-t border-gray-100 px-5 py-3 text-xs text-gray-500">
-                                        <MapPin className="size-3.5 shrink-0 text-[#14bace]" />
-                                        <span className="truncate">
-                                            {item.lokasi}
-                                        </span>
                                     </div>
                                 </Link>
                             ))}

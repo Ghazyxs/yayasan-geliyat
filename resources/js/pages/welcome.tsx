@@ -1,8 +1,9 @@
 import { Head, Link } from '@inertiajs/react';
-import { ArrowRight, MapPin, Calendar, Newspaper } from 'lucide-react';
+import { ArrowRight, Calendar, Newspaper } from 'lucide-react';
 import PublicLayout from '@/layouts/public-layout';
 import { useLanguage } from '@/hooks/use-language';
-import { type BidangItem, getBidangIcon } from './public/bidang';
+import { BidangIconBadge } from '@/components/bidang-icon';
+import { type BidangItem } from './public/bidang';
 import { type KegiatanData } from './public/kegiatan';
 
 interface WelcomeProps {
@@ -122,6 +123,8 @@ export default function Welcome({
                                                 <img
                                                     src={latestActivity.gambar}
                                                     alt={latestActivity.judul}
+                                                    fetchPriority="high"
+                                                    decoding="async"
                                                     className="h-full w-full object-cover"
                                                 />
                                             </div>
@@ -142,14 +145,6 @@ export default function Welcome({
                                                             latestActivity.tanggal_kegiatan
                                                         }
                                                     </span>
-                                                    {latestActivity.lokasi && (
-                                                        <span className="inline-flex items-center gap-1.5">
-                                                            <MapPin className="size-3.5 text-[#14bace]" />
-                                                            {
-                                                                latestActivity.lokasi
-                                                            }
-                                                        </span>
-                                                    )}
                                                 </div>
                                                 <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-gray-600">
                                                     {latestActivity.ringkasan ||
@@ -236,7 +231,6 @@ export default function Welcome({
                     <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                         {bidangList.map((rawBidang) => {
                             const bidang = translateBidang(rawBidang);
-                            const IconComponent = getBidangIcon(bidang.kode);
                             return (
                                 <Link
                                     key={bidang.id}
@@ -245,9 +239,10 @@ export default function Welcome({
                                     className="group flex flex-col justify-between rounded-2xl border border-[#e4eaec] bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#14bace]/40 hover:shadow-lg"
                                 >
                                     <div>
-                                        <div className="flex size-12 items-center justify-center rounded-xl bg-[#e8f8fa] text-[#14bace] transition-transform group-hover:scale-110">
-                                            <IconComponent className="size-6" />
-                                        </div>
+                                        <BidangIconBadge
+                                            kode={bidang.kode}
+                                            size="md"
+                                        />
                                         <h3 className="mt-5 font-poppins text-lg font-bold text-[#1d2b2d] transition-colors group-hover:text-[#14bace]">
                                             {bidang.nama}
                                         </h3>
@@ -315,6 +310,8 @@ export default function Welcome({
                                         <img
                                             src={act.gambar}
                                             alt={act.judul}
+                                            loading="lazy"
+                                            decoding="async"
                                             className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
                                         />
                                         <span className="absolute top-3 left-3 rounded-md bg-white/90 px-2.5 py-1 text-[10px] font-bold tracking-wider text-[#087f8c] uppercase shadow-xs">
@@ -335,12 +332,6 @@ export default function Welcome({
                                             <p className="mt-2 line-clamp-3 font-sans text-xs leading-relaxed text-gray-600">
                                                 {act.ringkasan || act.deskripsi}
                                             </p>
-                                        </div>
-                                        <div className="mt-4 flex items-center gap-1.5 border-t border-gray-100 pt-3 text-xs text-gray-500">
-                                            <MapPin className="size-3.5 shrink-0 text-[#14bace]" />
-                                            <span className="truncate">
-                                                {act.lokasi}
-                                            </span>
                                         </div>
                                     </div>
                                 </Link>
