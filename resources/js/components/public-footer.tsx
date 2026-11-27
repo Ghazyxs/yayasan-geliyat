@@ -16,6 +16,8 @@ export default function PublicFooter() {
                             <img
                                 src="/images/logo.png"
                                 alt="Logo Yayasan Geliyat"
+                                loading="lazy"
+                                decoding="async"
                                 className="size-11 rounded-lg object-contain"
                             />
                             <span className="font-poppins text-lg font-bold tracking-wide text-white">

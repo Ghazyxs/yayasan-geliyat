@@ -1,13 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import {
-    BookOpen,
-    Heart,
-    Sparkles,
-    Users,
-    ChevronRight,
-    ArrowRight,
-    type LucideIcon,
-} from 'lucide-react';
+import { ChevronRight, ArrowRight } from 'lucide-react';
 import PublicLayout from '@/layouts/public-layout';
 import { useLanguage } from '@/hooks/use-language';
 
@@ -42,21 +34,6 @@ export interface BidangItem {
 
 interface BidangPageProps {
     bidangList: BidangItem[];
-}
-
-export function getBidangIcon(kode: string): LucideIcon {
-    switch (kode) {
-        case 'pendidikan':
-            return BookOpen;
-        case 'kemanusiaan':
-            return Heart;
-        case 'ekonomi':
-            return Sparkles;
-        case 'keagamaan':
-            return Users;
-        default:
-            return BookOpen;
-    }
 }
 
 export function getBidangImagePosition(kode: string): string {

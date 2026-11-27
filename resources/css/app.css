@@ -9,11 +9,9 @@
 
 @theme {
     --font-sans:
-        'Poppins', 'Inter', 'Instrument Sans', ui-sans-serif, system-ui,
-        sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-        'Noto Color Emoji';
+        'Poppins', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+        'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
     --font-poppins: 'Poppins', sans-serif;
-    --font-inter: 'Inter', sans-serif;
 
     --color-geliyat-teal: #14bace;
     --color-geliyat-teal-dark: #087f8c;
